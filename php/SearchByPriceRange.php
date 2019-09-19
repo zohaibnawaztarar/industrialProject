@@ -1,20 +1,13 @@
+<!-- returns list of procedures filtered by price range-->
 <?php
+include './db_connect.php';
 
-$serverName = "zeno.computing.dundee.ac.uk";
-$connectionOptions = array(
-    "Database" => "ip19team8db",
-    "Uid" => "ip19team8",
-    "PWD" => "abc111abc111.."
-);
-
-#Create connection to database.
-$conn = sqlsrv_connect($serverName, $connectionOptions);
-
-
-$sql = "SELECT *  FROM dbo.DRGChargesData WHERE averageTotalPayments BETWEEN 0 AND 10000";
-
+$lowerlimit = 0;
+$upperlimit = 5000;
+$sql = "SELECT *  FROM dbo.newDB WHERE averageTotalPayments BETWEEN ? AND ?";
+$params = array($lowerlimit, $upperlimit);
 #running query
-$results = sqlsrv_query($conn, $sql);
+$results = sqlsrv_query($conn, $sql, $params);
 
 #if result is returned, print all rows. 
 if( $results === false) {
@@ -24,7 +17,7 @@ else
 {
 	while($row = sqlsrv_fetch_array($results, SQLSRV_FETCH_ASSOC)) 
 	{
-        echo $row['dRGCode'].", ".$row['providerName'].",".$row['averageTotalPayments']."<br/>";
+        echo $row['dRGCode'].", ".$row['dRGDescription'].",".$row['averageTotalPayments']."<br/>";
     }
 }
 

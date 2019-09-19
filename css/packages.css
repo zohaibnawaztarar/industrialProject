@@ -1,6 +1,6 @@
 :root {
-  --accent: #EC7133;
-  --shadow-accent: #bc5a28;
+  --accent: #005eb8;
+  --shadow-accent: #005eb8;
 }
 
 body {
@@ -103,7 +103,7 @@ a.custom-card:hover {
 
 .form-inline .form-control {
     display: inline-block;
-    width: 180px;
+    width: 250px;
     vertical-align: middle;
 }
 

@@ -168,7 +168,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="text-center mx-auto mb-4">
-					<h1 class="mt-5">Contact Us</h1>
+					<h1 class="mt-5">Get In Touch</h1>
 					<hr />
 	</div>
 			</div>
@@ -179,7 +179,7 @@
 <div class="container my-5">
 <div class="row">
   <div class="column"><p><h2>Send us a message</h2></p>
-  
+
   <form name="htmlform" method="post" action="html_form_send.php">
 <table width="450px">
 </tr>
@@ -188,54 +188,54 @@
   <label for="first_name">First Name *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="first_name" maxlength="50" size="30">
+  <input  type="text" name="first_name" maxlength="50" size="30" class="form-control my-2">
  </td>
 </tr>
- 
+
 <tr>
  <td valign="top"">
   <label for="last_name">Last Name *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="last_name" maxlength="50" size="30">
+  <input  type="text" name="last_name" maxlength="50" size="30" class="form-control my-2">
  </td>
 </tr>
 <tr>
  <td valign="top">
-  <label for="email">Email Address *</label>
+  <label for="email">E-mail *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="email" maxlength="80" size="30">
+  <input  type="text" name="email" maxlength="80" size="30" class="form-control my-2">
  </td>
- 
+
 </tr>
 <tr>
  <td valign="top">
-  <label for="telephone">Telephone Number</label>
+  <label for="telephone">Phone Number</label>
  </td>
  <td valign="top">
-  <input  type="text" name="telephone" maxlength="30" size="30">
+  <input  type="text" name="telephone" maxlength="30" size="30" class="form-control my-2">
  </td>
 </tr>
 <tr>
  <td valign="top">
-  <label for="comments">Comments *</label>
+  <label for="comments">Message *</label>
  </td>
  <td valign="top">
-  <textarea  name="comments" maxlength="1000" cols="33" rows="6"></textarea>
+  <textarea  name="comments" maxlength="1000" cols="33" rows="6" class="form-control my-2"></textarea>
  </td>
- 
+
 </tr>
 <tr>
  <td colspan="2" style="text-align:center">
-  <input type="submit" value="Submit"> 
+  <input class="btn btn-success btn-mini search-btn my-4" type="submit" value="Submit">
  </td>
 </tr>
 </table>
 </form>
-	  
+
 	</div>
-  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234567890<br><b>Email:</b> contact@comparecare.com<br><b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.1825674377983!2d-2.995466183757694!3d56.46461578074982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cceb9f9fd27%3A0x574118d555a38405!2s150+Lochee+Rd%2C+Dundee+DD2+2LD!5e0!3m2!1sen!2suk!4v1542229504576" width="100%" height="300" frameborder="0" style="border:0" allowfullscreen></iframe>
+  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234567890<br><b>Email:</b> contact@comparecare.com<br><b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
 </div>
 </div>
 </div>

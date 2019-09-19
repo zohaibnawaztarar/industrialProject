@@ -1,20 +1,13 @@
+
 <?php
-
-$serverName = "zeno.computing.dundee.ac.uk";
-$connectionOptions = array(
-    "Database" => "ip19team8db",
-    "Uid" => "ip19team8",
-    "PWD" => "abc111abc111.."
-);
-
-#Create connection to database.
-$conn = sqlsrv_connect($serverName, $connectionOptions);
+include './db_connect.php';
 
 
-$sql = "SELECT * FROM dbo.newDB WHERE dRGCode LIKE 39";
-
+$sql = "SELECT * FROM dbo.newDB WHERE dRGCode=?";
+$dRGCode =39;
+$params = array($dRGCode);
 #running query
-$results = sqlsrv_query($conn, $sql);
+$results = sqlsrv_query($conn, $sql, $params);
 
 #if result is returned, print all rows. 
 if( $results === false) {
@@ -27,8 +20,6 @@ else
         echo $row['dRGCode'].", ".$row['providerName']."<br />";
     }
 }
-
 #Frees resources from statement.
 sqlsrv_free_stmt( $results);
-
 ?>
