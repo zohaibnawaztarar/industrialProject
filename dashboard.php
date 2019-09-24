@@ -199,7 +199,7 @@
 
     <div class="container">
         <?php
-        if ($position != "customer" && $position != "databaseFind") { ?>
+        /*if ($position != "customer" && $position != "databaseFind") { */?>
         <div class="row mt-5">
             <div class="col-sm-4 my-lg-0 my-3">
                 <a href="dashboard/customers.php" class="custom-card">
@@ -211,23 +211,86 @@
                     </div>
                 </a>
             </div>
-            <div class="col-sm-4 my-lg-0 my-3">
-                <a href="dashboard/bookings.php" class="custom-card">
-                    <div class="card">
-                        <i class="card-img-top fas fa-briefcase fa-5x my-4"></i>
-                        <div class="card-body text-center">
-                            <h4 class="card-title">My Bookmarks</h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
+
 
             <div class="col-sm-4 my-lg-0 my-3">
             </div>
         </div>
-        <?php } else { ?>
+   <!--     <?php /*} else { */?>
         <h1 class="display-4 text-center my-5">Not Logged into Staff Account</h1>
-        <?php } ?>
+        --><?php /*} */?>
+        <!-- Get list of favourite procedures for user-->
+        <?php
+
+        include_once("php/db_connect.php");
+
+        $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
+        $UserID = 2;
+        $param = array($UserID);
+        # run sql query on already set up database connection with custom parameters
+        $result = sqlsrv_query($conn, $sql, $param);
+
+        $rows_count = 0;
+        #returns error if required.
+        if ($result == FALSE) {
+            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+            die(print_r(sqlsrv_errors(), true));
+        }
+        else {
+            #return if no results from query.
+            if (sqlsrv_has_rows($result) == 0) {
+                echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
+                echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
+            }
+            else {
+                #display formatted query results on frontend.
+                while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+                    var_dump($result);
+                    $rows_count++;
+                    ?>
+                    <div class="card my-3">
+                        <div class="row no-gutters">
+                            <div class="col">
+                                <div class="card-body">
+                                    <h4 class="card-title nhsColor" style="
+                                            float: left">
+                                        <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
+                                            float: right">
+                                            $
+                                            <?php echo round($row['averageTotalPayments']); ?>
+                                        </h3><br>
+                                    </h4>
+                                    <h5 class="card-title text-secondary">
+                                        <br><?php echo $row['dRGDescription']; ?>
+                                    </h5>
+                                    <p class="card-text">
+                                        <?php echo $row['providerCity']; ?>
+                                    </p>
+                                    <form action="hospitalDetails.php" method="GET">
+                                        <input type='hidden' name="providerId"
+                                               value="<?php echo $row['providerId']; ?>">
+                                        <?php
+                                        if (empty($row['dRGCode'])) { $dRGCode = $dRGInput; }
+                                        else { $dRGCode = $row['dRGCode']; }
+                                        ?>
+                                        <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+                                        <button class="btn btn-success buy-btn mx-1 m-auto" style="
+                                            float: right" type="buy" >
+                                            <i class="fas fa-info-circle"></i> View more information
+                                        </button><br>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php }
+            }
+        }
+        sqlsrv_free_stmt($result);
+
+        ?>
+
+
     </div>
 
     <!-- Footer -->
