@@ -244,8 +244,8 @@
                         <option value="WY">Wyoming</option>
                     </select>
 
-                    <input required type="text" placeholder="Zip Code" name="zipCode"  class="form-control my-2">
-                    <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search </button>
+                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
+                    <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -318,7 +318,10 @@
                                     <?php echo ucwords(strtolower($row['providerCity'])); ?><br>
                                     <?php echo $row['providerState']; ?><br>
                                 </p>
-                                <button class="btn btn-success btn-mini search-btn my-4 hidden-print" onclick="myFunction()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</button>
+                                <button class="btn btn-success btn-mini search-btn my-4 hidden-print"
+                                        onclick="myFunction()"><span class="glyphicon glyphicon-print"
+                                                                     aria-hidden="true"></span> Print
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -429,6 +432,48 @@
 
     } ?>
 
+    <!-- Other procedures listing -->
+    <div class="container">
+
+        <button class="btn btn-success search-btn mx-1 m-2" type="button" data-toggle="collapse"
+                data-target="#collapseProcList" aria-expanded="false" aria-controls="collapseExample">
+            Other procedures offered by this hospital
+        </button>
+        <div class="collapse" id="collapseProcList">
+            <div class="card card-body">
+                <div class="row">
+                    <?php
+                    $sqlProcList = "SELECT dRGCode, dRGDescription, providerId FROM dbo.newDB WHERE providerId=? AND year=2017 ORDER BY dRGDescription";
+                    $params = array($providerId);
+                    $resultProcList = sqlsrv_query($conn, $sqlProcList, $params);
+
+                    if ($resultProcList == FALSE) {
+                        echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
+                        die(print_r(sqlsrv_errors(), true));
+                    } else {
+                        if (sqlsrv_has_rows($resultProcList) == 0) {
+                            echo '<h1 class="display-3 pb-5 text-center">This hospital offers no other procedures.</h1>';
+                            echo '<h1 class="display-3 pb-5 text-center"><br></h1>';
+                        } else {
+                            while ($row = sqlsrv_fetch_array($resultProcList, SQLSRV_FETCH_ASSOC)) {
+                                ?>
+
+                                <div class="col-md-4">
+                                    <a href="hospitalDetails.php?providerId=<?php echo $providerId; ?>&dRGCode=<?php echo $row['dRGCode'] ?>">
+                                        <?php echo ucwords(strtolower($row['dRGDescription'])) ?>
+                                    </a>
+                                </div>
+
+
+                            <?php }
+                        }
+                        sqlsrv_free_stmt($resultProcList);
+                    } ?>
+                </div>
+            </div>
+        </div>
+        <br><br>
+    </div>
 </div>
 
 <!-- Footer -->

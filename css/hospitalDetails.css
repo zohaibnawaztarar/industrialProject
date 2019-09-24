@@ -155,7 +155,8 @@ a.custom-card:hover {
 [class*="col-"] {
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background-color: rgba(86, 61, 124, .15);
+  background-color: white;
   border: 1px solid rgba(86, 61, 124, .2);
+  font-size: 18px;
 }
 
