@@ -6,6 +6,18 @@
 body {
   padding-top: 54px;
   background-color: #fafafc;
+    font-size: 20px;
+}
+
+.h4, h4{
+   color: white;
+}
+
+.card-header{
+    background: #005eb8;
+}
+h2{
+    color: #005eb8;
 }
 
 @media (min-width: 992px) {
@@ -21,6 +33,8 @@ body {
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
+
+
 }
 
 .navbar {
@@ -66,6 +80,7 @@ body {
   background-color: var(--accent);
   color: white;
   border-color: var(--accent);
+
 }
 
 .search-btn:hover, .search-btn:focus, .buy-btn:hover, .buy-btn:focus {
@@ -90,9 +105,7 @@ a.custom-card:hover {
   text-decoration: none;
 }
 
-.card:hover {
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)
-}
+
 
 #id3, #id4 {
   display: none;
@@ -131,4 +144,18 @@ a.custom-card:hover {
     background-color: #555; /* Add a dark-grey background on hover */
 }
 
+.row {
+  margin-bottom: 1rem;
+}
+.row .row {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+[class*="col-"] {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(86, 61, 124, .15);
+  border: 1px solid rgba(86, 61, 124, .2);
+}
 

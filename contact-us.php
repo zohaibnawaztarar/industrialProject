@@ -124,9 +124,6 @@
 					<a class="nav-link" href="about.php">About Us</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="packages.php">Packages</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="faq.php">FAQs</a>
 				</li>
 				<li class="nav-item  active">
@@ -178,7 +175,7 @@
 
 <div class="container my-5">
 <div class="row">
-  <div class="column"><p><h2>Send us a message</h2></p>
+  <div class="column"><p><h2>Send us a Message</h2></p>
 
   <form name="htmlform" method="post" action="html_form_send.php">
 <table width="450px">
@@ -226,16 +223,21 @@
  </td>
 
 </tr>
+    <tr>
+        <td valign="top">
+        <label for="comments">* Required Fields</label>
+        </td>
+    </tr>
 <tr>
- <td colspan="2" style="text-align:center">
-  <input class="btn btn-success btn-mini search-btn my-4" type="submit" value="Submit">
+ <td colspan="2" style="text-align:right">
+  <input class="btn btn-success btn-mini search-btn my-4 center-block text-center" type="submit" value="Submit">
  </td>
 </tr>
 </table>
 </form>
 
 	</div>
-  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234567890<br><b>Email:</b> contact@comparecare.com<br><b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234 567 890<br> <b>Email:</b> <a href = "mailto:contact@comparecare.com">contact@comparecare.com</a> <br> <b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
 </div>
 </div>
 </div>

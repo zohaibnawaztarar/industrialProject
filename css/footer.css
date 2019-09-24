@@ -51,6 +51,8 @@ body {
 
 .login-btn {
   color: var(--accent);
+
+  color: white;
   border-color: var(--accent);
 }
 
@@ -96,11 +98,6 @@ a.custom-card:hover {
 }
 
 
-footer {
-  position: fixed!important;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
+
 
 

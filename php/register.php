@@ -5,32 +5,28 @@ if (isset($_GET['register'])) {
 $username = $_GET['username'];
 $password = $_GET['password'];
 
-$firstname = $_GET['first_name'];
-$lastname = $_GET['last_name'];
-$phone = $_GET['phone_number'];
+$name = $_GET['name'];
 $email = $_GET['email'];
-$age = $_GET['age'];
-$gender = $_GET['gender'];
-$nation = $_GET['nationality'];
+$zip = $_GET['zip'];
 
-$sql = "INSERT INTO customers (customer_first_name, customer_last_name, customer_phone, customer_email, customer_age, customer_gender, customer_nationality) VALUES ('$firstname', '$lastname', '$phone', '$email', '$age', '$gender', '$nation')";
+$sql = "INSERT INTO dbo.UserDB (fName, userEmail, userZipcode) VALUES ('$name', '$email', '$zip')";
 
-if (mysqli_query($conn, $sql)) {
+if (sqlsrv_query($conn, $sql)) {
     echo "New Customer Added Successfully";
-    $last_id = mysqli_insert_id($conn);
-    $sql = "INSERT INTO login (username, password, customer_id) VALUES ('$username', '$password', '$last_id')";
-    if (mysqli_query($conn, $sql)) {
+    $last_id = sqlsrv_query($conn, $sql);
+    $sql = "INSERT INTO dbo.UserDB (userName, userPassword, userID) VALUES ('$username', '$password', '$last_id')";
+    if (sqlsrv_query($conn, $sql)) {
         echo "New Web Account Added Successfully";
         echo '<button onclick="location.href=\'../index.php\';">Go Back</button>';
     } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        echo "Error: " . $sql . "<br>" . sqlsrv_error($conn);
         echo "<br>";
         echo "<br>";
         echo '<button onclick="location.href=\'../index.php\';">Go Back</button>';
     }
     
 } else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    echo "Error: " . $sql . "<br>" . sqlsrv_error($conn);
     echo "<br>";
     echo "<br>";
     echo '<button onclick="location.href=\'../index.php\';">Go Back</button>';
@@ -45,5 +41,5 @@ if (mysqli_query($conn, $sql)) {
 }
 
 
-mysqli_close($conn);
+sqlsrv_close($conn);
 ?>

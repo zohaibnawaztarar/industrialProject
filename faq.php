@@ -126,9 +126,6 @@
 				<li class="nav-item">
 					<a class="nav-link" href="about.php">About Us</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="packages.php">Packages</a>
-				</li>
 				<li class="nav-item active">
 					<a class="nav-link" href="#"><span class="sr-only">(current)</span>FAQs</a>
 				</li>
@@ -183,7 +180,7 @@
 		<div class="faq">
 			<section class="cd-faq mt-4">
 				<ul class="cd-faq-categories">
-					<li><a class="selected" href="#partners">Our Partners</a></li>
+					<li><a class="selected" href="#partners"> Our Partners</a></li>
 					<li><a href="#privacy">Privacy Policy</a></li>
 					<li><a href="#terms">Terms</a></li>
 
@@ -192,7 +189,7 @@
 				<div class="cd-faq-items">
 					<ul id="partners" class="cd-faq-group">
 						<li class="cd-faq-title">
-							<h2>Our Partners</h2>
+							<h5>Our Partners</h5>
 						</li>
 						<li>
 							<a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
@@ -207,12 +204,33 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 							</div> <!-- cd-faq-content -->
 						</li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
 
 					</ul> <!-- cd-faq-group -->
 
 					<ul id="privacy" class="cd-faq-group">
 						<li class="cd-faq-title">
-							<h2>Privacy Policy</h2>
+							<h5>Privacy Policy</h5>
 						</li>
 						<li>
 							<a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
@@ -235,12 +253,33 @@
 							</div> <!-- cd-faq-content -->
 						</li>
 
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
 
 					</ul> <!-- cd-faq-group -->
 
 					<ul id="terms" class="cd-faq-group">
 						<li class="cd-faq-title">
-							<h2>Terms & Conditions</h2>
+							<h5>Terms & Conditions</h5>
 						</li>
 						<li>
 							<a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
@@ -276,6 +315,27 @@
 								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 							</div> <!-- cd-faq-content -->
 						</li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
+
+                        <li>
+                            <a class="cd-faq-trigger" href="#0">Lorem ipsum dolor sit amet?</a>
+                            <div class="cd-faq-content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            </div> <!-- cd-faq-content -->
+                        </li>
 
 
 					</ul> <!-- cd-faq-group -->

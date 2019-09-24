@@ -253,15 +253,45 @@
 	<h1> Sorting filters here</h1>
 
 <div id="map"></div>
-
 <script>
   var map, infoWindow;
   var geocoder;
-  var userPos
+  var userPos;
+  var haveUserLocation;
 
   var customLabel = {
           label: 'R'
   };
+
+  function userLocation() {
+      geocoder = new google.maps.Geocoder();
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+              userPos = {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
+              };
+
+              infoWindow.setPosition(userPos);
+              infoWindow.setContent('Location found.');
+              infoWindow.open(map);
+              map.setCenter(userPos);
+              map.setZoom(10); //If location is found, increase zoom
+
+              haveUserLocation = true;
+
+          }, function() {
+              handleLocationError(true, infoWindow, map.getCenter());
+          });
+      } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+
+          haveUserLocation = false;
+      }
+  }
 
   function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -269,37 +299,29 @@
           zoom: 12
       });
 
-      geocoder = new google.maps.Geocoder();
+      userLocation();
+
       infoWindow = new google.maps.InfoWindow;
 
-      // Try HTML5 geolocation.
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          userPos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          var providerID1 = '330126';
-          var dRGCode1 = 39;
-          infoWindow.setPosition(userPos);
-          infoWindow.setContent('location found');
-          //infoWindow.setContent('<a href="https://zeno.computing.dundee.ac.uk/2019-projects/team8/hospitalDetails.php?'
-          //   +'providerId='+providerID1+'&dRGCode='+dRGCode1+'">Click here to view more information</a>');
-            infoWindow.open(map);
+      // downloadUrl('https://zeno.computing.dundee.ac.uk/2019-projects/team8/map_locations.xml', function (data) {
+      //     var xml = data.responseXML;
+      //     var markers = xml.documentElement.getElementsByTagName('marker');
+      //     Array.prototype.forEach.call(markers, function (markerElem) {
+      //         var name = markerElem.getAttribute('providerName');
+      //         var id = markerElem.getAttribute('dRGCode');
+      //         var address = markerElem.getAttribute('providerStreetAddress');
+      //         var city = markerElem.getAttribute('providerCity');
+      //         var zip = markerElem.getAttribute('providerZipCode');
+      //         var state = markerElem.getAttribute('providerState');
+      //
+      //
+      //           codeAddress(name, zip, address, city, state);
+      //     });
+      // });
 
-          map.setCenter(userPos);
-          map.setZoom(10); //If location is found, increase zoom
-        }, function() {
-          handleLocationError(true, infoWindow, map.getCenter());
-        });
-      } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, infoWindow, map.getCenter());
-      }
-        //codeAddress('5401','sdfasdfdsf','asdfa','RD');
       <?php
       include "./php/db_connect.php";
-      $sql="SELECT TOP(2) * FROM dbo.newDB WHERE dRGCode=?";
+      $sql="SELECT * FROM dbo.newDB WHERE dRGCode=? AND providerZipCode LIKE '10%'";
       $dRGCode=39;
       $params=array($dRGCode);
       #runningquery
@@ -309,62 +331,17 @@
       }
 
       while($row=sqlsrv_fetch_array($results,SQLSRV_FETCH_ASSOC)){
-          $providerID = $row['providerId'];
-          $name = $row['providerName'];
           $zip = $row['providerZipCode'];
           $address = $row['providerStreetAddress'];
           $city = $row['providerCity'];
-          //$state = $row['providerState'];
-          echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."');";
+          $state = $row['providerState'];
+          echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$state."');";
       }
 
       ?>
 
+  }
 
-/*
-      downloadUrl('https://zeno.computing.dundee.ac.uk/2019-projects/team8/map_locations.xml', function (data) {
-          var xml = data.responseXML;
-          var markers = xml.documentElement.getElementsByTagName('marker');
-          Array.prototype.forEach.call(markers, function (markerElem) {
-              var id = markerElem.getAttribute('dRGCode');
-              var address = markerElem.getAttribute('providerStreetAddress');
-              var city = markerElem.getAttribute('providerCity');
-              var zip = markerElem.getAttribute('providerZipCode');
-              var state = markerElem.getAttribute('providerState');
-              // var point = new google.maps.LatLng(
-              //     parseFloat(markerElem.getAttribute('lat')),
-              //     parseFloat(markerElem.getAttribute('lng')));
-
-                codeAddress(zip, address, city, state);
-              // var infowincontent = document.createElement('div');
-              // var strong = document.createElement('strong');
-              // strong.textContent = name
-              // infowincontent.appendChild(strong);
-              // infowincontent.appendChild(document.createElement('br'));
-              //
-              // var text = document.createElement('text');
-              // text.textContent = address
-              // infowincontent.appendChild(text);
-              // var icon = customLabel
-              // {
-              // }
-              // ;
-
-              // var marker = new google.maps.Marker({
-              //     map: map,
-              //     position: point,
-              //     label: icon.label
-              // });
-              // marker.addListener('click', function () {
-              //     infoWindow.setContent(infowincontent);
-              //     infoWindow.open(map, marker);
-              // });
-
-
-              // codeAddress(zip);
-         // });
-      });*/
-  };
 
   function downloadUrl(url, callback) {
       var request = window.ActiveXObject ?
@@ -387,49 +364,38 @@
 
   function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
+    // infoWindow.setContent(browserHasGeolocation ?
+    //         'Error: The Geolocation service failed.' :
+    //         'Error: Your browser doesn\'t support geolocation.');
+    // infoWindow.open(map);
   }
-  //
-  function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID) {
-      //zipCode = 36301;
-      //num++;
-      geocoder.geocode( {'address': zipCode}, function(results, status) {
+
+
+  function codeAddress(zipCode, address, city, state) {
+      geocoder.geocode( { 'address': zipCode}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
+              //Got result, center the map and put it out there
+              map.setCenter(results[0].geometry.location);
 
               var infowincontent = document.createElement('div');
               var strong = document.createElement('strong');
-              strong.textContent = name
+              // strong.textContent = name
               infowincontent.appendChild(strong);
+              infowincontent.appendChild(document.createElement('br'));
 
-              //var text = document.createElement('text');
-              //text.setAttribute('style', 'white-space: pre; font-weight:bold');
-              //text.textContent = hospitalName + '\r\n';
-              //infowincontent.appendChild(text);
-
-              //var text1 = document.createElement('text1');
-              //text1.setAttribute('style','white-space: pre;');
-              //text1.textContent = 'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' +  'Miles: ';
-              //infowincontent.appendChild(text1);
-
-              //var miles = document.createElement('miles');
-              //miles.setAttribute('style','white-space: pre; color : red;');
-              //miles.textContent = getDistance(results[0].geometry.location, userPos) + '\r\n';
-              //infowincontent.appendChild(miles);
-
-              var link = document.createElement('a');
-              //link.href = 'http://www.google.com';
+              var text = document.createElement('text');
+              text.setAttribute('style', 'white-space: pre;');
 
 
-              link.setAttribute('href','http://google.com');
-              infowincontent.appendChild(link);
-              //link.textContent = '<a href="https://zeno.computing.dundee.ac.uk/2019-projects/team8/hospitalDetails.php?'
-               //   +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
-              //link.textContent = 'https://zeno.computing.dundee.ac.uk/2019-projects/team8/hospitalDetails.php?providerId=330126&dRGCode=39';
-              //infowincontent.appendChild(link);
-              //document.body.appendChild()
+
+              if(haveUserLocation) {
+                  text.textContent = address + '\r\n' + city + '\r\n' + state + '\r\n' +  'Miles: ' + getDistance(results[0].geometry.location, userPos)
+              }
+              else {
+                  text.textContent = address + '\r\n' + city + '\r\n' + state + '\r\n';
+              }
+
+              infowincontent.appendChild(text);
 
               var icon = customLabel
               {
@@ -444,10 +410,17 @@
               marker.addListener('click', function () {
                   infoWindow.setContent(infowincontent);
                   infoWindow.open(map, marker);
+
+                  if(haveUserLocation){
+                      document.getElementById("testText").innerHTML = address + '\r\n' + city + '\r\n' + state + '\r\n' + 'Miles from your location: ' + getDistance(results[0].geometry.location, userPos)
+                  }
+                  else {
+                      document.getElementById("testText").innerHTML = address + '\r\n' + city + '\r\n' + state + '\r\n';
+                  }
               });
 
           } else {
-              alert("Geocode was not successful for the following reason: " + status);
+              //alert("Geocode was not successful for the following reason: " + status);
           }
       });
   }
@@ -470,8 +443,57 @@
   };
 </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEOf66YDCHpSc9OhGNJHhejaGG9DArF-U&callback=initMap" async defer>
+    <script type="text/javascript">
+        function test(a){
+            return 1+a;
+        }
+
     </script>
+<!--    --><?php
+//    include "./php/db_connect.php";
+//    $sql="SELECT * FROM dbo.newDB WHERE dRGCode=?";
+//    $dRGCode=39;
+//    $params=array($dRGCode);
+//    #runningquery
+//    $results=sqlsrv_query($conn,$sql,$params);
+//    if($results===false){
+//        die(print_r(sqlsrv_errors(),true));
+//    }
+//
+//    while($row=sqlsrv_fetch_array($results,SQLSRV_FETCH_ASSOC)){
+//        $zip = $row['providerZipCode'];
+//        $address = $row['providerStreetAddress'];
+//        $city = $row['providerCity'];
+//        $state = $row['providerState'];
+//        //$sa = 1;
+//        //echo $row['providerZipCode'];
+//        //echo $zip;
+//
+/*        "<?php echo $zip; ?>";*/
+//        "codeAddress($zip, $address, $city, $state)";
+//        ;
+//
+//        //echo '<script>test();</script>';
+//    }
+//    ?>
+
+    <script>
+        _zip = "<?php echo $zip; ?>";
+        _address = "<?php echo $address; ?>";
+        _city = "<?php echo $city; ?>";
+        _state = "<?php echo $state; ?>";
+        codeAddress(_zip, _address, _city, _state);
+    </script>
+
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEOf66YDCHpSc9OhGNJHhejaGG9DArF-U&callback=initMap" async defer>
+</script>
+
+    <h1>Hospital information:</h1>
+    <h3 id="hospitalName"></h3>
+    <p id="testText" style="white-space: pre"></p>
+
     <!--<div class="container">
 
 

@@ -17,7 +17,11 @@
         width: 100%;
     }
 }
+h1{
+    color: #005eb8;
+}
 
 #id3, #id4 {
     display: none;
   }
+

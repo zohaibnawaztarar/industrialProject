@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Compare Care | Packages</title>
+    <title>Compare Care | Details</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -18,7 +18,9 @@
           integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
           crossorigin="anonymous">
     <!-- Custom CSS -->
-    <link href="css/packages.css" rel="stylesheet">
+    <link href="css/hospitalDetails.css" rel="stylesheet">
+
+    <script src="js/print.js"></script>
 
 
     <?php
@@ -27,28 +29,17 @@
 
     //This breaks the GETs for some reason?
     //if($url != "") { //If the referee is not an about:blank page or been entered from the URL bar or a first entry
-    $state = "";
-    $zipCode = "";
+    $providerId = "";
     $dRGCode = "";
-    $order = "price_asc";
-
-    if (isset($_GET['state'])) {
-        $state = $_GET['state'];
-    }
-
-    if (isset($_GET['zipCode'])) {
-        $zipCode = $_GET['zipCode'];
-    }
 
     if (isset($_GET['dRGCode'])) {
         $dRGCode = $_GET['dRGCode'];
     }
 
-    if (isset($_GET['order'])) {
-        $order = $_GET['order'];
+    if (isset($_GET['providerId'])) {
+        $providerId = $_GET['providerId'];
     }
 
-    //}
     $userName = "";
     $encrypPass = "";
     //Check website navigating from before allowing post requests only if ftom the same server as this
@@ -107,7 +98,6 @@
         $_SESSION['encrypPass'] = $encrypPass;
     }
 
-
     if ($userName == "") {
         if (isset($_COOKIE["userName"])) {
             $userName = $_COOKIE["userName"];
@@ -125,18 +115,17 @@
             }
         }
     }
-
     ?>
-
 </head>
 
 <body>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+    <a class="navbar-brand" href="#"><i class="fas fa-ambulance"></i> Compare Care</a>
     <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-            aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            aria-controls="navbarResponsive"
+            aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -146,9 +135,6 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="about.php">About Us</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Packages<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="faq.php">FAQs</a>
@@ -160,8 +146,7 @@
         <form class="navbar-form form-inline" action="login.php" method="POST">
             <div id="id3" class="form-group">
                 <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username"
-                       name="userName"
-                       required>
+                       name="userName" required>
                 <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password"
                        name="uncrypPass" required>
                 <input class="form-control" type="hidden" name="remember" value="checked">
@@ -175,7 +160,12 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link account" href="dashboard.php">
-                        <?php echo $userName ?>'s Account</a>
+                        <?php
+                        if ($userName != "") {
+                            echo "$userName" . "'s";
+                        }
+                        ?>
+                        Account</a>
                 </li>
                 <li class="nav-item">
                     <form action="login.php" method="POST">
@@ -189,17 +179,17 @@
     </div>
 </nav>
 
-
+<!-- Header with Background Image -->
 <div class="place">
     <div class="container">
         <div class="row">
             <div class="text-center mx-auto mb-4">
                 <h1 class="mt-5">Search again?</h1>
                 <hr/>
-                <form class="form-inline mb-5" action="packages.php" method="GET">
+                <form class="form-inline mb-5" action="index.php" method="GET">
                     <input required type="text" placeholder="DRG Code or Keywords" name="dRGCode"
                            class="form-control my-2">
-                    <select class="form-control m-1 mb-2 mx-2" name="state">
+                    <select class="form-control my-2 m-1 mb-2 mx-2" name="state">
                         <option value="? OR 1=1" disabled selected>State</option>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
@@ -253,8 +243,9 @@
                         <option value="WI">Wisconsin</option>
                         <option value="WY">Wyoming</option>
                     </select>
-                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
-                    <button class="btn btn-success search-btn mx-1 m-auto" type="submit">Search</button>
+
+                    <input required type="text" placeholder="Zip Code" name="zipCode"  class="form-control my-2">
+                    <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search </button>
                 </form>
             </div>
         </div>
@@ -263,116 +254,168 @@
 
 <div class="container">
     <form action="packages.php" method="GET">
-        <input type="hidden" name="state" value="<?php echo $state; ?>"/>
-        <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
+        <input type="hidden" name="providerId" value="<?php echo $providerId; ?>"/>
         <input type="hidden" name="dRGCode" value="<?php echo $dRGCode; ?>"/>
-        <div class="row my-3 text-center sorters">
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="price_desc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-down"></i>
-                    Sort by Price DESC
-                </button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="price_asc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-up"></i>
-                    Sort by Price ASC
-                </button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="distance_asc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-down"></i>
-                    Sort by Closest Distance
-                </button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="distance_desc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-up"></i>
-                    Sort by Furthest Distance
-                </button>
-            </div>
-        </div>
-        <div class="row my-3 text-center sorters">
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="city_desc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-down"></i>
-                    Sort by City Name DESC
-                </button>
-            </div>
-            <div class="col-lg-3">
-                <button class="btn search-btn mx-1 m-auto" value="city_asc" name="order" type="submit"><i
-                            class="fas fa-sort-amount-up"></i>
-                    Sort by City Name ASC
-                </button>
-            </div>
-        </div>
-    </form>
-    <hr/>
-    <!-- Card Generation -->
 
-    <!-- Get list of procedures for a given hospital-->
+    </form>
+
+    <!-- Get hospital details -->
     <?php
     include_once("php/db_connect.php");
+    $sql = "SELECT * FROM dbo.newDB WHERE providerId=? AND dRGCode=? AND year=?";
 
-    $sql = "SELECT dRGDescription, providerName, providerCity, averageTotalPayments, providerId FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
+    $params = array($providerId, $dRGCode, 2017);
+    $resultMain = sqlsrv_query($conn, $sql, $params);
 
-    if (!empty($order)) {
-        if ($order == "price_desc") {
-            $sql .= " ORDER BY averageTotalPayments DESC";
-        } else if ($order == "price_asc") {
-            $sql .= " ORDER BY averageTotalPayments ASC";
-        } else if ($order == "distance_desc") {
-            //change to distance!!!!
-            $sql .= " ORDER BY averageTotalPayments DESC";
-        } else if ($order == "distance_asc") {
-            //change to distance!!
-            $sql .= " ORDER BY averageTotalPayments ASC";
-        } else if ($order == "city_desc") {
-            $sql .= " ORDER BY providerCity DESC";
-        } else if ($order == "city_asc") {
-            $sql .= " ORDER BY providerCity ASC";
-        }
-    }
+    $params = array($providerId, $dRGCode, 2016);
+    $result2016 = sqlsrv_query($conn, $sql, $params);
 
-    # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
-    $zipCodeDigits = substr($zipCode, 0, 2) . "%";
-    $params = array($zipCodeDigits, $dRGCode);
-    $result = sqlsrv_query($conn, $sql, $params);
+    $params = array($providerId, $dRGCode, 2015);
+    $result2015 = sqlsrv_query($conn, $sql, $params);
 
     $rows_count = 0;
 
-    if ($result == FALSE) {
+    if ($resultMain == FALSE) {
         echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
         die(print_r(sqlsrv_errors(), true));
     } else {
-        if (sqlsrv_has_rows($result) == 0) {
-            echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
+        if (sqlsrv_has_rows($resultMain) == 0) {
+            echo '<h1 class="display-3 pb-5 text-center">No results found! Something went wrong here, there should be results.</h1>';
             echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
         } else {
-            while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+            while ($row = sqlsrv_fetch_array($resultMain, SQLSRV_FETCH_ASSOC)) {
                 $rows_count++;
+                if (sqlsrv_has_rows($result2016) == 0) {
+                    $result2016_empty = true;
+                } else {
+                    $row2016 = sqlsrv_fetch_array($result2016, SQLSRV_FETCH_ASSOC);
+                    $result2016_empty = false;
+                }
+                if (sqlsrv_has_rows($result2015) == 0) {
+                    $result2015_empty = true;
+                } else {
+                    $row2015 = sqlsrv_fetch_array($result2015, SQLSRV_FETCH_ASSOC);
+                    $result2015_empty = false;
+                }
                 ?>
+
                 <div class="card my-3">
                     <div class="row no-gutters">
                         <div class="col">
                             <div class="card-body">
-                                <h4 class="card-title">
-                                    <?php echo $row['providerName']; ?><br>
-                                    <?php echo $row['dRGDescription']; ?>
+                                <h2 class="card-title">
+                                    <?php echo ucwords(strtolower($row['providerName'])); ?><br>
+                                </h2>
+                                <h4 class="card-title mb-2 text-muted">
+                                    <?php echo ucwords(strtolower($row['dRGDescription'])); ?>
+                                    (DRG Code: <?php echo ucwords(strtolower($row['dRGCode'])); ?>)
                                 </h4>
-                                <h3 class="card-title mb-2">
-                                    $
-                                    <?php echo round($row['averageTotalPayments']); ?>
-                                </h3>
+                                <h5 class="card-title mb-2">
+                                    Address
+                                </h5>
                                 <p class="card-text">
-                                    <?php echo $row['providerCity']; ?>
+                                    <?php echo ucwords(strtolower($row['providerStreetAddress'])); ?><br>
+                                    <?php echo ucwords(strtolower($row['providerCity'])); ?><br>
+                                    <?php echo $row['providerState']; ?><br>
                                 </p>
-                                <form action="hospitalDetails.php" method="GET">
-                                    <input type='hidden' name="providerId" value="<?php echo $row['providerId']; ?>">
-                                    <button class="btn btn-success buy-btn mx-1 m-auto" type="buy">
-                                        <i class="fas fa-info-circle"></i> View more information
-                                    </button>
-                                </form>
+                                <button class="btn btn-success btn-mini search-btn my-4 hidden-print" onclick="myFunction()"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="card-deck mb-3 text-center">
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Avg. Total Payments</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title">~ $<?php echo round($row['averageTotalPayments']) ?><small
+                                            class="text-muted"> in 2017</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>
+                                        <?php
+                                        if ($result2016_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2016['averageTotalPayments']) . " in ";
+                                        }
+                                        ?>
+                                        2016
+                                    </li>
+                                    <li>
+                                        <?php
+                                        if ($result2015_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2015['averageTotalPayments']) . " in ";
+                                        }
+                                        ?>
+                                        2015
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Covered Charges</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title">~ $<?php echo round($row['averageCoveredCharges']) ?><small
+                                            class="text-muted"> in 2017</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>
+                                        <?php
+                                        if ($result2016_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2016['averageCoveredCharges']) . " in ";
+                                        }
+                                        ?>
+                                        2016
+                                    </li>
+                                    <li>
+                                        <?php
+                                        if ($result2015_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2015['averageCoveredCharges']) . " in ";
+                                        }
+                                        ?>
+                                        2015
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">Medicare Payments</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title">~ $<?php echo round($row['averageMedicarePayments']) ?><small
+                                            class="text-muted"> in 2017</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    <li>
+                                        <?php
+                                        if ($result2016_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2016['averageMedicarePayments']) . " in ";
+                                        }
+                                        ?>
+                                        2016
+                                    </li>
+                                    <li>
+                                        <?php
+                                        if ($result2015_empty == true) {
+                                            echo "No data for ";
+                                        } else {
+                                            echo "~ $" . round($row2015['averageMedicarePayments']) . " in ";
+                                        }
+                                        ?>
+                                        2015
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -380,11 +423,23 @@
             <?php }
         }
 
-        sqlsrv_free_stmt($result);
+        sqlsrv_free_stmt($resultMain);
+        sqlsrv_free_stmt($result2016);
+        sqlsrv_free_stmt($result2015);
 
     } ?>
+    <div class="container">
+        <h3>Other procedures offered by this hospital</h3>
+        <div class="row">
+            <div class="col-md-4">.col-md-4</div>
+            <div class="col-md-4">.col-md-4</div>
+            <div class="col-md-4">.col-md-4</div>
+        </div>
+    </div>
+
 
 </div>
+
 
 <!-- Footer -->
 <footer class="py-3 bg-dark">
@@ -412,9 +467,6 @@
 
 
         $(".card").hover(
-            function () {
-                $(this).addClass('shadow-lg').css('cursor', 'pointer');
-            },
             function () {
                 $(this).removeClass('shadow-lg');
             }
@@ -444,5 +496,4 @@
     ?>
 </div>
 </body>
-
 </html>

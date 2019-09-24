@@ -124,9 +124,6 @@
 					<a class="nav-link" href="#">About Us<span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="packages.php">Packages</a>
-				</li>
-				<li class="nav-item">
 					<a class="nav-link" href="faq.php">FAQs</a>
 				</li>
 				<li class="nav-item">
