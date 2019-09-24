@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html>
-
-<!-- Information for connecting database: https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php -->
-
 <head>
 
 	<meta charset="utf-8">
@@ -255,10 +252,10 @@
 
 									include_once("php/db_connect.php");
 
-									$sql = "SELECT * FROM login"; //staff id blank here if customer
+									$sql = "SELECT * FROM dbo.userDB"; //staff id blank here if customer
 									//$sqlSTAFFPOS = "SELECT staff_position FROM staff WHERE login.staff_id = staff.staff_id";
 									$sqlSTAFFPOS = "SELECT * FROM staff";
-									$resultsetLogin = mysqli_query($conn, $sql) or die("database error:". mysqli_error($conn));
+									$resultsetLogin = sqlsrv_query($conn, $sql) or die("database error:". mysqli_error($conn));
 									$errorTest = "database error:";
 
 									//if ( (substr($resultsetLogin, 0, strlen($errorTest)) === $errorTest) != 1 ){ //database query result does not start with "database error:"
@@ -266,13 +263,13 @@
 									$pswVeris = "false"; //boolean for psw hints
 									$usrVeris = "false"; //boolean for psw hints
 									while( ($record = mysqli_fetch_assoc($resultsetLogin)) && ($position == "") ) {
-										if ($record['username'] == $userName) {
+										if ($record['userName'] == $userName) {
 											$databaseLog = $databaseLog." User Username Login Found in database, ";
 											$usrVeris = "true"; //boolean for psw hints
-											if ($record['password'] == $uncrypPass) {
+											if ($record['userPassword'] == $uncrypPass) {
 											//if (password_verify($record['password'], $encrypPass)) {
 												$pswVeris = "true"; //boolean for psw hints
-												$userPassword = $record['password']; //Set What the User Password Should be from the Database
+												$userPassword = $record['userPassword']; //Set What the User Password Should be from the Database
 												$databaseLog = $databaseLog." User Password Found in database, ";
 												if ($record['customer_id'] != ""){
 													//save position as customer
@@ -579,12 +576,7 @@
 					echo "<script type='text/javascript'>var result = false;</script>";
 					echo "<script type='text/javascript'>var result = window.confirm('$message');</script>";
 
-					//if echo result = true??
 
-					//$result = "<script type='text/javascript'>result</script>";
-					//echo "result = ".$result;
-					//echo "result1 = ".$result1;
-					//echo "result2 = ".$result2;
 					
 					$databaseLog = $databaseLog." Position Redirect - ".$position." ";
 					switch ($position) {
