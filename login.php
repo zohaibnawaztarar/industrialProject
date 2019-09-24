@@ -253,8 +253,7 @@
 									include_once("php/db_connect.php");
 
 									$sql = "SELECT * FROM dbo.userDB"; //staff id blank here if customer
-									//$sqlSTAFFPOS = "SELECT staff_position FROM staff WHERE login.staff_id = staff.staff_id";
-									$sqlSTAFFPOS = "SELECT * FROM staff";
+
 									$resultsetLogin = sqlsrv_query($conn, $sql) or die("database error:". mysqli_error($conn));
 									$errorTest = "database error:";
 
@@ -262,7 +261,7 @@
 									$position = "";
 									$pswVeris = "false"; //boolean for psw hints
 									$usrVeris = "false"; //boolean for psw hints
-									while( ($record = mysqli_fetch_assoc($resultsetLogin)) && ($position == "") ) {
+									while( $record = sqlsrv_fetch_array($resultsetLogin,SQLSRV_FETCH_ASSOC) ) {
 										if ($record['userName'] == $userName) {
 											$databaseLog = $databaseLog." User Username Login Found in database, ";
 											$usrVeris = "true"; //boolean for psw hints
@@ -290,8 +289,7 @@
 
 									//$encrypPass
 
-									// The cost parameter can change over time as hardware improves
-									$options = array('cost' => 11);
+
 
 									// Verify stored hash encrypPass against plain-text password
 									if ($pswVeris == "true") {

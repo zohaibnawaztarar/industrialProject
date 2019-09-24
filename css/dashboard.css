@@ -73,8 +73,6 @@ body {
 
 .card {
   height: 100%;
-  border-radius: 20px;
-  width: 18rem;
 }
 
 .card i {
@@ -96,12 +94,5 @@ a.custom-card:hover {
   display: none;
 }
 
-
-footer {
-  position: fixed!important;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
 
 
