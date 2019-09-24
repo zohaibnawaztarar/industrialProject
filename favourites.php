@@ -3,10 +3,7 @@
 
     include_once("php/db_connect.php");
     
-    $sql = 'SELECT *
-FROM bmDB
-LEFT JOIN newDB ON newDB.providerId=bmDB.providerID 
-WHERE bmDB.userID = ?;';
+    $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
     $UserID = 2;
     $param = array($UserID);
     # run sql query on already set up database connection with custom parameters
