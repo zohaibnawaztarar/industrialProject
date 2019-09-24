@@ -118,6 +118,11 @@ a.custom-card:hover {
   display: none;
 }
 
+.nhsColor {
+    color: #005eb8;
+
+}
+
 #myBtn {
     display: none; /* Hidden by default */
     position: fixed; /* Fixed/sticky position */
