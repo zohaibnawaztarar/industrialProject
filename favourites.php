@@ -1,12 +1,16 @@
  <!-- Get list of favourite procedures for user-->
 <?php
 
-
+    include_once("php/db_connect.php");
     
-    $sql = 'SELECT * FROM dbo.bmDB WHERE UserID=?';
+    $sql = 'SELECT *
+FROM bmDB
+LEFT JOIN newDB ON newDB.providerId=bmDB.providerID 
+WHERE bmDB.userID = ?;';
     $UserID = 2;
+    $param = array($UserID);
     # run sql query on already set up database connection with custom parameters
-    $result = sqlsrv_query($conn, $sql, $params);
+    $result = sqlsrv_query($conn, $sql, $param);
 
     $rows_count = 0;
     #returns error if required.
@@ -23,6 +27,7 @@
         else {
             #display formatted query results on frontend.
             while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+            	var_dump($result);
                 $rows_count++;
                 ?>
                 <div class="card my-3">
