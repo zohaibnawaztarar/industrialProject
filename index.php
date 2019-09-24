@@ -558,14 +558,17 @@
                         <div class="row no-gutters">
                             <div class="col">
                                 <div class="card-body">
-                                    <h4 class="card-title">
-                                        <?php echo $row['providerName']; ?><br>
-                                        <?php echo $row['dRGDescription']; ?>
+                                    <h4 class="card-title nhsColor" style="
+                                            float: left">
+                                        <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
+                                            float: right">
+                                            $
+                                            <?php echo round($row['averageTotalPayments']); ?>
+                                        </h3><br>
                                     </h4>
-                                    <h3 class="card-title mb-2">
-                                        $
-                                        <?php echo round($row['averageTotalPayments']); ?>
-                                    </h3>
+                                    <h5 class="card-title text-secondary">
+                                        <br><?php echo $row['dRGDescription']; ?>
+                                    </h5>
                                     <p class="card-text">
                                         <?php echo $row['providerCity']; ?>
                                     </p>
@@ -577,9 +580,10 @@
                                             else { $dRGCode = $row['dRGCode']; }
                                         ?>
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                        <button class="btn btn-success buy-btn mx-1 m-auto" type="buy">
+                                        <button class="btn btn-success buy-btn mx-1 m-auto" style="
+                                            float: right" type="buy" >
                                             <i class="fas fa-info-circle"></i> View more information
-                                        </button>
+                                        </button><br>
                                     </form>
                                 </div>
                             </div>
