@@ -342,7 +342,7 @@
 
             if (isDRGCode($dRGInput))
             {
-                $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
+                $sql = "SELECT dRGDescription, providerName, providerCity, averageTotalPayments, providerId, providerStreetAddress, providerZipCode FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
                 # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
                 $zipCodeDigits = substr($zipCode, 0, 2) . "%";
                 $params = array($zipCodeDigits, $dRGInput);
@@ -375,14 +375,18 @@
             $result = sqlsrv_query($conn, $sql, $params);
 
             while($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)){
+                if (empty($row['dRGCode'])) {
+                    $dRGCode = $dRGInput;
+                } else {
+                    $dRGCode = $row['dRGCode'];
+                }
+                $zipCode = $row['providerZipCode'];
                 $providerID = $row['providerId'];
                 $name = $row['providerName'];
-                $zip = $row['providerZipCode'];
                 $address = $row['providerStreetAddress'];
                 $city = $row['providerCity'];
                 $aTPs = $row['averageTotalPayments'];
-                $year = $row['year'];
-                echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGInput."','".$providerID."','".$aTPs."','".$year."');";
+                echo  "codeAddress('".$zipCode."','".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."','".$aTPs."');";
             }
             sqlsrv_free_stmt($result);
         }
@@ -462,12 +466,13 @@
         infoWindow.open(map);
     }
 
-    function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs, year) {
+    function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
 
         var latLong;
-        //alert("codeAddress");
+        //
 
         d3.csv("US_ZipCode_2018.csv").then(function(data) {
+            alert("codeAddress");
 
             for (var i = 0; i < 33145; i++) {
                 if (data[i].ZIP === zipCode) {
@@ -480,7 +485,7 @@
                     };
 
                     console.log("location: " + latLong.lat);
-                    createMarker(zipCode, address, city, latLong, hospitalName, dRGCode, providerID, aTPs, year);
+                    createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs);
                 }
 
             }
@@ -539,7 +544,7 @@
 
    */
        }
-       function createMarker(zipCode, address, city, latLong, hospitalName, dRGCode, providerID, aTPs, year) {
+       function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
            map.setZoom(6);
            var infowincontent = document.createElement('div');
@@ -554,7 +559,7 @@
 
            var text1 = document.createElement('text1');
            text1.setAttribute('style','white-space: pre;');
-           text1.textContent = 'Average Total Payments: $' + Math.round(aTPs) + ' in ' + year + '\r\n' +
+           text1.textContent = 'Average Total Payments: $' + Math.round(aTPs) + '\r\n' +
                'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' ;
            infowincontent.appendChild(text1);
            var miles = document.createElement('miles');
