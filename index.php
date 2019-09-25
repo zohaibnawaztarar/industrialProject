@@ -554,7 +554,7 @@
 
            var text1 = document.createElement('text1');
            text1.setAttribute('style','white-space: pre;');
-           text1.textContent = 'Average Total Payments: $' + aTPs + ' in ' + year + '\r\n' +
+           text1.textContent = 'Average Total Payments: $' + Math.round(aTPs) + ' in ' + year + '\r\n' +
                'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' ;
            infowincontent.appendChild(text1);
            var miles = document.createElement('miles');
