@@ -39,6 +39,8 @@
     $zipCode = "";
     $dRGInput = "";
     $order = "price_asc";
+    $priceMin = "0";
+    $priceMax = "0";
 
     if (isset($_GET['state'])) {
         $state = $_GET['state'];
@@ -55,6 +57,15 @@
     if (isset($_GET['order'])) {
         $order = $_GET['order'];
     }
+
+    if (isset($_GET['priceMin'])) {
+        $priceMin = $_GET['priceMin'];
+    }
+
+    if (isset($_GET['priceMax'])) {
+        $priceMax = $_GET['priceMax'];
+    }
+
     $userName = "";
     $encrypPass = "";
 
@@ -459,11 +470,24 @@
         <input type="hidden" name="state" value="<?php echo $state; ?>"/>
         <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
         <input type="hidden" name="dRGInput" value="<?php echo $dRGInput; ?>"/>
-        <div class="row my-3 text-center sorters ">
-
+        <div class="row my-3 text-center sorters">
 
             <form action="index.php" method="GET">
-                <div class="col-lg-3 offset-md-6">
+
+                <div class="col-lg-2">
+                    <label class="mb-6">Price Range</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Min: $</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Max: $</span>
+                        </div>
+                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <select class="form-control my-2" name="order">
                         <option value="" disabled selected hidden>Sort by</option>
                         <option value="price_asc" type="submit">Price: Low to High</option>
@@ -475,7 +499,7 @@
                     </select>
                 </div>
                 <div class="col-lg-3">
-                    <button class="btn search-btn mt-2" type="submit">Filter</button>
+                    <button class="btn search-btn mt-2" type="submit">Apply</button>
                 </div>
             </form>
         </div>
@@ -489,31 +513,34 @@
     if (empty($dRGInput) or empty($state) or empty($zipCode)) {
         echo '<h1 class="display-3 pb-5 text-center">Put stuff here!</h1>';
         echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
-    }
-    else {
+    } else {
         include_once("php/db_connect.php");
 
         #determine whether dRGCode was given or something else
         function isDRGCode($dRGInput)
         {
-            if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) { return true; }
-            else { return false; }
+            if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
-        if (isDRGCode($dRGInput))
-        {
+        if (isDRGCode($dRGInput)) {
             $sql = "SELECT dRGDescription, providerName, providerCity, averageTotalPayments, providerId FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
             # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
             $zipCodeDigits = substr($zipCode, 0, 2) . "%";
             $params = array($zipCodeDigits, $dRGInput);
-        }
-        else
-        {
+        } else {
             $sql = "SELECT dRGCode, dRGDescription, providerName, providerCity, averageTotalPayments, providerId FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
             # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
             $zipCodeDigits = substr($zipCode, 0, 2) . "%";
             $dRGInput = "%" . $dRGInput . "%";
             $params = array($zipCodeDigits, $dRGInput);
+        }
+
+        if ($priceMin < $priceMax) {
+            $sql .= " AND averageTotalPayments BETWEEN " . $priceMin . " AND " . $priceMax;
         }
 
         if (!empty($order)) {
@@ -542,14 +569,12 @@
         if ($result == FALSE) {
             echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
             die(print_r(sqlsrv_errors(), true));
-        }
-        else {
+        } else {
             #return if no results from query.
             if (sqlsrv_has_rows($result) == 0) {
                 echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
                 echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
-            }
-            else {
+            } else {
                 #display formatted query results on frontend.
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
                     $rows_count++;
@@ -560,14 +585,14 @@
                                 <div class="card-body">
                                     <h4 class="card-title nhsColor" style="
                                             float: left">
-                                        <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
+                                        <?php echo ucwords(strtolower($row['providerName'])); ?><h3 class="card-title mb-2" style="
                                             float: right">
                                             $
                                             <?php echo round($row['averageTotalPayments']); ?>
                                         </h3><br>
                                     </h4>
                                     <h5 class="card-title text-secondary">
-                                        <br><?php echo $row['dRGDescription']; ?>
+                                        <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
                                     </h5>
                                     <p class="card-text">
                                         <?php echo $row['providerCity']; ?>
@@ -576,14 +601,18 @@
                                         <input type='hidden' name="providerId"
                                                value="<?php echo $row['providerId']; ?>">
                                         <?php
-                                            if (empty($row['dRGCode'])) { $dRGCode = $dRGInput; }
-                                            else { $dRGCode = $row['dRGCode']; }
+                                        if (empty($row['dRGCode'])) {
+                                            $dRGCode = $dRGInput;
+                                        } else {
+                                            $dRGCode = $row['dRGCode'];
+                                        }
                                         ?>
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
                                         <button class="btn btn-success buy-btn mx-1 m-auto" style="
-                                            float: right" type="buy" >
+                                            float: right" type="buy">
                                             <i class="fas fa-info-circle"></i> View more information
-                                        </button><br>
+                                        </button>
+                                        <br>
                                     </form>
                                 </div>
                             </div>
