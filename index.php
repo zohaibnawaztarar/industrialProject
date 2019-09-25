@@ -318,9 +318,9 @@
                 infoWindow.setPosition(userPos);
                 infoWindow.setContent('location found');
                 infoWindow.open(map);
+                map.setCenter(userPos);
+                map.setZoom(10); //If location is found, increase zoom
 
-                //map.setCenter(userPos);
-                //map.setZoom(10); //If location is found, increase zoom
                 haveUserLocation = true;
             }, function() {
                 handleLocationError(true, infoWindow, map.getCenter());
@@ -330,9 +330,11 @@
             handleLocationError(false, infoWindow, map.getCenter());
             haveUserLocation = false;
         }
+
         <?php
         include "./php/db_connect.php";
         if (empty($dRGInput) or empty($state) or empty($zipCode)) {
+
         }else{
             function isDRGCode($dRGInput)
             {
@@ -386,7 +388,7 @@
                 $address = $row['providerStreetAddress'];
                 $city = $row['providerCity'];
                 $aTPs = $row['averageTotalPayments'];
-                echo  "codeAddress('".$zipCode."','".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."','".$aTPs."');";
+                echo  'codeAddress("'.$zipCode.'","'.$address.'", "'.$city.'", "'.$name.'","'.$dRGCode.'","'.$providerID.'","'.$aTPs.'");';
             }
             sqlsrv_free_stmt($result);
         }
@@ -467,13 +469,8 @@
     }
 
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
-
         var latLong;
-        //
-
         d3.csv("US_ZipCode_2018.csv").then(function(data) {
-            alert("codeAddress");
-
             for (var i = 0; i < 33145; i++) {
                 if (data[i].ZIP === zipCode) {
                     console.log("Found");
@@ -483,70 +480,17 @@
                         lat: parseFloat(data[i].LAT),
                         lng: parseFloat(data[i].LNG)
                     };
-
                     console.log("location: " + latLong.lat);
                     createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs);
                 }
-
             }
         });
-
-    /*
-           geocoder.geocode( {'address': zipCode}, function(results, status) {
-               if (status == google.maps.GeocoderStatus.OK) {
-                   map.setCenter(results[0].geometry.location);
-
-                   var infowincontent = document.createElement('div');
-                   var strong = document.createElement('strong');
-                   strong.textContent = name;
-                   infowincontent.appendChild(strong);
-
-                   var text = document.createElement('text');
-                   text.setAttribute('style', 'white-space: pre; font-weight:bold');
-                   text.textContent = hospitalName + '\r\n';
-                   infowincontent.appendChild(text);
-
-                   var text1 = document.createElement('text1');
-                   text1.setAttribute('style','white-space: pre;');
-                   text1.textContent = 'Average Total Payments: $' + aTPs + ' in ' + year + '\r\n' +
-                       'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' +  'Miles: ';
-                   infowincontent.appendChild(text1);
-
-                   var miles = document.createElement('miles');
-                   miles.setAttribute('style','white-space: pre; color : red;');
-                   miles.textContent = getDistance(results[0].geometry.location, userPos) + '\r\n';
-                   infowincontent.appendChild(miles);
-
-                   var link = document.createElement('a');
-                   link.innerHTML = '<a href="hospitalDetails.php?'
-                       +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
-                   infowincontent.appendChild(link);
-
-                   var icon = customLabel
-                   {
-                   }
-                   ;
-
-                   var marker = new google.maps.Marker({
-                       map: map,
-                       position: results[0].geometry.location
-                   });
-
-                   marker.addListener('click', function () {
-                       infoWindow.setContent(infowincontent);
-                       infoWindow.open(map, marker);
-                   });
-
-               } else {
-                   alert("Geocode was not successful for the following reason: " + status);
-               }
-           });
-
-   */
        }
+
        function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
            map.setZoom(6);
+
            var infowincontent = document.createElement('div');
            var strong = document.createElement('strong');
            //strong.textContent = name;
@@ -668,67 +612,8 @@
         echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
     } else {
         include_once("php/db_connect.php");
-/*
-        #determine whether dRGCode was given or something else
-        function isDRGCode($dRGInput)
-        {
-            if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        if (isDRGCode($dRGInput)) {
-
-            $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
-            # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
-            $zipCodeDigits = substr($zipCode, 0, 2) . "%";
-            $params = array($zipCodeDigits, $dRGInput);
-        } else {
-
-            $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
-            # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
-            $zipCodeDigits = substr($zipCode, 0, 2) . "%";
-            $dRGInput = "%" . $dRGInput . "%";
-            $params = array($zipCodeDigits, $dRGInput);
-        }
-
-        if ($priceMin < $priceMax) {
-            $sql .= " AND averageTotalPayments BETWEEN " . $priceMin . " AND " . $priceMax;
-        }
-
-        if (!empty($order)) {
-            if ($order == "price_desc") {
-                $sql .= " ORDER BY averageTotalPayments DESC";
-            } else if ($order == "price_asc") {
-                $sql .= " ORDER BY averageTotalPayments ASC";
-            } else if ($order == "distance_desc") {
-                //change to distance!!!!
-                $sql .= " ORDER BY averageTotalPayments DESC";
-            } else if ($order == "distance_asc") {
-                //change to distance!!
-                $sql .= " ORDER BY averageTotalPayments ASC";
-            } else if ($order == "city_desc") {
-                $sql .= " ORDER BY providerCity DESC";
-            } else if ($order == "city_asc") {
-                $sql .= " ORDER BY providerCity ASC";
-            }
-        }
-        */
         # run sql query on already set up database connection with custom parameters
         $result = sqlsrv_query($conn, $sql, $params);
-        //while($row=sqlsrv_fetch_array($results,SQLSRV_FETCH_ASSOC)){
-            //echo $row['providerId'];
-            //$providerID = $row['providerId'];
-            //$name = $row['providerName'];
-            //$zip = $row['providerZipCode'];
-            //$address = $row['providerStreetAddress'];
-            //$city = $row['providerCity'];
-            //$aTPs = $row['averageTotalPayments'];
-            //$year = $row['year'];
-            //echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."','".$aTPs."','".$year."');";
-        //}
 
         $rows_count = 0;
         #returns error if required.
