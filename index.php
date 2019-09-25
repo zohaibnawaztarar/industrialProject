@@ -22,7 +22,7 @@
     <!-- Custom CSS -->
     <link href="css/home.css" rel="stylesheet">
 
-
+    <script src="https://d3js.org/d3.v5.js"></script>
 </head>
 
 <body>
@@ -39,7 +39,6 @@
     $zipCode = "";
     $dRGInput = "";
     $order = "price_asc";
-    $priceMin = "0";
     $priceMax = "0";
 
     if (isset($_GET['state'])) {
@@ -293,7 +292,8 @@
 <script>
     var map, infoWindow;
     var geocoder;
-    var userPos
+    var userPos;
+    var haveUserLocation;
 
     var customLabel = {
         label: 'R'
@@ -305,31 +305,90 @@
             zoom: 12
         });
 
-        //geocoder = new google.maps.Geocoder();
+        geocoder = new google.maps.Geocoder();
         infoWindow = new google.maps.InfoWindow;
 
         // Try HTML5 geolocation.
-        // if (navigator.geolocation) {
-        //     navigator.geolocation.getCurrentPosition(function (position) {
-        //         userPos = {
-        //             lat: position.coords.latitude,
-        //             lng: position.coords.longitude
-        //         };
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userPos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                infoWindow.setPosition(userPos);
+                infoWindow.setContent('location found');
+                infoWindow.open(map);
 
-        //         infoWindow.setPosition(userPos);
-        //         infoWindow.setContent('Location found.');
-        //         infoWindow.open(map);
-        //         map.setCenter(userPos);
-        //         map.setZoom(10); //If location is found, increase zoom
-        //     }, function () {
-        //         handleLocationError(true, infoWindow, map.getCenter());
-        //     });
-        // } else {
-        //     // Browser doesn't support Geolocation
-        //     handleLocationError(false, infoWindow, map.getCenter());
-        // }
+                //map.setCenter(userPos);
+                //map.setZoom(10); //If location is found, increase zoom
+                haveUserLocation = true;
+            }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+            haveUserLocation = false;
+        }
+        <?php
+        include "./php/db_connect.php";
+        if (empty($dRGInput) or empty($state) or empty($zipCode)) {
+        }else{
+            function isDRGCode($dRGInput)
+            {
+                if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) { return true; }
+                else { return false; }
+            }
 
+            if (isDRGCode($dRGInput))
+            {
+                $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
+                # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
+                $zipCodeDigits = substr($zipCode, 0, 2) . "%";
+                $params = array($zipCodeDigits, $dRGInput);
+            }
+            else
+            {
+                $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
+                # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
+                $zipCodeDigits = substr($zipCode, 0, 2) . "%";
+                $dRGInput = "%" . $dRGInput . "%";
+                $params = array($zipCodeDigits, $dRGInput);
+            }
+            if (!empty($order)) {
+                if ($order == "price_desc") {
+                    $sql .= " ORDER BY averageTotalPayments DESC";
+                } else if ($order == "price_asc") {
+                    $sql .= " ORDER BY averageTotalPayments ASC";
+                } else if ($order == "distance_desc") {
+                    //change to distance!!!!
+                    $sql .= " ORDER BY averageTotalPayments DESC";
+                } else if ($order == "distance_asc") {
+                    //change to distance!!
+                    $sql .= " ORDER BY averageTotalPayments ASC";
+                } else if ($order == "city_desc") {
+                    $sql .= " ORDER BY providerCity DESC";
+                } else if ($order == "city_asc") {
+                    $sql .= " ORDER BY providerCity ASC";
+                }
+            }
+            $result = sqlsrv_query($conn, $sql, $params);
 
+            while($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)){
+                $providerID = $row['providerId'];
+                $name = $row['providerName'];
+                $zip = $row['providerZipCode'];
+                $address = $row['providerStreetAddress'];
+                $city = $row['providerCity'];
+                $aTPs = $row['averageTotalPayments'];
+                $year = $row['year'];
+                echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGInput."','".$providerID."','".$aTPs."','".$year."');";
+            }
+            sqlsrv_free_stmt($result);
+        }
+        ?>
+
+/*
         downloadUrl('https://zeno.computing.dundee.ac.uk/2019-projects/team8/map_locations.xml', function (data) {
             var xml = data.responseXML;
             var markers = xml.documentElement.getElementsByTagName('marker');
@@ -343,7 +402,7 @@
                 //     parseFloat(markerElem.getAttribute('lat')),
                 //     parseFloat(markerElem.getAttribute('lng')));
 
-                codeAddress(zip, address, city, state);
+                //codeAddress(zip, address, city, state);
                 // var infowincontent = document.createElement('div');
                 // var strong = document.createElement('strong');
                 // strong.textContent = name
@@ -372,6 +431,7 @@
                 // codeAddress(zip);
             });
         });
+        */
     }
 
 
@@ -394,7 +454,6 @@
     function doNothing() {
     }
 
-
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
@@ -403,57 +462,144 @@
         infoWindow.open(map);
     }
 
+    function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs, year) {
 
-    function codeAddress(zipCode, address, city, state) {
-        geocoder.geocode({'address': zipCode}, function (results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                //Got result, center the map and put it out there
-                map.setCenter(results[0].geometry.location);
+        var latLong;
+        //alert("codeAddress");
 
-                var infowincontent = document.createElement('div');
-                var strong = document.createElement('strong');
-                strong.textContent = name
-                infowincontent.appendChild(strong);
-                infowincontent.appendChild(document.createElement('br'));
+        d3.csv("US_ZipCode_2018.csv").then(function(data) {
 
-                var text = document.createElement('text');
-                text.setAttribute('style', 'white-space: pre;');
+            for (var i = 0; i < 33145; i++) {
+                if (data[i].ZIP === zipCode) {
+                    console.log("Found");
+                    console.log("Zip: " + data[i].ZIP);
+                    //console.log("zip: " + zip);
+                    latLong = {
+                        lat: parseFloat(data[i].LAT),
+                        lng: parseFloat(data[i].LNG)
+                    };
 
-                text.textContent = address + '\r\n' + city + '\r\n' + state + '\r\n' + 'Miles: ' + getDistance(results[0].geometry.location, userPos)
-                infowincontent.appendChild(text);
-
-                var icon = customLabel
-                {
+                    console.log("location: " + latLong.lat);
+                    createMarker(zipCode, address, city, latLong, hospitalName, dRGCode, providerID, aTPs, year);
                 }
-                ;
 
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location
-                });
-
-                marker.addListener('click', function () {
-                    infoWindow.setContent(infowincontent);
-                    infoWindow.open(map, marker);
-                });
-
-            } else {
-                alert("Geocode was not successful for the following reason: " + status);
             }
         });
-    }
+
+    /*
+           geocoder.geocode( {'address': zipCode}, function(results, status) {
+               if (status == google.maps.GeocoderStatus.OK) {
+                   map.setCenter(results[0].geometry.location);
+
+                   var infowincontent = document.createElement('div');
+                   var strong = document.createElement('strong');
+                   strong.textContent = name;
+                   infowincontent.appendChild(strong);
+
+                   var text = document.createElement('text');
+                   text.setAttribute('style', 'white-space: pre; font-weight:bold');
+                   text.textContent = hospitalName + '\r\n';
+                   infowincontent.appendChild(text);
+
+                   var text1 = document.createElement('text1');
+                   text1.setAttribute('style','white-space: pre;');
+                   text1.textContent = 'Average Total Payments: $' + aTPs + ' in ' + year + '\r\n' +
+                       'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' +  'Miles: ';
+                   infowincontent.appendChild(text1);
+
+                   var miles = document.createElement('miles');
+                   miles.setAttribute('style','white-space: pre; color : red;');
+                   miles.textContent = getDistance(results[0].geometry.location, userPos) + '\r\n';
+                   infowincontent.appendChild(miles);
+
+                   var link = document.createElement('a');
+                   link.innerHTML = '<a href="hospitalDetails.php?'
+                       +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
+                   infowincontent.appendChild(link);
+
+                   var icon = customLabel
+                   {
+                   }
+                   ;
+
+                   var marker = new google.maps.Marker({
+                       map: map,
+                       position: results[0].geometry.location
+                   });
+
+                   marker.addListener('click', function () {
+                       infoWindow.setContent(infowincontent);
+                       infoWindow.open(map, marker);
+                   });
+
+               } else {
+                   alert("Geocode was not successful for the following reason: " + status);
+               }
+           });
+
+   */
+       }
+       function createMarker(zipCode, address, city, latLong, hospitalName, dRGCode, providerID, aTPs, year) {
+           map.setCenter(latLong);
+           map.setZoom(6);
+           var infowincontent = document.createElement('div');
+           var strong = document.createElement('strong');
+           //strong.textContent = name;
+           infowincontent.appendChild(strong);
+
+           var text = document.createElement('text');
+           text.setAttribute('style', 'white-space: pre; font-weight:bold');
+           text.textContent = hospitalName + '\r\n';
+           infowincontent.appendChild(text);
+
+           var text1 = document.createElement('text1');
+           text1.setAttribute('style','white-space: pre;');
+           text1.textContent = 'Average Total Payments: $' + aTPs + ' in ' + year + '\r\n' +
+               'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' ;
+           infowincontent.appendChild(text1);
+           var miles = document.createElement('miles');
+           miles.setAttribute('style','white-space: pre; color : red;');
+           if(haveUserLocation) {
+               miles.textContent = 'Miles: ' + getDistance(latLong, userPos) + '\r\n';
+               infowincontent.appendChild(miles);
+           }
+
+           var link = document.createElement('a');
+           link.innerHTML = '<a href="hospitalDetails.php?'
+               +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
+           infowincontent.appendChild(link);
+
+           var icon = customLabel
+           {
+           }
+           ;
+
+           var marker = new google.maps.Marker({
+               map: map,
+               position: latLong
+           });
+
+           console.log("mark: " + marker.position)
+           console.log("marker")
+
+           marker.addListener('click', function () {
+               infoWindow.setContent(infowincontent);
+               infoWindow.open(map, marker);
+           });
+       }
 
 
-    var rad = function (x) {
-        return x * Math.PI / 180;
-    };
+       var rad = function (x) {
+           return x * Math.PI / 180;
+       };
 
-    var getDistance = function (p1, p2) {
+    var getDistance = function(p1, p2) {
         var R = 6378137; // Earth’s mean radius in meter
-        var dLat = rad(p2.lat - p1.lat());
-        var dLong = rad(p2.lng - p1.lng());
+
+        var dLat = rad(p2.lat - p1.lat);
+        var dLong = rad(p2.lng - p1.lng);
         var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat)) *
+            Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) *
             Math.sin(dLong / 2) * Math.sin(dLong / 2);
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c;
@@ -470,6 +616,7 @@
         <input type="hidden" name="state" value="<?php echo $state; ?>"/>
         <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
         <input type="hidden" name="dRGInput" value="<?php echo $dRGInput; ?>"/>
+
         <div class="row my-3 text-center sorters">
 
             <form action="index.php" method="GET">
@@ -499,6 +646,7 @@
                     </select>
                 </div>
                 <div class="col-lg-3">
+
                     <button class="btn search-btn mt-2" type="submit">Apply</button>
                 </div>
             </form>
@@ -515,7 +663,7 @@
         echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
     } else {
         include_once("php/db_connect.php");
-
+/*
         #determine whether dRGCode was given or something else
         function isDRGCode($dRGInput)
         {
@@ -527,12 +675,14 @@
         }
 
         if (isDRGCode($dRGInput)) {
-            $sql = "SELECT dRGDescription, providerName, providerCity, averageTotalPayments, providerId FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
+
+            $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
             # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
             $zipCodeDigits = substr($zipCode, 0, 2) . "%";
             $params = array($zipCodeDigits, $dRGInput);
         } else {
-            $sql = "SELECT dRGCode, dRGDescription, providerName, providerCity, averageTotalPayments, providerId FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
+
+            $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
             # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
             $zipCodeDigits = substr($zipCode, 0, 2) . "%";
             $dRGInput = "%" . $dRGInput . "%";
@@ -560,15 +710,27 @@
                 $sql .= " ORDER BY providerCity ASC";
             }
         }
-
+        */
         # run sql query on already set up database connection with custom parameters
         $result = sqlsrv_query($conn, $sql, $params);
+        //while($row=sqlsrv_fetch_array($results,SQLSRV_FETCH_ASSOC)){
+            //echo $row['providerId'];
+            //$providerID = $row['providerId'];
+            //$name = $row['providerName'];
+            //$zip = $row['providerZipCode'];
+            //$address = $row['providerStreetAddress'];
+            //$city = $row['providerCity'];
+            //$aTPs = $row['averageTotalPayments'];
+            //$year = $row['year'];
+            //echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."','".$aTPs."','".$year."');";
+        //}
 
         $rows_count = 0;
         #returns error if required.
         if ($result == FALSE) {
             echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
             die(print_r(sqlsrv_errors(), true));
+
         } else {
             #return if no results from query.
             if (sqlsrv_has_rows($result) == 0) {
@@ -577,6 +739,7 @@
             } else {
                 #display formatted query results on frontend.
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+
                     $rows_count++;
                     ?>
                     <div class="card my-3">
@@ -601,6 +764,7 @@
                                         <input type='hidden' name="providerId"
                                                value="<?php echo $row['providerId']; ?>">
                                         <?php
+
                                         if (empty($row['dRGCode'])) {
                                             $dRGCode = $dRGInput;
                                         } else {
@@ -608,6 +772,7 @@
                                         }
                                         ?>
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+
                                         <button class="btn btn-success buy-btn mx-1 m-auto" style="
                                             float: right" type="buy">
                                             <i class="fas fa-info-circle"></i> View more information

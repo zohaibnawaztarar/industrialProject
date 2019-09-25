@@ -296,10 +296,10 @@
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
       }
-        //codeAddress('5401','sdfasdfdsf','asdfa','RD');
+        codeAddress('5401','sdfasdfdsf','asdfa','blabla','39','87958');
       <?php
-      include "./php/db_connect.php";
-      $sql="SELECT TOP(2) * FROM dbo.newDB WHERE dRGCode=?";
+      /*include "./php/db_connect.php";
+      $sql="SELECT TOP(5) * FROM dbo.newDB WHERE dRGCode=?";
       $dRGCode=39;
       $params=array($dRGCode);
       #runningquery
@@ -314,10 +314,11 @@
           $zip = $row['providerZipCode'];
           $address = $row['providerStreetAddress'];
           $city = $row['providerCity'];
-          //$state = $row['providerState'];
-          echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."');";
+          $aTPs = $row['averageTotalPayments'];
+          $year = $row['year'];
+          echo  "codeAddress(". "'".$zip."', '".$address."', '".$city."', '".$name."','".$dRGCode."','".$providerID."','".$aTPs."','".$year."');";
       }
-
+*/
       ?>
 
 
@@ -392,44 +393,35 @@
             'Error: Your browser doesn\'t support geolocation.');
     infoWindow.open(map);
   }
-  //
-  function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID) {
-      //zipCode = 36301;
-      //num++;
+  function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs, year) {
       geocoder.geocode( {'address': zipCode}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
 
               var infowincontent = document.createElement('div');
               var strong = document.createElement('strong');
-              strong.textContent = name
+              strong.textContent = name;
               infowincontent.appendChild(strong);
 
-              //var text = document.createElement('text');
-              //text.setAttribute('style', 'white-space: pre; font-weight:bold');
-              //text.textContent = hospitalName + '\r\n';
-              //infowincontent.appendChild(text);
+              var text = document.createElement('text');
+              text.setAttribute('style', 'white-space: pre; font-weight:bold');
+              text.textContent = hospitalName + '\r\n';
+              infowincontent.appendChild(text);
 
-              //var text1 = document.createElement('text1');
-              //text1.setAttribute('style','white-space: pre;');
-              //text1.textContent = 'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' +  'Miles: ';
-              //infowincontent.appendChild(text1);
+              var text1 = document.createElement('text1');
+              text1.setAttribute('style','white-space: pre;');
+              text1.textContent = 'Average Total Payments: $' + aTPs + ' in ' + year + '\r\n' +
+                  'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' +  'Miles: ';
+              infowincontent.appendChild(text1);
 
-              //var miles = document.createElement('miles');
-              //miles.setAttribute('style','white-space: pre; color : red;');
-              //miles.textContent = getDistance(results[0].geometry.location, userPos) + '\r\n';
-              //infowincontent.appendChild(miles);
+              var miles = document.createElement('miles');
+              miles.setAttribute('style','white-space: pre; color : red;');
+              miles.textContent = getDistance(results[0].geometry.location, userPos) + '\r\n';
+              infowincontent.appendChild(miles);
 
               var link = document.createElement('a');
-              //link.href = 'http://www.google.com';
-
-
-              link.setAttribute('href','http://google.com');
+              link.innerHTML = '<a href="hospitalDetails.php?'
+                 +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
               infowincontent.appendChild(link);
-              //link.textContent = '<a href="https://zeno.computing.dundee.ac.uk/2019-projects/team8/hospitalDetails.php?'
-               //   +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
-              //link.textContent = 'https://zeno.computing.dundee.ac.uk/2019-projects/team8/hospitalDetails.php?providerId=330126&dRGCode=39';
-              //infowincontent.appendChild(link);
-              //document.body.appendChild()
 
               var icon = customLabel
               {
