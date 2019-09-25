@@ -304,7 +304,8 @@
                         <div class="col">
                             <div class="card-body">
                                 <h2 class="card-title">
-                                    <?php echo ucwords(strtolower($row['providerName'])); ?><br>
+                                    <?php echo ucwords(strtolower($row['providerName'])); ?>
+
                                 </h2>
                                 <h4 class="card-title mb-2 text-muted">
                                     <?php echo ucwords(strtolower($row['dRGDescription'])); ?>
@@ -320,7 +321,9 @@
                                 </p>
                                 <button class="btn btn-success btn-mini search-btn my-4 hidden-print"
                                         onclick="myFunction()"><span class="glyphicon glyphicon-print"
-                                                                     aria-hidden="true"></span> Print
+                                                                     aria-hidden="true"></span><i class="fas fa-print"></i> Print
+                                </button>
+                                <button class="btn btn-success btn-mini search-btn my-4" style="float: right"> <i class="fas fa-star"></i> Bookmark
                                 </button>
                             </div>
                         </div>
