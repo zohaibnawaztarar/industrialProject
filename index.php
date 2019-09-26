@@ -300,6 +300,8 @@
         label: 'R'
     };
 
+    var zipDistance = {};
+
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: new google.maps.LatLng(-33.863276, 151.207977),
@@ -469,6 +471,14 @@
         infoWindow.open(map);
     }
 
+    function storeDistance(latlng) {
+
+        zipDistance[latlng] = getDistance(latlng, userPos);
+
+        console.log("zipdistance: " + zipDistance);
+    }
+
+
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
         var latLong;
         d3.csv("US_ZipCode_2018.csv").then(function(data) {
@@ -482,15 +492,28 @@
                         lng: parseFloat(data[i].LNG)
                     };
                     console.log("location: " + latLong.lat);
+
+
+                    zipDistance[zipCode] = getDistance(latLong, userPos);
+
+                    console.log("zipdistance: " + zipDistance[zipCode]);
+
+
+
+
                     createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs);
                 }
             }
+
         });
        }
+
 
        function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
            map.setZoom(6);
+
+
 
            var infowincontent = document.createElement('div');
            var strong = document.createElement('strong');
@@ -510,9 +533,15 @@
            var miles = document.createElement('miles');
            miles.setAttribute('style','white-space: pre; color : red;');
            if(haveUserLocation) {
-               miles.textContent = 'Miles: ' + getDistance(latLong, userPos) + '\r\n';
+               var milesFrom = getDistance(latLong, userPos) + '\r\n';
+               miles.textContent = 'Miles: ' + milesFrom //getDistance(latLong, userPos) + '\r\n';
                infowincontent.appendChild(miles);
            }
+
+           if(haveUserLocation) {
+               document.getElementById(hospitalName).innerText = "Distance: " + milesFrom
+           }
+
 
            var link = document.createElement('a');
            link.innerHTML = '<a href="hospitalDetails.php?'
@@ -536,6 +565,9 @@
                infoWindow.setContent(infowincontent);
                infoWindow.open(map, marker);
            });
+
+
+
        }
 
 
@@ -651,7 +683,17 @@
                                         <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
                                     </h5>
                                     <p class="card-text">
+
                                         <?php echo $row['providerCity']; ?>
+
+
+                                        <br>
+
+                                        <p id="<?php echo $row['providerName']; ?>"></p>
+
+
+
+
                                     </p>
                                     <form action="hospitalDetails.php" method="GET">
                                         <input type='hidden' name="providerId"
