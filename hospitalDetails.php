@@ -22,7 +22,7 @@
 
     <script src="js/print.js"></script>
 
-
+    <script src="https://d3js.org/d3.v5.js"></script>
     <?php
     error_reporting(E_ALL & ~E_NOTICE); //Hide error messages (e.g. notices on homepage, will only be turned on when releasing website)
     $url = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
@@ -243,8 +243,6 @@
                         <option value="WI">Wisconsin</option>
                         <option value="WY">Wyoming</option>
                     </select>
-
-                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
                     <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search</button>
                 </form>
             </div>
@@ -256,7 +254,6 @@
     <form action="packages.php" method="GET">
         <input type="hidden" name="providerId" value="<?php echo $providerId; ?>"/>
         <input type="hidden" name="dRGCode" value="<?php echo $dRGCode; ?>"/>
-
     </form>
 
     <!-- Get hospital details -->
@@ -273,6 +270,7 @@
     $params = array($providerId, $dRGCode, 2015);
     $result2015 = sqlsrv_query($conn, $sql, $params);
 
+    //var address;
     $rows_count = 0;
 
     if ($resultMain == FALSE) {
@@ -285,6 +283,8 @@
         } else {
             while ($row = sqlsrv_fetch_array($resultMain, SQLSRV_FETCH_ASSOC)) {
                 $rows_count++;
+                if($rows_count < 2)
+                    $address = $row['providerName']." ".$row['providerStreetAddress'];
                 if (sqlsrv_has_rows($result2016) == 0) {
                     $result2016_empty = true;
                 } else {
@@ -324,6 +324,30 @@
                                 </button>
                             </div>
                         </div>
+                        <div id="miniMap" style="width:450px; height: 350px;"></div>
+                        <script>
+                            var map;
+                            var grocoder;
+                            function initMap() {
+                                //search by address
+                                geocoder = new google.maps.Geocoder();
+                                var address_1= "<?php echo $address?>";
+                                geocoder.geocode({'address':address_1},function(results,status){
+                                    if(status==google.maps.GeocoderStatus.OK){
+                                        map = new google.maps.Map(document.getElementById('miniMap'), {
+                                            center: results[0].geometry.location,
+                                            zoom: 13
+                                        });
+                                        var marker = new google.maps.Marker({position: results[0].geometry.location, map: map});
+                                    }else{
+                                        alert("fail");
+                                    }
+                                })
+                            }
+                        </script>
+                        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEOf66YDCHpSc9OhGNJHhejaGG9DArF-U&callback=initMap" async
+                                defer>
+                        </script>
                     </div>
                 </div>
                 <div class="container">
