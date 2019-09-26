@@ -243,6 +243,8 @@
                         <option value="WI">Wisconsin</option>
                         <option value="WY">Wyoming</option>
                     </select>
+                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
+
                     <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search</button>
                 </form>
             </div>
@@ -300,7 +302,7 @@
                 ?>
 
                 <div class="card my-3">
-                    <div class="row no-gutters">
+                    <div class="row no-gutters" style="margin-bottom: 0px">
                         <div class="col">
                             <div class="card-body">
                                 <h2 class="card-title">
