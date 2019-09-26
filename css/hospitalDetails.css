@@ -39,6 +39,7 @@ h2{
 
 .navbar {
   white-space: nowrap;
+    font-size: 16px;
 }
 
 .navbar-brand i:hover {
