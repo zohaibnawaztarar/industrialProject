@@ -212,7 +212,7 @@
             <div class="col-lg-12">
                 <div class="float-lg-left text-center">
                     <br><br>
-                    <h1 class="mt-5">Find the best procedure!</h1>
+                    <h1 class="mt-5">Find the best procedure</h1>
                     <hr/>
                     <form action="index.php" method="GET">
                         <div class="form-group m-0">
@@ -299,8 +299,6 @@
     var customLabel = {
         label: 'R'
     };
-
-    var zipDistance = {};
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -471,14 +469,6 @@
         infoWindow.open(map);
     }
 
-    function storeDistance(latlng) {
-
-        zipDistance[latlng] = getDistance(latlng, userPos);
-
-        console.log("zipdistance: " + zipDistance);
-    }
-
-
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
         var latLong;
         d3.csv("US_ZipCode_2018.csv").then(function(data) {
@@ -492,28 +482,15 @@
                         lng: parseFloat(data[i].LNG)
                     };
                     console.log("location: " + latLong.lat);
-
-
-                    zipDistance[zipCode] = getDistance(latLong, userPos);
-
-                    console.log("zipdistance: " + zipDistance[zipCode]);
-
-
-
-
                     createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs);
                 }
             }
-
         });
        }
-
 
        function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
            map.setZoom(6);
-
-
 
            var infowincontent = document.createElement('div');
            var strong = document.createElement('strong');
@@ -542,7 +519,6 @@
                document.getElementById(hospitalName).innerText = "Distance: " + milesFrom
            }
 
-
            var link = document.createElement('a');
            link.innerHTML = '<a href="hospitalDetails.php?'
                +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
@@ -565,9 +541,6 @@
                infoWindow.setContent(infowincontent);
                infoWindow.open(map, marker);
            });
-
-
-
        }
 
 
@@ -604,7 +577,7 @@
             <form action="index.php" method="GET">
 
                 <div class="col-lg-2">
-                    <label class="form-control my-2">Price Range</label>
+                    <label class="my-2"><strong>Price Range:</strong></label>
                 </div>
                 <div class="col-lg-4">
                     <div class="input-group">
@@ -683,18 +656,10 @@
                                         <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
                                     </h5>
                                     <p class="card-text">
-
                                         <?php echo $row['providerCity']; ?>
-
-
-                                        <br>
-
-                                        <p id="<?php echo $row['providerName']; ?>"></p>
-
-
-
-
                                     </p>
+                                    <br>
+                                    <p id="<?php echo $row['providerName']; ?>"></p>
                                     <form action="hospitalDetails.php" method="GET">
                                         <input type='hidden' name="providerId"
                                                value="<?php echo $row['providerId']; ?>">
