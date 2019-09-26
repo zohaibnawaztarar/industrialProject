@@ -334,7 +334,7 @@
 
         <?php
         include "./php/db_connect.php";
-        if (empty($dRGInput) or empty($state) or empty($zipCode)) {
+        if (empty($dRGInput) or empty($state)) {
 
         }else{
             function isDRGCode($dRGInput)
@@ -665,7 +665,6 @@
                                         }
                                         ?>
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-
                                         <button class="btn btn-success buy-btn mx-1 m-auto" style="
                                             float: right" type="buy">
                                             <i class="fas fa-info-circle"></i> View more information
