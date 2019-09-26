@@ -40,6 +40,7 @@
     $dRGInput = "";
     $order = "price_asc";
     $priceMax = "0";
+    $priceMin = "0";
 
     if (isset($_GET['state'])) {
         $state = $_GET['state'];
@@ -571,16 +572,18 @@
             <form action="index.php" method="GET">
 
                 <div class="col-lg-2">
-                    <label class="mb-6">Price Range</label>
+                    <label class="form-control my-2">Price Range</label>
+                </div>
+                <div class="col-lg-4">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Min: $</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
+                        <input type="number" class="form-control my-2" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Max: $</span>
                         </div>
-                        <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
+                        <input type="number" class="form-control my-2" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
                     </div>
                 </div>
                 <div class="col-lg-3">
