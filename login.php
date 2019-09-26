@@ -427,7 +427,7 @@
 
 
 		<?php
-				echo '<h1 class="display-4 text-center"> Welcome '.htmlentities($userName, ENT_QUOTES | ENT_IGNORE, "UTF-8")." to Compare Care's Login/Out Page </h1> <br>";
+				echo '<h1 class="display-4 text-center"> Welcome '.htmlentities($userName, ENT_QUOTES | ENT_IGNORE, "UTF-8")." to Compare Care's Login Page </h1> <br>";
 				if ($encrypPass !== " " && $encrypPass !== "") {
 					/////
 					//echo 'Test code: encrypted password is: |'.htmlentities($encrypPass, ENT_QUOTES | ENT_IGNORE, "UTF-8").'|<br>';
@@ -536,13 +536,14 @@
 				echo 'document.getElementById("id6.1").readOnly = false;';
 				echo 'document.getElementById("id6.2").readOnly = false;';
 				echo '</script>';
-
+                header( "refresh:5;url=http://thisinterestsme.com/php-forcing-https-over-http/" );
 			} else {
 				// Show logout
 				echo '<script type="text/javascript">';
 					echo 'var x = document.getElementById("id7");';
 					echo 'x.style.display = "block";';
 					echo '</script>';
+
 
 				//Redirect to other pages?
 				//Set Refresh header using PHP.

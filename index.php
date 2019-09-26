@@ -40,6 +40,7 @@
     $dRGInput = "";
     $order = "price_asc";
     $priceMax = "0";
+    $priceMin = "0";
 
     if (isset($_GET['state'])) {
         $state = $_GET['state'];
