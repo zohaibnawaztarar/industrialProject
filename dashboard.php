@@ -245,7 +245,6 @@
             else {
                 #display formatted query results on frontend.
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                    var_dump($result);
                     $rows_count++;
                     ?>
                     <div class="card my-3">
