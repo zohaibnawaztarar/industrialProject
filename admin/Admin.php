@@ -130,7 +130,7 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+        <a class="navbar-brand" href="../index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
         <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <form action="login.php" method="POST">
+                        <form action="../login.php" method="POST">
                             <input type='hidden' name="logout" value="true">
                             <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Logout</button>
                         </form>
