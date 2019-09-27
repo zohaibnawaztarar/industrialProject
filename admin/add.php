@@ -198,28 +198,112 @@
     </div>
 
 
+
+    <?php
+    if (isset($_POST["Submit"])) {
+        //get variables
+        $dRGCode=$_POST['dRGCode'];
+        $dRGDescription=$_POST['dRGDescription'];
+        $providerId= $_POST['providerId'];
+        $providerName=$_POST['providerName'];
+        $providerStreetAddress=$_POST['providerStreetAddress'];
+        $providerCity=$_POST['providerCity'];
+        $providerState=$_POST['providerState'];
+        $providerZipCode=$_POST['providerZipCode'];
+        $hospitalReferralRegionHRRDescription=$_POST['hospitalReferralRegionHRRDescription'];
+        $totalDischarges=$_POST['totalDischarges'];
+        $averageCoveredCharges=$_POST['averageCoveredCharges'];
+        $averageTotalPayments = $_POST['averageTotalPayments'];
+        $averageMedicarePayments=$_POST['averageMedicarePayments'];
+        $year=$_POST['year'];
+        //check the type of the data
+        if(!is_numeric($dRGCode) || !is_numeric($providerId)|| !is_numeric($providerZipCode) || !is_numeric($totalDischarges))
+            echo "<script>
+        alert('dRGCode, provider ID, provider zipcode and total discharges must be numeric!');
+        function goBack(){
+            history.back(); 
+        }
+        setTimeout('goBack()',500);</script>";
+        if(!is_numeric($averageCoveredCharges) || !is_numeric($averageTotalPayments)|| !is_numeric($averageMedicarePayments)
+            || !is_numeric($year))
+            echo "<script>
+        alert('average covered charges, average total payments, average medicare payments and year must be numeric!');
+        function goBack(){
+            history.back(); 
+        }
+        setTimeout('goBack()',500);</script>";
+        //check if the data is duplicated
+        include "php/db_connect.php";
+        $sql = "SELECT * FROM dbo.newDB WHERE dRGCode=".$dRGCode." AND providerId=".$providerId." AND year =".$year;
+        $result = sqlsrv_query($conn, $sql);
+
+        if($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)) {
+            echo "The data you insert is duplicated. If you want to update this data, please <a href = 'updateOrDeleteData.php'>click</a> here.";
+            echo "<br>Or if you want to insert other data, please <a href = 'insertData.php'>click</a> here to go back.";
+        }else{
+            //insert the data when the data is not duplicated
+            sqlsrv_free_stmt($result);
+            $providerStreetAddress = str_replace("'","''",$providerStreetAddress);
+            $sql = "INSERT INTO dbo.insertDB(dRGCode, dRGDescription, providerId, providerName, providerStreetAddress,
+        providerCity, providerState, providerZipCode, hospitalReferralRegionHRRDescription, totalDischarges,
+        averageCoveredCharges, averageTotalPayments, averageMedicarePayments, year)
+        Values (".$dRGCode.",'".$dRGDescription."',".$providerId.",'".$providerName."','".$providerStreetAddress.
+                "','".$providerCity."','".$providerState."',".$providerZipCode.",'".$hospitalReferralRegionHRRDescription.
+                "',".$totalDischarges.",".$averageCoveredCharges.",".$averageTotalPayments.",".$averageMedicarePayments.
+                ",".$year." )";
+            $result = sqlsrv_query($conn, $sql);
+            sqlsrv_free_stmt($result);
+        }
+    }
+    else
+
+    ?>
+
+
+
+
+
     <div class="container">
         <div class="row">
             <div class="text-center mx-auto mb-4">
                 <br>
                 <h1 class="text-centre">Fill the data in form below to add in database</h1>
-                <form class="navbar-form" action="UpdateDatabase.php" method="post" enctype="multipart/form-data">
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
-                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                           class="form-control my-2"><br>
+                <form class="navbar-form" action="insertData.php" method="post">
+                <h4 class="text-left">DRG Definition</h4>
 
-                    <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
+                <input required type="text" name="dRGCode" placeholder="Enter DRG Code"class="form-control my-2"><br>
+
+                <input required type="text" name="dRGDescription" placeholder="Enter DRG Description"class="form-control my-2"><br>
+
+                <h4 class="text-left">Provider Information</h4>
+
+                <input required type="text" name="providerId" placeholder="Enter provider Id"class="form-control my-2"><br>
+
+                <input required type="text" name="providerName" placeholder="Enter Provider Name"class="form-control my-2"><br>
+
+                <input required type="text" name="providerStreetAddress" placeholder="Enter Provider Street Address"class="form-control my-2"><br>
+
+                <input required type="text" name="providerCity" placeholder="Enter Provider City"class="form-control my-2"><br>
+
+                <input required type="text" name="providerState" placeholder="Enter Provider State"class="form-control my-2"><br>
+
+                <input required type="text" name="providerZipCode" placeholder="Enter Provider Zip Code"class="form-control my-2"><br>
+
+                <input required type="text" name="hospitalReferralRegionHRRDescription" placeholder="Enter hospital Referral Region HRR Description"class="form-control my-2"><br>
+
+                <h4 class="text-left">Charges Data</h4>
+
+                <input required type="text" name="totalDischarges" placeholder="Enter Total Discharges"class="form-control my-2"><br>
+
+                <input required type="text" name="averageCoveredCharges" placeholder="Enter Average Covered Charges"class="form-control my-2"><br>
+
+                <input required type="text" name="averageTotalPayments" placeholder="Enter Average Total Payments"class="form-control my-2"><br>
+
+                <input required type="text" name="averageMedicarePayments" placeholder="Enter Average Medicare Payments"class="form-control my-2"><br>
+
+                <input required type="text" name="year" placeholder="Enter year"class="form-control my-2"><br>
+
+                <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
                            name="submit" value="Submit">
 
                 </form>
