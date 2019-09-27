@@ -216,8 +216,9 @@
                     <hr/>
                     <form action="index.php" method="GET">
                         <div class="form-group m-0">
-                            <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                                   class="form-control my-2">
+                            <input required type="text"
+                                   placeholder="<?php if (empty($dRGInput)) {echo "DRG Code or Keywords";}else {echo $dRGInput;}?>"
+                                   name="dRGInput" class="form-control my-2">
 
                             <select required class="form-control my-2" name="state">
                                 <option value="" disabled selected hidden>Select State</option>
@@ -273,7 +274,8 @@
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
                             </select>
-                            <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
+                            <input required type="text" placeholder="<?php if (empty($zipCode)) {echo "Zip Code";}else {echo $zipCode;}?>"
+                                   name="zipCode" class="form-control my-2">
                         </div>
 
                         <div class="form-group m-0">
@@ -355,9 +357,18 @@
                 $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
                 # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
                 $zipCodeDigits = substr($zipCode, 0, 2) . "%";
-                $dRGInput = "%" . $dRGInput . "%";
-                $params = array($zipCodeDigits, $dRGInput);
+                $params = array($zipCodeDigits, "%" . $dRGInput . "%");
             }
+
+            //check if valid price range given
+            if ($priceMin < $priceMax) {
+                //priceMax will be set as value at this point to pass the operator, but priceMin can be empty still
+                if (empty($priceMin)) {
+                    $priceMin = 0;
+                }
+                $sql .= " AND averageTotalPayments BETWEEN " . $priceMin . " AND " . $priceMax;
+            }
+
             if (!empty($order)) {
                 if ($order == "price_desc") {
                     $sql .= " ORDER BY averageTotalPayments DESC";
