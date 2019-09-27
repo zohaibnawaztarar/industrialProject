@@ -130,7 +130,7 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+        <a class="navbar-brand" href="../index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
         <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -138,25 +138,25 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="../index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="about.php">About Us</a>
+                    <a class="nav-link" href="../about.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="faq.php">FAQs</a>
+                    <a class="nav-link" href="../faq.php">FAQs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact-us.php">Contact Us</a>
+                    <a class="nav-link" href="../contact-us.php">Contact Us</a>
                 </li>
             </ul>
-            <form class="navbar-form form-inline" action="login.php" method="POST">
+            <form class="navbar-form form-inline" action="../login.php" method="POST">
                 <div id="id3" class="form-group">
                     <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username" name="userName" required>
                     <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password" name="uncrypPass" required>
                     <input class="form-control" type="hidden" name="remember" value="checked">
                     <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Log In</button>
-                    <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register" onclick="location.href='register.php';">Register</button>
+                    <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register" onclick="location.href='../register.php';">Register</button>
                 </div>
             </form>
             <div id="id4" class="logout">
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <form action="login.php" method="POST">
+                        <form action="../login.php" method="POST">
                             <input type='hidden' name="logout" value="true">
                             <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Logout</button>
                         </form>
@@ -190,67 +190,48 @@
                         if ($userName != "" and $position != "customer") {
                             echo "$userName" . "'s ";
                         }
-                    ?>Admin Dashboard
+                    ?>Add New Data | Admin Dashboard
                     </h1>
                 </div>
             </div>
         </div>
     </div>
 
+
     <div class="container">
-        <?php
-        /*if ($position != "customer" && $position != "databaseFind") { */?>
-        <div class="row mt-5">
-            <div class="col-sm-4 my-lg-0 my-3">
-                <a href="admin/add.php" class="custom-card">
-                    <div class="card">
-                        <i class="card-img-top fas fa-plus-circle fa-5x my-4"></i>
-                        <div class="card-body text-center">
-                            <h4 class="card-title"> Add New Data</h4>
-                        </div>
-                    </div>
-                </a>
+        <div class="row">
+            <div class="text-center mx-auto mb-4">
+                <br>
+                <h1 class="text-centre">Fill the data in form below to add in database</h1>
+                <form class="navbar-form" action="UpdateDatabase.php" method="post" enctype="multipart/form-data">
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+                    <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
+                           class="form-control my-2"><br>
+
+                    <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
+                           name="submit" value="Submit">
+
+                </form>
+                <br><br>
+                <form class="" action="../admin/admin.php" method="post">
+                    <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+                </form>
             </div>
-
-            <div class="col-sm-4 my-lg-0 my-3">
-                <a href="admin/edit.php" class="custom-card">
-                    <div class="card">
-                        <i class="card-img-top fas fa-edit fa-5x my-4"></i>
-                        <div class="card-body text-center">
-                            <h4 class="card-title"> Update/Remove Data</h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-sm-4 my-lg-0 my-3">
-                <a href="admin/upload.php" class="custom-card">
-                    <div class="card">
-                        <i class="card-img-top fas fa-upload fa-5x my-4"></i>
-                        <div class="card-body text-center">
-                            <h4 class="card-title"> Upload Data File</h4>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
-
-
-
-
-            <div class="col-sm-4 my-lg-0 my-3">
-            </div>
-
         </div>
-   <!--     <?php /*} else { */?>
-        <h1 class="display-4 text-center my-5">Not Logged into Staff Account</h1>
-        --><?php /*} */?>
-        <br>
-        <h4 class="card-title text-center"> Upload Data File</h4>
-        <br>
-
-
     </div>
+
+    <br><br>
 
     <!-- Footer -->
     <footer class="py-3 bg-dark">
