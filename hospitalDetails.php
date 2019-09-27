@@ -24,6 +24,9 @@
 
     <script src="https://d3js.org/d3.v5.js"></script>
     <?php
+
+    use function Sodium\add;
+
     error_reporting(E_ALL & ~E_NOTICE); //Hide error messages (e.g. notices on homepage, will only be turned on when releasing website)
     $url = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
 
@@ -461,6 +464,11 @@
 
     } ?>
 
+    <!-- Price trend graph -->
+
+    <canvas class="my-4" id="trendGraph" width="900" height="380"></canvas>
+    <br>
+
     <!-- Other procedures listing -->
     <div class="container">
 
@@ -539,6 +547,35 @@
         // document ready
     });
 </script>
+
+<!-- Graph for price trends -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
+<?php
+#get data from DB for graph for all years and payment types
+$sql = "SELECT year, averageTotalPayments, averageCoveredCharges, averageMedicarePayments FROM newDB WHERE providerId=? AND dRGCode=? ORDER BY year";
+$params = array($providerId, $dRGCode);
+$result = sqlsrv_query($conn, $sql, $params);
+$jSRows = [];
+
+if ($result == FALSE) {
+    echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
+    die(print_r(sqlsrv_errors(), true));
+} else {
+    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+        array_push($jSRows, $row);
+    }
+}
+?>
+
+<!-- Function to generate graph declared in external script, then data gets prepared and passed in -->
+<script src="js/price-trend-graph.js"></script>
+<script id="trendGraphDataJS">
+    var rows = <?php echo json_encode($jSRows);?>;
+    generateGraph(rows);
+</script>
+
+<!--  -->
 
 <div class="showHideElements">
     <?php
