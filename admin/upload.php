@@ -206,28 +206,26 @@
 </div>
 
 
-<div class="col-md-5 col-md-offset-6">
-    <div class="float-lg-none text-center">
-        <div class="col-lg-2">
+<div class="container">
+    <div class="row">
+        <div class="text-center mx-auto mb-4">
+            <form class="navbar-form form-inline" action="UpdateDatabase.php" method="post" enctype="multipart/form-data">
 
-        <form class="navbar-form form-inline" action="UpdateDatabase.php" method="post" enctype="multipart/form-data">
-            <div class="form-group ml-5">
-                <label class="my-2" for="file"><strong>Filename：</strong></label>
-                <input class="form-control my-2" style="height: 100%" type="file" name="file" id="file"><br>
-                <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
-                       name="submit" value="Submit">
+                    <label class="my-2" for="file"><strong>Filename：</strong></label>
+                    <input class="form-control my-2" style="height: 100%" type="file" name="file" id="file"><br>
+                    <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
+                           name="submit" value="Submit">
 
-        </form>
+            </form>
+            <br><br>
+            <form class="" action="../admin/admin.php" method="post">
+                <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+            </form>
         </div>
-            <br><br><br>
-    <form class="navbar-form form-inline" action="../admin/admin.php" method="post">
-        <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
-    </form>
-    <br><br><br>
-</div>
+    </div>
 </div>
 
-
+    <br><br>
 
 
 
