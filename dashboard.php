@@ -224,9 +224,22 @@
 
         include_once("php/db_connect.php");
 
+        #get userId from userName
+        $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+        if ($resultID == FALSE) {
+            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+            die(print_r(sqlsrv_errors(), true));
+        } else {
+            if (sqlsrv_has_rows($resultID) == 0) {
+                //no user with that user name
+            } else {
+                $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+                $userID = $rowID['userID'];
+            }
+        }
+
         $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
-        $UserID = 2;
-        $param = array($UserID);
+        $param = array($userID);
         # run sql query on already set up database connection with custom parameters
         $result = sqlsrv_query($conn, $sql, $param);
 
@@ -239,10 +252,11 @@
         else {
             #return if no results from query.
             if (sqlsrv_has_rows($result) == 0) {
-                echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
+                echo '<h1 class="display-3 pb-5 text-center">No procedures bookmarked</h1>';
                 echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
             }
             else {
+                echo '<h3 class="pt-5"><i class="fas fa-bookmark"></i> Bookmarks</h3>';
                 #display formatted query results on frontend.
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
                     $rows_count++;
@@ -275,7 +289,7 @@
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
                                         <button class="btn btn-success buy-btn mx-1 m-auto" style="
                                             float: right" type="buy" >
-                                            <i class="fas fa-info-circle"></i> View more information
+                                            <i class="fas fa-info-circle" style="color: white"></i> View more information
                                         </button><br>
                                     </form>
                                 </div>
