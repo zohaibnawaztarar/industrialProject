@@ -297,7 +297,7 @@ if (($userName != "") && ($encrypPass != "")) {
             var u = document.getElementById("update_div");
             var r = document.getElementById("remove_div");
 
-                <? php
+                <?php
                 if (isset($_GET['select'])) {
                 if (isset($_GET['update_customer_id_select'])) {
                     echo 'u.style.display = "block";';

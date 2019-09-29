@@ -34,6 +34,7 @@
     //if($url != "") { //If the referee is not an about:blank page or been entered from the URL bar or a first entry
     $providerId = "";
     $dRGCode = "";
+    $toBookmark = "0";
 
     if (isset($_GET['dRGCode'])) {
         $dRGCode = $_GET['dRGCode'];
@@ -41,6 +42,10 @@
 
     if (isset($_GET['providerId'])) {
         $providerId = $_GET['providerId'];
+    }
+
+    if (isset($_GET['toBookmark'])) {
+        $toBookmark = $_GET['toBookmark'];
     }
 
     $userName = "";
@@ -288,8 +293,8 @@
         } else {
             while ($row = sqlsrv_fetch_array($resultMain, SQLSRV_FETCH_ASSOC)) {
                 $rows_count++;
-                if($rows_count < 2)
-                    $address = $row['providerName']." ".$row['providerStreetAddress'];
+                if ($rows_count < 2)
+                    $address = $row['providerName'] . " " . $row['providerStreetAddress'];
                 if (sqlsrv_has_rows($result2016) == 0) {
                     $result2016_empty = true;
                 } else {
@@ -325,35 +330,100 @@
                                     <?php echo $row['providerState']; ?><br>
                                 </p>
                                 <button class="btn btn-success btn-mini search-btn my-4 hidden-print"
-                                        onclick="myFunction()"><span class="glyphicon glyphicon-print"
-                                                                     aria-hidden="true"></span><i class="fas fa-print"></i> Print
+                                        onclick="printPage()"><span class="glyphicon glyphicon-print"
+                                                                    aria-hidden="true"></span><i
+                                            class="fas fa-print"></i> Print
                                 </button>
-                                <button class="btn btn-success btn-mini search-btn my-4" style="float: right"> <i class="fas fa-star"></i> Bookmark
-                                </button>
+
+                                <!-- Bookmarks -->
+                                <?php
+                                #get userId from userName
+                                $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+                                if ($resultID == FALSE) {
+                                    echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+                                    die(print_r(sqlsrv_errors(), true));
+                                } else {
+                                    if (sqlsrv_has_rows($resultID) == 0) {
+                                        //no user with that user name
+                                    } else {
+                                        $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+                                        $userID = $rowID['userID'];
+                                    }
+                                }
+
+                                //check whether procedure is already bookmarked
+                                $isBookMark = false;
+                                $sqlBookmark = "SELECT * FROM bmDB WHERE providerId=? AND dRGCode=? AND userID=?";
+                                $params = array($providerId, $dRGCode, $userID);
+                                $bookMarkResult = sqlsrv_query($conn, $sqlBookmark, $params);
+                                if ($bookMarkResult == FALSE) {
+                                    die(print_r(sqlsrv_errors(), true));
+                                } else {
+                                    if (sqlsrv_has_rows($bookMarkResult) == 0) {
+                                        //no result, so not bookmarked yet
+                                        $isBookMark = false;
+                                    } else {
+                                        //result found, hospital already bookmarked
+                                        $isBookMark = true;
+                                    }
+                                }
+
+                                if (!empty($toBookmark))
+                                {
+                                    //if user selected to bookmark a hospital, check that it's not bookmarked yet as well
+                                    if ($toBookmark && !$isBookMark)
+                                    {
+                                        //insert new bookmark
+                                        $sqlBookmark = "INSERT INTO dbo.bmDB VALUES (?, ?, ?)";
+                                        $params = array($userID, $dRGCode, $providerId);
+                                        $insertResults= sqlsrv_query($conn, $sqlBookmark, $params);
+                                        $rowsAffected = sqlsrv_rows_affected($insertResults);
+                                        if ($insertResults == FALSE or $rowsAffected == FALSE)
+                                            die(FormatErrors(sqlsrv_errors()));
+                                        $isBookMark = true;
+                                    }
+                                }
+                                ?>
+                                <form action='hospitalDetails.php' method='GET' style="float: right">
+                                    <input type='hidden' name='toBookmark' value='1'>
+                                    <input type='hidden' name='dRGCode' value='<?php echo $dRGCode; ?>'>
+                                    <input type='hidden' name='providerId' value='<?php echo $providerId; ?>'>
+                                    <button class="btn btn-success btn-mini search-btn my-4" style="float: right" <?php if ($isBookMark){echo "disabled";} ?>>
+                                        <i class="<?php if ($isBookMark){echo "fas fa-check";}else {echo"far fa-bookmark";}?>">
+                                        </i> Bookmark
+                                    </button>
+                                </form>
+                                <!-- End: Bookmarks -->
+
                             </div>
                         </div>
                         <div id="miniMap" style="width:450px; height: 350px;"></div>
                         <script>
                             var map;
                             var grocoder;
+
                             function initMap() {
                                 //search by address
                                 geocoder = new google.maps.Geocoder();
-                                var address_1= "<?php echo $address?>";
-                                geocoder.geocode({'address':address_1},function(results,status){
-                                    if(status==google.maps.GeocoderStatus.OK){
+                                var address_1 = "<?php echo $address?>";
+                                geocoder.geocode({'address': address_1}, function (results, status) {
+                                    if (status == google.maps.GeocoderStatus.OK) {
                                         map = new google.maps.Map(document.getElementById('miniMap'), {
                                             center: results[0].geometry.location,
                                             zoom: 13
                                         });
-                                        var marker = new google.maps.Marker({position: results[0].geometry.location, map: map});
-                                    }else{
+                                        var marker = new google.maps.Marker({
+                                            position: results[0].geometry.location,
+                                            map: map
+                                        });
+                                    } else {
                                         alert("fail");
                                     }
                                 })
                             }
                         </script>
-                        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEOf66YDCHpSc9OhGNJHhejaGG9DArF-U&callback=initMap" async
+                        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEOf66YDCHpSc9OhGNJHhejaGG9DArF-U&callback=initMap"
+                                async
                                 defer>
                         </script>
                     </div>
