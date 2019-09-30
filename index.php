@@ -216,8 +216,9 @@
                     <hr/>
                     <form action="index.php" method="GET">
                         <div class="form-group m-0">
-                            <input required type="text" placeholder="DRG Code or Keywords" name="dRGInput"
-                                   class="form-control my-2">
+                            <input required type="text"
+                                   placeholder="<?php if (empty($dRGInput)) {echo "DRG Code or Keywords";}else {echo $dRGInput;}?>"
+                                   name="dRGInput" class="form-control my-2">
 
                             <select required class="form-control my-2" name="state">
                                 <option value="" disabled selected hidden>Select State</option>
@@ -273,7 +274,8 @@
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
                             </select>
-                            <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
+                            <input required type="text" placeholder="<?php if (empty($zipCode)) {echo "Zip Code";}else {echo $zipCode;}?>"
+                                   name="zipCode" class="form-control my-2">
                         </div>
 
                         <div class="form-group m-0">
@@ -355,9 +357,18 @@
                 $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
                 # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
                 $zipCodeDigits = substr($zipCode, 0, 2) . "%";
-                $dRGInput = "%" . $dRGInput . "%";
-                $params = array($zipCodeDigits, $dRGInput);
+                $params = array($zipCodeDigits, "%" . $dRGInput . "%");
             }
+
+            //check if valid price range given
+            if ($priceMin < $priceMax) {
+                //priceMax will be set as value at this point to pass the operator, but priceMin can be empty still
+                if (empty($priceMin)) {
+                    $priceMin = 0;
+                }
+                $sql .= " AND averageTotalPayments BETWEEN " . $priceMin . " AND " . $priceMax;
+            }
+
             if (!empty($order)) {
                 if ($order == "price_desc") {
                     $sql .= " ORDER BY averageTotalPayments DESC";
@@ -365,7 +376,7 @@
                     $sql .= " ORDER BY averageTotalPayments ASC";
                 } else if ($order == "distance_desc") {
                     //change to distance!!!!
-                    $sql .= " ORDER BY averageTotalPayments DESC";
+
                 } else if ($order == "distance_asc") {
                     //change to distance!!
                     $sql .= " ORDER BY averageTotalPayments ASC";
@@ -516,7 +527,8 @@
            }
 
            if(haveUserLocation) {
-               document.getElementById(hospitalName).innerText = "Distance: " + milesFrom
+               document.getElementById(hospitalName).innerText = "Miles: " + milesFrom
+               document.getElementsByClassName("resultContainer").id = milesFrom
            }
 
            var link = document.createElement('a');
@@ -613,10 +625,35 @@
 
 
     <!-- Get list of procedures for a given hospital-->
+
+
+    <script>
+        function divSort() {
+            var toSort = document.getElementById('results').children;
+            toSort = Array.prototype.slice.call(toSort, 0);
+
+            toSort.sort(function(a, b) {
+                var aord = +a.id.split('-')[1];
+                var bord = +b.id.split('-')[1];
+                // two elements never have the same ID hence this is sufficient:
+                return (aord > bord) ? 1 : -1;
+            });
+
+            var parent = document.getElementById('results');
+            parent.innerHTML = "";
+
+            for(var i = 0, l = toSort.length; i < l; i++) {
+                parent.appendChild(toSort[i]);
+            }
+        }
+
+
+    </script>
+<div id="results">
     <?php
 
     if (empty($dRGInput) or empty($state) or empty($zipCode)) {
-        echo '<h1 class="display-3 pb-5 text-center">Put stuff here!</h1>';
+        echo '<h4 class="display-3 pb-5 text-center">Bookmarks/Recommended will appear here!</h4>';
         echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
     } else {
         include_once("php/db_connect.php");
@@ -624,7 +661,7 @@
         $result = sqlsrv_query($conn, $sql, $params);
 
         $rows_count = 0;
-        #returns error if required.
+        #returns error if required
         if ($result == FALSE) {
             echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
             die(print_r(sqlsrv_errors(), true));
@@ -636,11 +673,15 @@
                 echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
             } else {
                 #display formatted query results on frontend.
+
+
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
 
                     $rows_count++;
                     ?>
+                    <div id="" class="resultContainer">
                     <div class="card my-3">
+
                         <div class="row no-gutters">
                             <div class="col">
                                 <div class="card-body">
@@ -659,7 +700,7 @@
                                         <?php echo $row['providerCity']; ?>
                                     </p>
                                     <br>
-                                    <p id="<?php echo $row['providerName']; ?>"></p>
+                                    <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
                                     <form action="hospitalDetails.php" method="GET">
                                         <input type='hidden' name="providerId"
                                                value="<?php echo $row['providerId']; ?>">
@@ -688,6 +729,8 @@
         sqlsrv_free_stmt($result);
 
     } ?>
+                    </div>
+</div>
 
 </div>
 

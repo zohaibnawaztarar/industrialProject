@@ -1,3 +1,3 @@
-function myFunction() {
+function printPage() {
     window.print();
 }

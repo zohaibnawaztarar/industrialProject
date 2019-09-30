@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="Team 3">
 
-    <title>Compare Care | Dashboard</title>
+    <title>Compare Care | Admin Dashboard</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
@@ -18,9 +18,9 @@
         crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link href="css/dashboard.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
 
-    <?php include_once "php/db_connect.php"; ?>
+    <?php include_once "../php/db_connect.php"; ?>
 
 </head>
 
@@ -28,7 +28,7 @@
 
     <div id="id1" class="userDetails">
         <?php
-        include_once("php/db_connect.php");
+        include_once("../php/db_connect.php");
 			error_reporting(E_ALL & ~E_NOTICE); //Hide error messages (e.g. notices on homepage, will only be turned on when releasing website)
 			$url = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
 			$message = "REFERER is: ".parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
@@ -130,7 +130,7 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+        <a class="navbar-brand" href="../index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
         <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -138,25 +138,25 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="../index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="about.php">About Us</a>
+                    <a class="nav-link" href="../about.php">About Us</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="faq.php">FAQs</a>
+                    <a class="nav-link" href="../faq.php">FAQs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact-us.php">Contact Us</a>
+                    <a class="nav-link" href="../contact-us.php">Contact Us</a>
                 </li>
             </ul>
-            <form class="navbar-form form-inline" action="login.php" method="POST">
+            <form class="navbar-form form-inline" action="../login.php" method="POST">
                 <div id="id3" class="form-group">
                     <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username" name="userName" required>
                     <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password" name="uncrypPass" required>
                     <input class="form-control" type="hidden" name="remember" value="checked">
                     <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Log In</button>
-                    <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register" onclick="location.href='register.php';">Register</button>
+                    <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register" onclick="location.href='../register.php';">Register</button>
                 </div>
             </form>
             <div id="id4" class="logout">
@@ -171,7 +171,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <form action="login.php" method="POST">
+                        <form action="../login.php" method="POST">
                             <input type='hidden' name="logout" value="true">
                             <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Logout</button>
                         </form>
@@ -190,7 +190,7 @@
                         if ($userName != "" and $position != "customer") {
                             echo "$userName" . "'s ";
                         }
-                    ?>Dashboard
+                    ?>Admin Dashboard
                     </h1>
                 </div>
             </div>
@@ -202,106 +202,46 @@
         /*if ($position != "customer" && $position != "databaseFind") { */?>
         <div class="row mt-5">
             <div class="col-sm-4 my-lg-0 my-3">
-                <a href="dashboard/customers.php" class="custom-card">
+                <a href="add.php" class="custom-card">
                     <div class="card">
-                        <i class="card-img-top fas fa-address-book fa-5x my-4"></i>
+                        <i class="card-img-top fas fa-plus-circle fa-5x my-4"></i>
                         <div class="card-body text-center">
-                            <h4 class="card-title"> My Profile</h4>
+                            <h4 class="card-title"> Add New Data</h4>
                         </div>
                     </div>
                 </a>
             </div>
 
+            <div class="col-sm-4 my-lg-0 my-3">
+                <a href="edit.php" class="custom-card">
+                    <div class="card">
+                        <i class="card-img-top fas fa-edit fa-5x my-4"></i>
+                        <div class="card-body text-center">
+                            <h4 class="card-title"> Update/Remove Data</h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-4 my-lg-0 my-3">
+                <a href="upload.php" class="custom-card">
+                    <div class="card">
+                        <i class="card-img-top fas fa-upload fa-5x my-4"></i>
+                        <div class="card-body text-center">
+                            <h4 class="card-title"> Upload Data File</h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <br><br><br><br><br><br><br><br>
 
             <div class="col-sm-4 my-lg-0 my-3">
             </div>
-        </div>
+        </div>   <br><br><br><br><br><br><br><br><br><br>
    <!--     <?php /*} else { */?>
         <h1 class="display-4 text-center my-5">Not Logged into Staff Account</h1>
         --><?php /*} */?>
-        <!-- Get list of favourite procedures for user-->
-        <?php
 
-        include_once("php/db_connect.php");
-
-        #get userId from userName
-        $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
-        if ($resultID == FALSE) {
-            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-            die(print_r(sqlsrv_errors(), true));
-        } else {
-            if (sqlsrv_has_rows($resultID) == 0) {
-                //no user with that user name
-            } else {
-                $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
-                $userID = $rowID['userID'];
-            }
-        }
-
-        $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
-        $param = array($userID);
-        # run sql query on already set up database connection with custom parameters
-        $result = sqlsrv_query($conn, $sql, $param);
-
-        $rows_count = 0;
-        #returns error if required.
-        if ($result == FALSE) {
-            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-            die(print_r(sqlsrv_errors(), true));
-        }
-        else {
-            #return if no results from query.
-            if (sqlsrv_has_rows($result) == 0) {
-                echo '<h1 class="display-3 pb-5 text-center">No procedures bookmarked</h1>';
-                echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
-            }
-            else {
-                echo '<h3 class="pt-5"><i class="fas fa-bookmark"></i> Bookmarks</h3>';
-                #display formatted query results on frontend.
-                while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                    $rows_count++;
-                    ?>
-                    <div class="card my-3">
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <div class="card-body">
-                                    <h4 class="card-title nhsColor" style="
-                                            float: left">
-                                        <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
-                                            float: right">
-                                            $
-                                            <?php echo round($row['averageTotalPayments']); ?>
-                                        </h3><br>
-                                    </h4>
-                                    <h5 class="card-title text-secondary">
-                                        <br><?php echo $row['dRGDescription']; ?>
-                                    </h5>
-                                    <p class="card-text">
-                                        <?php echo $row['providerCity']; ?>
-                                    </p>
-                                    <form action="hospitalDetails.php" method="GET">
-                                        <input type='hidden' name="providerId"
-                                               value="<?php echo $row['providerId']; ?>">
-                                        <?php
-                                        if (empty($row['dRGCode'])) { $dRGCode = $dRGInput; }
-                                        else { $dRGCode = $row['dRGCode']; }
-                                        ?>
-                                        <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                        <button class="btn btn-success buy-btn mx-1 m-auto" style="
-                                            float: right" type="buy" >
-                                            <i class="fas fa-info-circle" style="color: white"></i> View more information
-                                        </button><br>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php }
-            }
-        }
-        sqlsrv_free_stmt($result);
-
-        ?>
 
 
     </div>
