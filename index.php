@@ -527,7 +527,7 @@
            }
 
            if(haveUserLocation) {
-               document.getElementById(hospitalName).innerHTML = milesFrom
+               document.getElementById(hospitalName).innerText = "Miles: " + milesFrom
                document.getElementsByClassName("resultContainer").id = milesFrom
            }
 
@@ -653,7 +653,7 @@
     <?php
 
     if (empty($dRGInput) or empty($state) or empty($zipCode)) {
-        echo '<h1 class="display-3 pb-5 text-center">Put stuff here!</h1>';
+        echo '<h4 class="display-3 pb-5 text-center">Bookmarks/Recommended will appear here!</h4>';
         echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
     } else {
         include_once("php/db_connect.php");
@@ -661,7 +661,7 @@
         $result = sqlsrv_query($conn, $sql, $params);
 
         $rows_count = 0;
-        #returns error if required.
+        #returns error if required
         if ($result == FALSE) {
             echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
             die(print_r(sqlsrv_errors(), true));
