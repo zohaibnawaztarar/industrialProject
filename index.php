@@ -376,7 +376,7 @@
                     $sql .= " ORDER BY averageTotalPayments ASC";
                 } else if ($order == "distance_desc") {
                     //change to distance!!!!
-                    $sql .= " ORDER BY averageTotalPayments DESC";
+
                 } else if ($order == "distance_asc") {
                     //change to distance!!
                     $sql .= " ORDER BY averageTotalPayments ASC";
@@ -527,7 +527,8 @@
            }
 
            if(haveUserLocation) {
-               document.getElementById(hospitalName).innerText = "Distance: " + milesFrom
+               document.getElementById(hospitalName).innerHTML = milesFrom
+               document.getElementsByClassName("resultContainer").id = milesFrom
            }
 
            var link = document.createElement('a');
@@ -624,6 +625,31 @@
 
 
     <!-- Get list of procedures for a given hospital-->
+
+
+    <script>
+        function divSort() {
+            var toSort = document.getElementById('results').children;
+            toSort = Array.prototype.slice.call(toSort, 0);
+
+            toSort.sort(function(a, b) {
+                var aord = +a.id.split('-')[1];
+                var bord = +b.id.split('-')[1];
+                // two elements never have the same ID hence this is sufficient:
+                return (aord > bord) ? 1 : -1;
+            });
+
+            var parent = document.getElementById('results');
+            parent.innerHTML = "";
+
+            for(var i = 0, l = toSort.length; i < l; i++) {
+                parent.appendChild(toSort[i]);
+            }
+        }
+
+
+    </script>
+<div id="results">
     <?php
 
     if (empty($dRGInput) or empty($state) or empty($zipCode)) {
@@ -647,11 +673,15 @@
                 echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
             } else {
                 #display formatted query results on frontend.
+
+
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
 
                     $rows_count++;
                     ?>
+                    <div id="" class="resultContainer">
                     <div class="card my-3">
+
                         <div class="row no-gutters">
                             <div class="col">
                                 <div class="card-body">
@@ -670,7 +700,7 @@
                                         <?php echo $row['providerCity']; ?>
                                     </p>
                                     <br>
-                                    <p id="<?php echo $row['providerName']; ?>"></p>
+                                    <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
                                     <form action="hospitalDetails.php" method="GET">
                                         <input type='hidden' name="providerId"
                                                value="<?php echo $row['providerId']; ?>">
@@ -699,6 +729,8 @@
         sqlsrv_free_stmt($result);
 
     } ?>
+                    </div>
+</div>
 
 </div>
 
