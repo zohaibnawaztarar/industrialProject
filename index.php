@@ -314,8 +314,9 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(39.8097343, -98.5556199),
-            zoom: 3
+            center: new google.maps.LatLng(40.425167, 74.002150),
+            zoom: 12
+
         });
 
         geocoder = new google.maps.Geocoder();
