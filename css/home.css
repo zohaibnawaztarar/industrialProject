@@ -192,3 +192,10 @@ html, body{
     margin-left: auto;
 }
 
+.input-group-prepend {
+    margin-right: -1px;
+    margin-top: 8px;
+}
+.input-group-append, .input-group-prepend {
+    display: block;
+}
