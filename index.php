@@ -209,7 +209,7 @@
 <header class="header">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-6">
                 <div class="float-lg-left text-center">
                     <br><br>
                     <h1 class="mt-5">Find the best procedure</h1>
@@ -282,16 +282,26 @@
                             <button class="btn btn-success btn-mini search-btn my-4" type="submit">Search</button>
                         </div>
                     </form>
+
                 </div>
             </div>
+            <div class="col-lg-6">
+            <div class="text-center">
+
+                <div id="map"></div>
+            </div>
+
         </div>
     </div>
+    </div>
+
 </header>
+
 
 <!-- Page Content -->
 <!-- --------------------------------------------------------------------- -->
 
-<div id="map"></div>
+
 <script>
     var map, infoWindow;
     var geocoder;
@@ -324,7 +334,7 @@
                 infoWindow.setContent('location found');
                 infoWindow.open(map);
                 map.setCenter(userPos);
-                map.setZoom(10); //If location is found, increase zoom
+                map.setZoom(8); //If location is found, increase zoom
 
                 haveUserLocation = true;
             }, function() {
@@ -447,50 +457,7 @@
         }
         ?>
 
-/*
-        downloadUrl('https://zeno.computing.dundee.ac.uk/2019-projects/team8/map_locations.xml', function (data) {
-            var xml = data.responseXML;
-            var markers = xml.documentElement.getElementsByTagName('marker');
-            Array.prototype.forEach.call(markers, function (markerElem) {
-                var id = markerElem.getAttribute('dRGInput');
-                var address = markerElem.getAttribute('providerStreetAddress');
-                var city = markerElem.getAttribute('providerCity');
-                var zip = markerElem.getAttribute('providerZipCode');
-                var state = markerElem.getAttribute('providerState');
-                // var point = new google.maps.LatLng(
-                //     parseFloat(markerElem.getAttribute('lat')),
-                //     parseFloat(markerElem.getAttribute('lng')));
 
-                //codeAddress(zip, address, city, state);
-                // var infowincontent = document.createElement('div');
-                // var strong = document.createElement('strong');
-                // strong.textContent = name
-                // infowincontent.appendChild(strong);
-                // infowincontent.appendChild(document.createElement('br'));
-                //
-                // var text = document.createElement('text');
-                // text.textContent = address
-                // infowincontent.appendChild(text);
-                // var icon = customLabel
-                // {
-                // }
-                // ;
-
-                // var marker = new google.maps.Marker({
-                //     map: map,
-                //     position: point,
-                //     label: icon.label
-                // });
-                // marker.addListener('click', function () {
-                //     infoWindow.setContent(infowincontent);
-                //     infoWindow.open(map, marker);
-                // });
-
-
-                // codeAddress(zip);
-            });
-        });
-        */
     }
 
 
@@ -545,7 +512,7 @@
 
        function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
-           map.setZoom(6);
+           map.setZoom(8);
 
            var infowincontent = document.createElement('div');
            var strong = document.createElement('strong');
