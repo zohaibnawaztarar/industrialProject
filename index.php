@@ -209,7 +209,7 @@
 <header class="header">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-6">
                 <div class="float-lg-left text-center">
                     <br><br>
                     <h1 class="mt-5">Find the best procedure</h1>
@@ -282,16 +282,26 @@
                             <button class="btn btn-success btn-mini search-btn my-4" type="submit">Search</button>
                         </div>
                     </form>
+
                 </div>
             </div>
+            <div class="col-lg-6">
+            <div class="text-center">
+
+                <div id="map"></div>
+            </div>
+
         </div>
     </div>
+    </div>
+
 </header>
+
 
 <!-- Page Content -->
 <!-- --------------------------------------------------------------------- -->
 
-<div id="map"></div>
+
 <script>
     var map, infoWindow;
     var geocoder;
@@ -306,13 +316,16 @@
         map = new google.maps.Map(document.getElementById('map'), {
             center: new google.maps.LatLng(40.425167, 74.002150),
             zoom: 12
+
         });
 
         geocoder = new google.maps.Geocoder();
         infoWindow = new google.maps.InfoWindow;
 
+
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
+            console.log("1")
             navigator.geolocation.getCurrentPosition(function(position) {
                 userPos = {
                     lat: position.coords.latitude,
@@ -322,7 +335,7 @@
                 infoWindow.setContent('location found');
                 infoWindow.open(map);
                 map.setCenter(userPos);
-                map.setZoom(10); //If location is found, increase zoom
+                map.setZoom(8); //If location is found, increase zoom
 
                 haveUserLocation = true;
             }, function() {
@@ -330,8 +343,47 @@
             });
         } else {
             // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-            haveUserLocation = false;
+            //handleLocationError(false, infoWindow, map.getCenter());
+            //haveUserLocation = false;
+            //
+            //d3.csv("US_ZipCode_2018.csv").then(function(data) {
+            //
+            //    console.log("test")
+            //    for (var i = 0; i < 33145; i++) {
+            //        if (data[i].ZIP == "<?php //echo $_GET['zipCode']; ?>//") {
+            //            userPos = {
+            //                lat: parseFloat(data[i].LAT),
+            //                lng: parseFloat(data[i].LNG)
+            //            };
+            //
+            //            console.log("User Pos: " + userPos)
+            //        }
+            //    }
+            //});
+
+        }
+
+        console.log("2")
+
+        if(!haveUserLocation) {
+
+            haveUserLocation = true;
+
+            d3.csv("US_ZipCode_2018.csv").then(function(data) {
+
+                console.log("test")
+                for (var i = 0; i < 33145; i++) {
+                    if (data[i].ZIP == "<?php echo $_GET['zipCode']; ?>") {
+                        userPos = {
+                            lat: parseFloat(data[i].LAT),
+                            lng: parseFloat(data[i].LNG)
+                        };
+                        console.log("User Pos: " + userPos.lat)
+                        return;
+
+                    }
+                }
+            });
         }
 
         <?php
@@ -406,50 +458,7 @@
         }
         ?>
 
-/*
-        downloadUrl('https://zeno.computing.dundee.ac.uk/2019-projects/team8/map_locations.xml', function (data) {
-            var xml = data.responseXML;
-            var markers = xml.documentElement.getElementsByTagName('marker');
-            Array.prototype.forEach.call(markers, function (markerElem) {
-                var id = markerElem.getAttribute('dRGInput');
-                var address = markerElem.getAttribute('providerStreetAddress');
-                var city = markerElem.getAttribute('providerCity');
-                var zip = markerElem.getAttribute('providerZipCode');
-                var state = markerElem.getAttribute('providerState');
-                // var point = new google.maps.LatLng(
-                //     parseFloat(markerElem.getAttribute('lat')),
-                //     parseFloat(markerElem.getAttribute('lng')));
 
-                //codeAddress(zip, address, city, state);
-                // var infowincontent = document.createElement('div');
-                // var strong = document.createElement('strong');
-                // strong.textContent = name
-                // infowincontent.appendChild(strong);
-                // infowincontent.appendChild(document.createElement('br'));
-                //
-                // var text = document.createElement('text');
-                // text.textContent = address
-                // infowincontent.appendChild(text);
-                // var icon = customLabel
-                // {
-                // }
-                // ;
-
-                // var marker = new google.maps.Marker({
-                //     map: map,
-                //     position: point,
-                //     label: icon.label
-                // });
-                // marker.addListener('click', function () {
-                //     infoWindow.setContent(infowincontent);
-                //     infoWindow.open(map, marker);
-                // });
-
-
-                // codeAddress(zip);
-            });
-        });
-        */
     }
 
 
@@ -473,11 +482,14 @@
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent(browserHasGeolocation ?
+        //     'Error: The Geolocation service failed.' :
+        //     'Error: Your browser doesn\'t support geolocation.');
+        // infoWindow.open(map);
+
+
+
     }
 
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
@@ -501,7 +513,7 @@
 
        function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
            map.setCenter(latLong);
-           map.setZoom(6);
+           map.setZoom(8);
 
            var infowincontent = document.createElement('div');
            var strong = document.createElement('strong');

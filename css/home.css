@@ -144,9 +144,14 @@ a.custom-card:hover {
 }
 
 #map {
-	height: 50%;
-	margin: 0;
-	position:relative;
+
+	margin: 0px;
+    position: relative;  // We can now move the element
+    width: 100%;
+top: 90px;
+    height: 350px;
+       // 100px from top relative to its old position
+
 }
 
 html, body{
@@ -179,4 +184,18 @@ html, body{
     vertical-align: middle;
 }
 
+.container{
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: auto;
+    margin-left: auto;
+}
 
+.input-group-prepend {
+    margin-right: -1px;
+    margin-top: 8px;
+}
+.input-group-append, .input-group-prepend {
+    display: block;
+}
