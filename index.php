@@ -304,15 +304,17 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(-33.863276, 151.207977),
-            zoom: 12
+            center: new google.maps.LatLng(39.8097343, -98.5556199),
+            zoom: 3
         });
 
         geocoder = new google.maps.Geocoder();
         infoWindow = new google.maps.InfoWindow;
 
+
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
+            console.log("1")
             navigator.geolocation.getCurrentPosition(function(position) {
                 userPos = {
                     lat: position.coords.latitude,
@@ -330,8 +332,47 @@
             });
         } else {
             // Browser doesn't support Geolocation
-            handleLocationError(false, infoWindow, map.getCenter());
-            haveUserLocation = false;
+            //handleLocationError(false, infoWindow, map.getCenter());
+            //haveUserLocation = false;
+            //
+            //d3.csv("US_ZipCode_2018.csv").then(function(data) {
+            //
+            //    console.log("test")
+            //    for (var i = 0; i < 33145; i++) {
+            //        if (data[i].ZIP == "<?php //echo $_GET['zipCode']; ?>//") {
+            //            userPos = {
+            //                lat: parseFloat(data[i].LAT),
+            //                lng: parseFloat(data[i].LNG)
+            //            };
+            //
+            //            console.log("User Pos: " + userPos)
+            //        }
+            //    }
+            //});
+
+        }
+
+        console.log("2")
+
+        if(!haveUserLocation) {
+
+            haveUserLocation = true;
+
+            d3.csv("US_ZipCode_2018.csv").then(function(data) {
+
+                console.log("test")
+                for (var i = 0; i < 33145; i++) {
+                    if (data[i].ZIP == "<?php echo $_GET['zipCode']; ?>") {
+                        userPos = {
+                            lat: parseFloat(data[i].LAT),
+                            lng: parseFloat(data[i].LNG)
+                        };
+                        console.log("User Pos: " + userPos.lat)
+                        return;
+
+                    }
+                }
+            });
         }
 
         <?php
@@ -473,11 +514,14 @@
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-            'Error: The Geolocation service failed.' :
-            'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
+        // infoWindow.setPosition(pos);
+        // infoWindow.setContent(browserHasGeolocation ?
+        //     'Error: The Geolocation service failed.' :
+        //     'Error: Your browser doesn\'t support geolocation.');
+        // infoWindow.open(map);
+
+
+
     }
 
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
