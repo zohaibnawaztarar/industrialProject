@@ -130,7 +130,7 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#"><i class="fas fa-ambulance"></i> Compare Care</a>
+    <a class="navbar-brand" href="#"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
     <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -188,16 +188,16 @@
 </nav>
 
 <!-- Header with Background Image -->
-<div class="place">
+<div class="place" role="banner">
     <div class="container">
         <div class="row">
-            <div class="text-center mx-auto mb-4 no-print">
+            <div class="text-center mx-auto mb-4 no-print" role="search">
                 <h1 class="mt-5">Search again?</h1>
                 <hr/>
                 <form class="form-inline mb-5" action="index.php" method="GET">
                     <input required type="text" placeholder="DRG Code or Keywords" name="dRGCode"
-                           class="form-control my-2">
-                    <select class="form-control my-2 m-1 mb-2 mx-2" name="state">
+                           class="form-control my-2" aria-label="DRG Code or keywords">
+                    <select class="form-control my-2 m-1 mb-2 mx-2" name="state" aria-label="State selection">
                         <option value="? OR 1=1" disabled selected>State</option>
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
@@ -251,7 +251,7 @@
                         <option value="WI">Wisconsin</option>
                         <option value="WY">Wyoming</option>
                     </select>
-                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2">
+                    <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2" aria-label="Zip Code">
 
                     <button class="btn btn-success search-btn mx-1 m-2" type="submit">Search</button>
                 </form>
@@ -261,7 +261,7 @@
 </div>
 <body>
 
-<div class="container">
+<div class="container" role="main">
     <form action="packages.php" method="GET">
         <input type="hidden" name="providerId" value="<?php echo $providerId; ?>"/>
         <input type="hidden" name="dRGCode" value="<?php echo $dRGCode; ?>"/>
@@ -537,7 +537,7 @@
 
     <!-- Price trend graph -->
 
-    <canvas class="my-4" id="trendGraph" width="900" height="380"></canvas>
+    <canvas class="my-4" id="trendGraph" width="900" height="380" aria-label="Graph showing trend history and prediction of procedure costs"></canvas>
     <br>
 
 
@@ -545,7 +545,7 @@
     <div class="container">
 
         <button class="btn btn-success search-btn mx-1 m-2 no-print text-center col" type="button" data-toggle="collapse"
-                data-target="#collapseProcList" aria-expanded="false" aria-controls="collapseExample">
+                data-target="#collapseProcList" aria-expanded="false" aria-controls="collapse">
             Click here to see other procedures offered by this hospital <i class="fas fa-chevron-circle-down"></i>
         </button>
 
