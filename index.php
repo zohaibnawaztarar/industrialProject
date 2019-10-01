@@ -172,9 +172,9 @@
         <form class="navbar-form form-inline" action="login.php" method="POST">
             <div id="id3" class="form-group">
                 <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username"
-                       name="userName" required>
+                       name="userName" required aria-label="Enter your username">
                 <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password"
-                       name="uncrypPass" required>
+                       name="uncrypPass" required aria-label="Enter your Password">
                 <input class="form-control" type="hidden" name="remember" value="checked">
                 <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Log In</button>
                 <button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register"
