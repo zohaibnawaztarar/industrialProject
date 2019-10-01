@@ -34,7 +34,7 @@
     //if($url != "") { //If the referee is not an about:blank page or been entered from the URL bar or a first entry
     $providerId = "";
     $dRGCode = "";
-    $toBookmark = "0";
+    $toBookmark = "";
 
     if (isset($_GET['dRGCode'])) {
         $dRGCode = $_GET['dRGCode'];
@@ -338,58 +338,73 @@
 
                                 <!-- Bookmarks -->
                                 <?php
-                                #get userId from userName
-                                $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
-                                if ($resultID == FALSE) {
-                                    echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-                                    die(print_r(sqlsrv_errors(), true));
-                                } else {
-                                    if (sqlsrv_has_rows($resultID) == 0) {
-                                        //no user with that user name
-                                    } else {
-                                        $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
-                                        $userID = $rowID['userID'];
-                                    }
-                                }
 
-                                //check whether procedure is already bookmarked
-                                $isBookMark = false;
-                                $sqlBookmark = "SELECT * FROM bmDB WHERE providerId=? AND dRGCode=? AND userID=?";
-                                $params = array($providerId, $dRGCode, $userID);
-                                $bookMarkResult = sqlsrv_query($conn, $sqlBookmark, $params);
-                                if ($bookMarkResult == FALSE) {
-                                    die(print_r(sqlsrv_errors(), true));
-                                } else {
-                                    if (sqlsrv_has_rows($bookMarkResult) == 0) {
-                                        //no result, so not bookmarked yet
-                                        $isBookMark = false;
-                                    } else {
-                                        //result found, hospital already bookmarked
-                                        $isBookMark = true;
-                                    }
-                                }
-
-                                if (!empty($toBookmark))
+                                if (!empty($userName))
                                 {
-                                    //if user selected to bookmark a hospital, check that it's not bookmarked yet as well
-                                    if ($toBookmark && !$isBookMark)
+                                    #get userId from userName
+                                    $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+                                    if ($resultID == FALSE) {
+                                        echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+                                        die(print_r(sqlsrv_errors(), true));
+                                    } else {
+                                        if (sqlsrv_has_rows($resultID) == 0) {
+                                            //no user with that user name
+                                        } else {
+                                            $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+                                            $userID = $rowID['userID'];
+                                        }
+                                    }
+
+                                    //check whether procedure is already bookmarked
+                                    $sqlBookmark = "SELECT * FROM bmDB WHERE providerId=? AND dRGCode=? AND userID=?";
+                                    $params = array($providerId, $dRGCode, $userID);
+                                    $bookMarkResult = sqlsrv_query($conn, $sqlBookmark, $params);
+                                    if ($bookMarkResult == FALSE) {
+                                        die(print_r(sqlsrv_errors(), true));
+                                    } else {
+                                        if (sqlsrv_has_rows($bookMarkResult) == 0) {
+                                            //no result, so not bookmarked yet
+                                            $isBookMark = false;
+                                        } else {
+                                            //result found, hospital already bookmarked
+                                            $isBookMark = true;
+                                        }
+                                    }
+
+                                    if (isset($toBookmark))
                                     {
-                                        //insert new bookmark
-                                        $sqlBookmark = "INSERT INTO dbo.bmDB VALUES (?, ?, ?)";
-                                        $params = array($userID, $dRGCode, $providerId);
-                                        $insertResults= sqlsrv_query($conn, $sqlBookmark, $params);
-                                        $rowsAffected = sqlsrv_rows_affected($insertResults);
-                                        if ($insertResults == FALSE or $rowsAffected == FALSE)
-                                            die(FormatErrors(sqlsrv_errors()));
-                                        $isBookMark = true;
+                                        //if user selected to bookmark a hospital, check that it's not bookmarked yet as well
+                                        if ($toBookmark == 'a' && !$isBookMark)
+                                        {
+                                            //insert new bookmark
+                                            $sqlBookmark = "INSERT INTO dbo.bmDB VALUES (?, ?, ?)";
+                                            $params = array($userID, $dRGCode, $providerId);
+                                            $insertResults= sqlsrv_query($conn, $sqlBookmark, $params);
+                                            $rowsAffected = sqlsrv_rows_affected($insertResults);
+                                            if ($insertResults == FALSE or $rowsAffected == FALSE)
+                                                die(FormatErrors(sqlsrv_errors()));
+                                            $isBookMark = true;
+                                        }
+                                        else if ($toBookmark == 'd' && $isBookMark)
+                                        {
+                                            //remove from bookmarks
+                                            $sqlBookmark = "DELETE FROM dbo.bmDB WHERE userID=? AND dRGCode=? AND providerID=?";
+                                            $params = array($userID, $dRGCode, $providerId);
+                                            $removeResults= sqlsrv_query($conn, $sqlBookmark, $params);
+                                            $rowsAffected = sqlsrv_rows_affected($removeResults);
+                                            if ($removeResults == FALSE or $rowsAffected == FALSE)
+                                                die(FormatErrors(sqlsrv_errors()));
+                                            $isBookMark = false;
+                                        }
                                     }
                                 }
+
                                 ?>
                                 <form action='hospitalDetails.php' method='GET' style="float: right">
-                                    <input type='hidden' name='toBookmark' value='1'>
+                                    <input type='hidden' name='toBookmark' value='<?php if ($isBookMark){echo 'd';} else {echo 'a';} ?>'>
                                     <input type='hidden' name='dRGCode' value='<?php echo $dRGCode; ?>'>
                                     <input type='hidden' name='providerId' value='<?php echo $providerId; ?>'>
-                                    <button class="btn btn-success btn-mini search-btn my-4 no-print" style="float: right" <?php if ($isBookMark){echo "disabled";} ?>>
+                                    <button class="btn btn-success btn-mini search-btn my-4 no-print" style="float: right" <?php if (empty($userName)){echo "disabled";} ?>>
                                         <i class="<?php if ($isBookMark){echo "fas fa-check";}else {echo"far fa-bookmark";}?>">
                                         </i> Bookmark
                                     </button>
