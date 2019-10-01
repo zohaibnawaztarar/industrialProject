@@ -287,9 +287,12 @@
                                         else { $dRGCode = $row['dRGCode']; }
                                         ?>
                                         <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                        <button class="btn btn-success buy-btn mx-1 m-auto" style="
+                                        <button class="btn btn-success buy-btn mx-1 m-1" style="
                                             float: right" type="buy" >
                                             <i class="fas fa-info-circle" style="color: white"></i> View more information
+                                        </button>
+                                        <button class="btn btn-success buy-btn mx-1 m-1" style="
+                                            float: right" type="buy" > <i class="fas fa-times-circle" style="color: white"></i> Unbookmark
                                         </button><br>
                                     </form>
                                 </div>
