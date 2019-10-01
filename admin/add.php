@@ -25,7 +25,11 @@
 </head>
 
 <body>
-
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
     <div id="id1" class="userDetails">
         <?php
         include_once("../php/db_connect.php");
@@ -200,7 +204,7 @@
 
 
     <?php
-    if (isset($_POST["Submit"])) {
+    if (isset($_POST["submit"])) {
         //get variables
         $dRGCode=$_POST['dRGCode'];
         $dRGDescription=$_POST['dRGDescription'];
@@ -216,30 +220,27 @@
         $averageTotalPayments = $_POST['averageTotalPayments'];
         $averageMedicarePayments=$_POST['averageMedicarePayments'];
         $year=$_POST['year'];
-        //check the type of the data
-        if(!is_numeric($dRGCode) || !is_numeric($providerId)|| !is_numeric($providerZipCode) || !is_numeric($totalDischarges))
-            echo "<script>
-        alert('dRGCode, provider ID, provider zipcode and total discharges must be numeric!');
-        function goBack(){
-            history.back(); 
-        }
-        setTimeout('goBack()',500);</script>";
-        if(!is_numeric($averageCoveredCharges) || !is_numeric($averageTotalPayments)|| !is_numeric($averageMedicarePayments)
-            || !is_numeric($year))
-            echo "<script>
-        alert('average covered charges, average total payments, average medicare payments and year must be numeric!');
-        function goBack(){
-            history.back(); 
-        }
-        setTimeout('goBack()',500);</script>";
+
         //check if the data is duplicated
-        include "php/db_connect.php";
+        include "../php/db_connect.php";
         $sql = "SELECT * FROM dbo.newDB WHERE dRGCode=".$dRGCode." AND providerId=".$providerId." AND year =".$year;
         $result = sqlsrv_query($conn, $sql);
 
         if($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)) {
-            echo "The data you insert is duplicated. If you want to update this data, please <a href = 'updateOrDeleteData.php'>click</a> here.";
-            echo "<br>Or if you want to insert other data, please <a href = 'insertData.php'>click</a> here to go back.";
+            echo '<div class="container">
+                    <div class="row">
+                    <div class="text-center mx-auto mb-4">
+                    <br>
+                    <h3 class="text-centre">The data you insert is duplicated</h3>
+                    <h3 class="text-centre">If you want to edit this data again</h3>
+                    <button class="btn btn-success btn-mini search-btn my-4" type="submit" onClick = "goBack()">
+                    <i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+                    <h3 class="text-centre">Or you can update this data</h3>
+                    <form class="" action="../admin/updateDatabase.php" method="post">
+                    <button class="btn btn-success btn-mini search-btn my-4" type="submit">
+                    <i class="fas fa-long-arrow-alt-left"></i> Update</button>
+                    </form>
+                    </div></div></div>';
         }else{
             //insert the data when the data is not duplicated
             sqlsrv_free_stmt($result);
@@ -253,68 +254,85 @@
                 ",".$year." )";
             $result = sqlsrv_query($conn, $sql);
             sqlsrv_free_stmt($result);
+            echo '<div class="container">
+                    <div class="row">
+                    <div class="text-center mx-auto mb-4">
+                    <br>
+                    <h3 class="text-centre">Inserted Successfully</h3>
+                    <form class="" action="../admin/Admin.php" method="post">
+                    <button class="btn btn-success btn-mini search-btn my-4" type="submit">
+                    <i class="fas fa-long-arrow-alt-left"></i> Go Back to Admin</button>
+                    </form>
+                    </div></div></div>';
         }
     }
     else
-
-    ?>
-
-
-
-
-
+        echo '
     <div class="container">
         <div class="row">
             <div class="text-center mx-auto mb-4">
                 <br>
                 <h1 class="text-centre">Fill the data in form below to add in database</h1>
-                <form class="navbar-form" action="insertData.php" method="post">
-                <h4 class="text-left">DRG Definition</h4>
+                <form class="navbar-form" action="add.php" method="post">
+                    <h4 class="text-left">DRG Definition</h4>
 
-                <input required type="text" name="dRGCode" placeholder="Enter DRG Code"class="form-control my-2"><br>
+                    <input required type="number" name="dRGCode" placeholder="Enter DRG Code" class="form-control my-2"><br>
 
-                <input required type="text" name="dRGDescription" placeholder="Enter DRG Description"class="form-control my-2"><br>
+                    <input required type="text" name="dRGDescription" placeholder="Enter DRG Description"
+                           class="form-control my-2"><br>
 
-                <h4 class="text-left">Provider Information</h4>
+                    <h4 class="text-left">Provider Information</h4>
 
-                <input required type="text" name="providerId" placeholder="Enter provider Id"class="form-control my-2"><br>
+                    <input required type="number" name="providerId" placeholder="Enter provider Id"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="providerName" placeholder="Enter Provider Name"class="form-control my-2"><br>
+                    <input required type="text" name="providerName" placeholder="Enter Provider Name"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="providerStreetAddress" placeholder="Enter Provider Street Address"class="form-control my-2"><br>
+                    <input required type="text" name="providerStreetAddress" placeholder="Enter Provider Street Address"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="providerCity" placeholder="Enter Provider City"class="form-control my-2"><br>
+                    <input required type="text" name="providerCity" placeholder="Enter Provider City"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="providerState" placeholder="Enter Provider State"class="form-control my-2"><br>
+                    <input required type="text" maxlength="2" name="providerState" placeholder="Enter Provider State"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="providerZipCode" placeholder="Enter Provider Zip Code"class="form-control my-2"><br>
+                    <input required type="number" name="providerZipCode" placeholder="Enter Provider Zip Code"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="hospitalReferralRegionHRRDescription" placeholder="Enter hospital Referral Region HRR Description"class="form-control my-2"><br>
+                    <input required type="text" name="hospitalReferralRegionHRRDescription"
+                           placeholder="Enter hospital Referral Region HRR Description" class="form-control my-2"><br>
 
-                <h4 class="text-left">Charges Data</h4>
+                    <h4 class="text-left">Charges Data</h4>
 
-                <input required type="text" name="totalDischarges" placeholder="Enter Total Discharges"class="form-control my-2"><br>
+                    <input required type="number" name="totalDischarges" placeholder="Enter Total Discharges"
+                           class="form-control my-2"><br>
 
-                <input required type="text" name="averageCoveredCharges" placeholder="Enter Average Covered Charges"class="form-control my-2"><br>
+                    <input required type="number" step="any" min="0" name="averageCoveredCharges"
+                           placeholder="Enter Average Covered Charges" class="form-control my-2"><br>
 
-                <input required type="text" name="averageTotalPayments" placeholder="Enter Average Total Payments"class="form-control my-2"><br>
+                    <input required type="number" step="any" min="0" name="averageTotalPayments"
+                           placeholder="Enter Average Total Payments" class="form-control my-2"><br>
 
-                <input required type="text" name="averageMedicarePayments" placeholder="Enter Average Medicare Payments"class="form-control my-2"><br>
+                    <input required type="number" step="any" min="0" name="averageMedicarePayments"
+                           placeholder="Enter Average Medicare Payments" class="form-control my-2"><br>
 
-                <input required type="text" name="year" placeholder="Enter year"class="form-control my-2"><br>
+                    <input required type="number" step="any" min="0" name="year" placeholder="Enter year"
+                           class="form-control my-2"><br>
 
-                <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;" type="submit"
+                    <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;"
+                           type="submit"
                            name="submit" value="Submit">
-
                 </form>
                 <br><br>
                 <form class="" action="../admin/admin.php" method="post">
-                    <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+                <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
                 </form>
-            </div>
+                </div>
         </div>
-    </div>
-
+    </div>';
+?>
     <br><br>
 
     <!-- Footer -->
