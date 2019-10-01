@@ -113,12 +113,12 @@
 
 	<!-- Navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
 		<button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
 		 aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
+		<div class="collapse navbar-collapse" id="navbarResponsive" role="banner">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item">
 					<a class="nav-link" href="index.php">Home</a>
@@ -176,7 +176,7 @@
 	</div>
 	<!-- Page Content -->
 
-	<div class="container">
+	<div class="container" role="main">
 		<div class="faq">
 			<section class="cd-faq mt-4">
 				<ul class="cd-faq-categories">
