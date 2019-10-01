@@ -148,7 +148,7 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#"><i class="fas fa-ambulance"></i> Compare Care</a>
+    <a class="navbar-brand" href="#"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
     <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -206,7 +206,8 @@
 </nav>
 
 <!-- Header with Background Image -->
-<header class="header">
+<header class="header" role="banner">
+
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
@@ -215,12 +216,12 @@
                     <h1 class="mt-5">Find the best procedure</h1>
                     <hr/>
                     <form action="index.php" method="GET">
-                        <div class="form-group m-0">
+                        <div class="form-group m-0" role="search">
                             <input required type="text"
                                    placeholder="<?php if (empty($dRGInput)) {echo "DRG Code or Keywords";}else {echo $dRGInput;}?>"
-                                   name="dRGInput" class="form-control my-2">
+                                   name="dRGInput" class="form-control my-2" aria-label="DRG Code or keywords">
 
-                            <select required class="form-control my-2" name="state">
+                            <select required class="form-control my-2" name="state" aria-label="State selection">
                                 <option value="" disabled selected hidden>Select State</option>
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
@@ -275,7 +276,7 @@
                                 <option value="WY">Wyoming</option>
                             </select>
                             <input required type="text" placeholder="<?php if (empty($zipCode)) {echo "Zip Code";}else {echo $zipCode;}?>"
-                                   name="zipCode" class="form-control my-2">
+                                   name="zipCode" class="form-control my-2" aria-label="Zip Code">
                         </div>
 
                         <div class="form-group m-0">
@@ -288,7 +289,7 @@
             <div class="col-lg-6">
             <div class="text-center">
 
-                <div id="map"></div>
+                <div id="map" alt="Map used to display search results" title="Google Map"></div>
             </div>
 
         </div>
@@ -590,7 +591,7 @@
 </script>
 
 
-<div class="container">
+<div class="container" role="main">
     <form action="index.php" method="GET">
         <input type="hidden" name="state" value="<?php echo $state; ?>"/>
         <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
@@ -608,15 +609,15 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Min: $</span>
                         </div>
-                        <input type="number" class="form-control my-2" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
+                        <input type="number" class="form-control my-2" aria-label="Minimum amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Max: $</span>
                         </div>
-                        <input type="number" class="form-control my-2" aria-label="Amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
+                        <input type="number" class="form-control my-2" aria-label="Maximum amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <select class="form-control my-2" name="order">
+                    <select class="form-control my-2" name="order" aria-label="Filter type">
                         <option value="" disabled selected hidden>Sort by</option>
                         <option value="price_asc" type="submit">Price: Low to High</option>
                         <option value="price_desc" type="submit">Price: High to Low</option>
@@ -736,6 +737,18 @@
                         </div>
                     </div>
                 <?php }
+
+                ?>
+
+                <button onclick="returnToTop()">Return to top</button>
+                <script>
+                    function returnToTop() {
+                        document.body.scrollTop = 0; // For Safari
+                        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                    }
+                </script>
+                <?php
+
             }
         }
         sqlsrv_free_stmt($result);
