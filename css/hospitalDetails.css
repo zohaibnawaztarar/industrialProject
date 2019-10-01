@@ -161,3 +161,11 @@ a.custom-card:hover {
   font-size: 18px;
 }
 
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
+

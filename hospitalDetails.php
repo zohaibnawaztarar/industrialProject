@@ -126,7 +126,7 @@
     ?>
 </head>
 
-<body>
+
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -191,7 +191,7 @@
 <div class="place">
     <div class="container">
         <div class="row">
-            <div class="text-center mx-auto mb-4">
+            <div class="text-center mx-auto mb-4 no-print">
                 <h1 class="mt-5">Search again?</h1>
                 <hr/>
                 <form class="form-inline mb-5" action="index.php" method="GET">
@@ -259,6 +259,7 @@
         </div>
     </div>
 </div>
+<body>
 
 <div class="container">
     <form action="packages.php" method="GET">
@@ -329,7 +330,7 @@
                                     <?php echo ucwords(strtolower($row['providerCity'])); ?><br>
                                     <?php echo $row['providerState']; ?><br>
                                 </p>
-                                <button class="btn btn-success btn-mini search-btn my-4 hidden-print"
+                                <button class="btn btn-success btn-mini search-btn my-4 hidden-print no-print"
                                         onclick="printPage()"><span class="glyphicon glyphicon-print"
                                                                     aria-hidden="true"></span><i
                                             class="fas fa-print"></i> Print
@@ -388,7 +389,7 @@
                                     <input type='hidden' name='toBookmark' value='1'>
                                     <input type='hidden' name='dRGCode' value='<?php echo $dRGCode; ?>'>
                                     <input type='hidden' name='providerId' value='<?php echo $providerId; ?>'>
-                                    <button class="btn btn-success btn-mini search-btn my-4" style="float: right" <?php if ($isBookMark){echo "disabled";} ?>>
+                                    <button class="btn btn-success btn-mini search-btn my-4 no-print" style="float: right" <?php if ($isBookMark){echo "disabled";} ?>>
                                         <i class="<?php if ($isBookMark){echo "fas fa-check";}else {echo"far fa-bookmark";}?>">
                                         </i> Bookmark
                                     </button>
@@ -539,16 +540,20 @@
     <canvas class="my-4" id="trendGraph" width="900" height="380"></canvas>
     <br>
 
+
     <!-- Other procedures listing -->
     <div class="container">
 
-        <button class="btn btn-success search-btn mx-1 m-2" type="button" data-toggle="collapse"
+        <button class="btn btn-success search-btn mx-1 m-2 no-print text-center col" type="button" data-toggle="collapse"
                 data-target="#collapseProcList" aria-expanded="false" aria-controls="collapseExample">
-            Other procedures offered by this hospital
+            Click here to see other procedures offered by this hospital <i class="fas fa-chevron-circle-down"></i>
         </button>
+
         <div class="collapse" id="collapseProcList">
             <div class="card card-body">
+                <h2 class="text-center">Other Procedures Offered By This Hospital</h2><br>
                 <div class="row">
+
                     <?php
                     $sqlProcList = "SELECT dRGCode, dRGDescription, providerId FROM dbo.newDB WHERE providerId=? AND year=2017 ORDER BY dRGDescription";
                     $params = array($providerId);
