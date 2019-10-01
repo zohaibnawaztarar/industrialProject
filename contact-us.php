@@ -109,8 +109,8 @@
     </div>
 
 	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="banner">
+		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
 		<button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 		 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -173,7 +173,7 @@
 	</div>
 	<!-- Page Content -->
 
-<div class="container my-5">
+<div class="container my-5" role="main">
 <div class="row">
   <div class="column"><p><h2>Send us a Message</h2></p>
 
@@ -230,14 +230,16 @@
     </tr>
 <tr>
  <td colspan="2" style="text-align:right">
-  <input class="btn btn-success btn-mini search-btn my-4 center-block text-center" type="submit" value="Submit">
+  <input aria-label="Submit" class="btn btn-success btn-mini search-btn my-4 center-block text-center" type="submit" value="Submit">
  </td>
 </tr>
 </table>
 </form>
 
 	</div>
-  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234 567 890<br> <b>Email:</b> <a href = "mailto:contact@comparecare.com">contact@comparecare.com</a> <br> <b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234 567 890<br> <b>Email:</b> <a href = "mailto:contact@comparecare.com">contact@comparecare.com</a> <br> <b>Address:</b> University of Dundee, Dundee.</p><br>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk"
+              width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" alt="Google map showing marker on our address location"></iframe>
 </div>
 </div>
 </div>
