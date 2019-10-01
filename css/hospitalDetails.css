@@ -168,4 +168,7 @@ a.custom-card:hover {
         display: none !important;
     }
 }
+.navbar-dark .navbar-nav .nav-link {
+    color: rgb(255, 255, 255);
+}
 

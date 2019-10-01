@@ -71,6 +71,18 @@ body {
   border-color: var(--shadow-accent);
 }
 
+.back-btn {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  width: 90%;
+}
+
+.back-btn:hover, .back-btn:focus, .back-btn:focus {
+  background-color: var(--shadow-accent);
+  border-color: var(--shadow-accent);
+}
+
 .register .card {
   height: 100%;
   border-radius: 20px;
@@ -101,3 +113,6 @@ footer {
 }
 
 
+.navbar-dark .navbar-nav .nav-link {
+  color: rgb(255, 255, 255);
+}
