@@ -110,12 +110,12 @@
 
 	<!-- Navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
 		<button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 		 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
+		<div class="collapse navbar-collapse" id="navbarResponsive" role="banner">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item">
 					<a class="nav-link" href="index.php">Home</a>
@@ -173,17 +173,17 @@
 	</div>
 	<!-- Page Content -->
 
-<div class="container">
+<div class="container" role="main">
 <div class="row">
   <div class="column"><br><h1>Who We Are</h1><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
   Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse 
   cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 </div>
-  <br><div class="column"><br><img class="card-img-top" src="./resources/about.jpg" alt=""></div>
+  <br><div class="column"><br><img class="card-img-top" src="./resources/about.jpg" alt="Medical staff taking blood pressure of patient."></div>
 </div>
 <br>
 <div class="row">
- <div class="column"><img class="card-img-top" src="./resources/about2.png" alt=""></div>
+ <div class="column"><img class="card-img-top" src="./resources/about2.png" alt="Person running on road in mountainous area."></div>
   <div class="column"><h1>What We Do</h1><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
   Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit 
   esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
