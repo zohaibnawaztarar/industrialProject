@@ -148,7 +148,9 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
+    <a class="navbar-brand" href="#"><i class="fas fa-ambulance"
+                                        title="Compare care logo. Vehicle with medical cross symbol on side"></i>
+        Compare Care</a>
     <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
             aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -218,7 +220,11 @@
                     <form action="index.php" method="GET">
                         <div class="form-group m-0" role="search">
                             <input required type="text"
-                                   placeholder="<?php if (empty($dRGInput)) {echo "DRG Code or Keywords";}else {echo $dRGInput;}?>"
+                                   placeholder="<?php if (empty($dRGInput)) {
+                                       echo "DRG Code or Keywords";
+                                   } else {
+                                       echo $dRGInput;
+                                   } ?>"
                                    name="dRGInput" class="form-control my-2" aria-label="DRG Code or keywords">
 
                             <select required class="form-control my-2" name="state" aria-label="State selection">
@@ -275,7 +281,11 @@
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
                             </select>
-                            <input required type="text" placeholder="<?php if (empty($zipCode)) {echo "Zip Code";}else {echo $zipCode;}?>"
+                            <input required type="text" placeholder="<?php if (empty($zipCode)) {
+                                echo "Zip Code";
+                            } else {
+                                echo $zipCode;
+                            } ?>"
                                    name="zipCode" class="form-control my-2" aria-label="Zip Code">
                         </div>
 
@@ -287,13 +297,13 @@
                 </div>
             </div>
             <div class="col-lg-6">
-            <div class="text-center">
+                <div class="text-center">
 
-                <div id="map" alt="Map used to display search results" title="Google Map"></div>
+                    <div id="map" alt="Map used to display search results" title="Google Map"></div>
+                </div>
+
             </div>
-
         </div>
-    </div>
     </div>
 
 </header>
@@ -327,7 +337,7 @@
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
             console.log("1")
-            navigator.geolocation.getCurrentPosition(function(position) {
+            navigator.geolocation.getCurrentPosition(function (position) {
                 userPos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -339,7 +349,7 @@
                 map.setZoom(8); //If location is found, increase zoom
 
                 haveUserLocation = true;
-            }, function() {
+            }, function () {
                 handleLocationError(true, infoWindow, map.getCenter());
             });
         } else {
@@ -366,11 +376,11 @@
 
         console.log("2")
 
-        if(!haveUserLocation) {
+        if (!haveUserLocation) {
 
             haveUserLocation = true;
 
-            d3.csv("US_ZipCode_2018.csv").then(function(data) {
+            d3.csv("US_ZipCode_2018.csv").then(function (data) {
 
                 console.log("test")
                 for (var i = 0; i < 33145; i++) {
@@ -391,22 +401,22 @@
         include "./php/db_connect.php";
         if (empty($dRGInput) or empty($state)) {
 
-        }else{
+        } else {
             function isDRGCode($dRGInput)
             {
-                if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) { return true; }
-                else { return false; }
+                if (preg_match('/^[0-9]{1,3}$/', $dRGInput)) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
 
-            if (isDRGCode($dRGInput))
-            {
+            if (isDRGCode($dRGInput)) {
                 $sql = "SELECT dRGDescription, providerName, providerCity, averageTotalPayments, providerId, providerStreetAddress, providerZipCode FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGCode=? AND year=2017";
                 # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
                 $zipCodeDigits = substr($zipCode, 0, 2) . "%";
                 $params = array($zipCodeDigits, $dRGInput);
-            }
-            else
-            {
+            } else {
                 $sql = "SELECT * FROM dbo.newDB WHERE providerZipCode LIKE ? AND dRGDescription LIKE ? AND year=2017";
                 # get first 2 digits of the zipcode given by the user, % is the regular expression for SQL (any number of chars can follow)
                 $zipCodeDigits = substr($zipCode, 0, 2) . "%";
@@ -441,7 +451,7 @@
             }
             $result = sqlsrv_query($conn, $sql, $params);
 
-            while($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)){
+            while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
                 if (empty($row['dRGCode'])) {
                     $dRGCode = $dRGInput;
                 } else {
@@ -453,7 +463,7 @@
                 $address = $row['providerStreetAddress'];
                 $city = $row['providerCity'];
                 $aTPs = $row['averageTotalPayments'];
-                echo  'codeAddress("'.$zipCode.'","'.$address.'", "'.$city.'", "'.$name.'","'.$dRGCode.'","'.$providerID.'","'.$aTPs.'");';
+                echo 'codeAddress("' . $zipCode . '","' . $address . '", "' . $city . '", "' . $name . '","' . $dRGCode . '","' . $providerID . '","' . $aTPs . '");';
             }
             sqlsrv_free_stmt($result);
         }
@@ -490,12 +500,11 @@
         // infoWindow.open(map);
 
 
-
     }
 
     function codeAddress(zipCode, address, city, hospitalName, dRGCode, providerID, aTPs) {
         var latLong;
-        d3.csv("US_ZipCode_2018.csv").then(function(data) {
+        d3.csv("US_ZipCode_2018.csv").then(function (data) {
             for (var i = 0; i < 33145; i++) {
                 if (data[i].ZIP === zipCode) {
                     console.log("Found");
@@ -510,70 +519,70 @@
                 }
             }
         });
-       }
+    }
 
-       function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
-           map.setCenter(latLong);
-           map.setZoom(8);
+    function createMarker(address, city, latLong, hospitalName, dRGCode, providerID, aTPs) {
+        map.setCenter(latLong);
+        map.setZoom(8);
 
-           var infowincontent = document.createElement('div');
-           var strong = document.createElement('strong');
-           //strong.textContent = name;
-           infowincontent.appendChild(strong);
+        var infowincontent = document.createElement('div');
+        var strong = document.createElement('strong');
+        //strong.textContent = name;
+        infowincontent.appendChild(strong);
 
-           var text = document.createElement('text');
-           text.setAttribute('style', 'white-space: pre; font-weight:bold');
-           text.textContent = hospitalName + '\r\n';
-           infowincontent.appendChild(text);
+        var text = document.createElement('text');
+        text.setAttribute('style', 'white-space: pre; font-weight:bold');
+        text.textContent = hospitalName + '\r\n';
+        infowincontent.appendChild(text);
 
-           var text1 = document.createElement('text1');
-           text1.setAttribute('style','white-space: pre;');
-           text1.textContent = 'Average Total Payments: $' + Math.round(aTPs) + '\r\n' +
-               'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n' ;
-           infowincontent.appendChild(text1);
-           var miles = document.createElement('miles');
-           miles.setAttribute('style','white-space: pre; color : red;');
-           if(haveUserLocation) {
-               var milesFrom = getDistance(latLong, userPos) + '\r\n';
-               miles.textContent = 'Miles: ' + milesFrom //getDistance(latLong, userPos) + '\r\n';
-               infowincontent.appendChild(miles);
-           }
+        var text1 = document.createElement('text1');
+        text1.setAttribute('style', 'white-space: pre;');
+        text1.textContent = 'Average Total Payments: $' + Math.round(aTPs) + '\r\n' +
+            'Address: ' + address + '\r\n' + 'City: ' + city + '\r\n';
+        infowincontent.appendChild(text1);
+        var miles = document.createElement('miles');
+        miles.setAttribute('style', 'white-space: pre; color : red;');
+        if (haveUserLocation) {
+            var milesFrom = getDistance(latLong, userPos) + '\r\n';
+            miles.textContent = 'Miles: ' + milesFrom //getDistance(latLong, userPos) + '\r\n';
+            infowincontent.appendChild(miles);
+        }
 
-           if(haveUserLocation) {
-               document.getElementById(hospitalName).innerText = "Miles: " + milesFrom
-               document.getElementsByClassName("resultContainer").id = milesFrom
-           }
+        if (haveUserLocation) {
+            document.getElementById(hospitalName).innerText = "Miles: " + milesFrom
+            document.getElementsByClassName("resultContainer").id = milesFrom
+        }
 
-           var link = document.createElement('a');
-           link.innerHTML = '<a href="hospitalDetails.php?'
-               +'providerId='+providerID+'&dRGCode='+dRGCode+'">Click here to view more information</a>';
-           infowincontent.appendChild(link);
+        var link = document.createElement('a');
+        link.innerHTML = '<a href="hospitalDetails.php?'
+            + 'providerId=' + providerID + '&dRGCode=' + dRGCode + '">Click here to view more information</a>';
+        infowincontent.appendChild(link);
 
-           var icon = customLabel
-           {
-           }
-           ;
+        var icon = customLabel
+        {
+        }
+        ;
 
-           var marker = new google.maps.Marker({
-               map: map,
-               position: latLong
-           });
+        var marker = new google.maps.Marker({
+            map: map,
+            position: latLong
+        });
 
-           console.log("mark: " + marker.position)
-           console.log("marker")
+        console.log("mark: " + marker.position)
+        console.log("marker")
 
-           marker.addListener('click', function () {
-               infoWindow.setContent(infowincontent);
-               infoWindow.open(map, marker);
-           });
-       }
+        marker.addListener('click', function () {
+            infoWindow.setContent(infowincontent);
+            infoWindow.open(map, marker);
+        });
+    }
 
 
-       var rad = function (x) {
-           return x * Math.PI / 180;
-       };
+    var rad = function (x) {
+        return x * Math.PI / 180;
+    };
 
-    var getDistance = function(p1, p2) {
+    var getDistance = function (p1, p2) {
         var R = 6378137; // Earth’s mean radius in meter
 
         var dLat = rad(p2.lat - p1.lat);
@@ -592,7 +601,7 @@
 
 
 <div class="container" role="main">
-    <form action="index.php" method="GET">
+    <form action="index.php" method="GET" <?php if (empty($dRGInput) or empty($state) or empty($zipCode)){echo "hidden";}?>>
         <input type="hidden" name="state" value="<?php echo $state; ?>"/>
         <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
         <input type="hidden" name="dRGInput" value="<?php echo $dRGInput; ?>"/>
@@ -609,11 +618,15 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Min: $</span>
                         </div>
-                        <input type="number" class="form-control my-2" aria-label="Minimum amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMin">
+                        <input type="number" class="form-control my-2"
+                               aria-label="Minimum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
+                               name="priceMin">
                         <div class="input-group-prepend">
                             <span class="input-group-text">Max: $</span>
                         </div>
-                        <input type="number" class="form-control my-2" aria-label="Maximum amount (to the nearest dollar)" placeholder="0" min="0" step="500" name="priceMax">
+                        <input type="number" class="form-control my-2"
+                               aria-label="Maximum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
+                               name="priceMax">
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -645,7 +658,7 @@
             var toSort = document.getElementById('results').children;
             toSort = Array.prototype.slice.call(toSort, 0);
 
-            toSort.sort(function(a, b) {
+            toSort.sort(function (a, b) {
                 var aord = +a.id.split('-')[1];
                 var bord = +b.id.split('-')[1];
                 // two elements never have the same ID hence this is sufficient:
@@ -655,83 +668,164 @@
             var parent = document.getElementById('results');
             parent.innerHTML = "";
 
-            for(var i = 0, l = toSort.length; i < l; i++) {
+            for (var i = 0, l = toSort.length; i < l; i++) {
                 parent.appendChild(toSort[i]);
             }
         }
 
 
     </script>
-<div id="results">
-    <?php
-
-    if (empty($dRGInput) or empty($state) or empty($zipCode)) {
-        echo '<h4 class="display-3 pb-5 text-center">Bookmarks/Recommended will appear here!</h4>';
-        echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
-    } else {
+    <div id="results">
+        <?php
         include_once("php/db_connect.php");
-        # run sql query on already set up database connection with custom parameters
-        $result = sqlsrv_query($conn, $sql, $params);
 
-        $rows_count = 0;
-        #returns error if required
-        if ($result == FALSE) {
-            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-            die(print_r(sqlsrv_errors(), true));
+        if (empty($dRGInput) or empty($state) or empty($zipCode)) {
+            if (!empty($userName)) {
+                #get userId from userName
+                $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+                if ($resultID == FALSE) {
+                    echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
+                    die(print_r(sqlsrv_errors(), true));
+                } else {
+                    if (sqlsrv_has_rows($resultID) == 0) {
+                        //no user with that user name
+                    } else {
+                        $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+                        $userID = $rowID['userID'];
+                    }
+                }
 
-        } else {
-            #return if no results from query.
-            if (sqlsrv_has_rows($result) == 0) {
-                echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
-                echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
+                $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
+                $param = array($userID);
+                # run sql query on already set up database connection with custom parameters
+                $result = sqlsrv_query($conn, $sql, $param);
+
+                if ($result == FALSE) {
+                    echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+                    die(print_r(sqlsrv_errors(), true));
+                } else {
+                    #return if no results from query.
+                    if (sqlsrv_has_rows($result) == 0) {
+                        echo '<h1 class="display-3 pb-5 text-center">Bookmark procedures to view them here</h1>';
+                        echo '<h1 class="display-3 pb-5 text-center"><br><br></h1>';
+                    } else {
+                        echo '<h3 class="pt-5"><i class="fas fa-bookmark"></i> Your Bookmarks</h3>';
+                        #display formatted query results on frontend.
+                        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+                        ?>
+                        <div class="card my-3">
+                            <div class="row no-gutters">
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h4 class="card-title nhsColor" style="
+                                            float: left">
+                                            <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
+                                            float: right">
+                                                $
+                                                <?php echo round($row['averageTotalPayments']); ?>
+                                            </h3><br>
+                                        </h4>
+                                        <h5 class="card-title text-secondary">
+                                            <br><?php echo $row['dRGDescription']; ?>
+                                        </h5>
+                                        <p class="card-text">
+                                            <?php echo $row['providerCity']; ?>
+                                        </p>
+                                        <form action="hospitalDetails.php" method="GET">
+                                            <input type='hidden' name="providerId"
+                                                   value="<?php echo $row['providerId']; ?>">
+                                            <?php
+                                            if (empty($row['dRGCode'])) { $dRGCode = $dRGInput; }
+                                            else { $dRGCode = $row['dRGCode']; }
+                                            ?>
+                                            <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+                                            <button class="btn btn-success buy-btn mx-1 m-1" style="
+                                            float: right" type="buy" >
+                                                <i class="fas fa-info-circle" style="color: white"></i> View more information
+                                            </button>
+                                            <button class="btn btn-success buy-btn mx-1 m-1" style="
+                                            float: right" type="buy" > <i class="fas fa-times-circle" style="color: white"></i> Unbookmark
+                                            </button><br>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                    }
+                }
             } else {
-                #display formatted query results on frontend.
+                echo '<h1 class="display-3 pb-5 text-center">Create an account to save procedures!</h1>';
+                echo '<h3 class="pb-5 text-center">Benefit from quick access to procedures you often search for.</h3>';
+                echo '<div class="col-sm-2 m-auto">
+                        <button class="btn search-btn btn-outline-success my-2 my-sm-0 mr-2" onclick="location.href = \'register.php\'"> Register</button>
+                        </div><br><br>';
+            }
+        } else {
+            # run sql query on already set up database connection with custom parameters
+            $result = sqlsrv_query($conn, $sql, $params);
+
+            $rows_count = 0;
+            #returns error if required
+            if ($result == FALSE) {
+                echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+                die(print_r(sqlsrv_errors(), true));
+
+            } else {
+                #return if no results from query.
+                if (sqlsrv_has_rows($result) == 0) {
+                    echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
+                    echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
+                } else {
+                    #display formatted query results on frontend.
 
 
                 while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-
                     $rows_count++;
                     ?>
                     <div id="" class="resultContainer">
-                    <div class="card my-3">
-
-                        <div class="row no-gutters">
-                            <div class="col">
-                                <div class="card-body">
-                                    <h4 class="card-title nhsColor" style="
+                        <div class="card my-3">
+                            <div class="row no-gutters">
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h4 class="card-title nhsColor" style="
                                             float: left">
-                                        <?php echo ucwords(strtolower($row['providerName'])); ?><h3 class="card-title mb-2" style="
+                                            <?php echo ucwords(strtolower($row['providerName'])); ?><h3
+                                                    class="card-title mb-2"
+                                                    style="
                                             float: right">
-                                            $
-                                            <?php echo round($row['averageTotalPayments']); ?>
-                                        </h3><br>
-                                    </h4>
-                                    <h5 class="card-title text-secondary">
-                                        <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
-                                    </h5>
-                                    <p class="card-text">
-                                        <?php echo $row['providerCity']; ?>
-                                    </p>
-                                    <br>
-                                    <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
-                                    <form action="hospitalDetails.php" method="GET">
-                                        <input type='hidden' name="providerId"
-                                               value="<?php echo $row['providerId']; ?>">
-                                        <?php
-
-                                        if (empty($row['dRGCode'])) {
-                                            $dRGCode = $dRGInput;
-                                        } else {
-                                            $dRGCode = $row['dRGCode'];
-                                        }
-                                        ?>
-                                        <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                        <button class="btn btn-success buy-btn mx-1 m-auto" style="
-                                            float: right" type="buy">
-                                            <i class="fas fa-info-circle"></i> View more information
-                                        </button>
+                                                $
+                                                <?php echo round($row['averageTotalPayments']); ?>
+                                            </h3><br>
+                                        </h4>
+                                        <h5 class="card-title text-secondary">
+                                            <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
+                                        </h5>
+                                        <p class="card-text">
+                                            <?php echo $row['providerCity']; ?>
+                                        </p>
                                         <br>
-                                    </form>
+                                        <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
+                                        <form action="hospitalDetails.php" method="GET">
+                                            <input type='hidden' name="providerId"
+                                                   value="<?php echo $row['providerId']; ?>">
+                                            <?php
+
+                                            if (empty($row['dRGCode'])) {
+                                                $dRGCode = $dRGInput;
+                                            } else {
+                                                $dRGCode = $row['dRGCode'];
+                                            }
+                                            ?>
+                                            <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+                                            <button class="btn btn-success buy-btn mx-1 m-auto" style="
+                                            float: right" type="buy">
+                                                <i class="fas fa-info-circle"></i> View more information
+                                            </button>
+                                            <br>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -740,34 +834,37 @@
 
                 ?>
 
-                        <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i> Top</button>
-                        <script>//Get the button:
-                            mybutton = document.getElementById("myBtn");
+                    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i> Top
+                    </button>
+                    <script>//Get the button:
+                        mybutton = document.getElementById("myBtn");
 
-                            // When the user scrolls down 20px from the top of the document, show the button
-                            window.onscroll = function() {scrollFunction()};
+                        // When the user scrolls down 20px from the top of the document, show the button
+                        window.onscroll = function () {
+                            scrollFunction()
+                        };
 
-                            function scrollFunction() {
-                                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                                    mybutton.style.display = "block";
-                                } else {
-                                    mybutton.style.display = "none";
-                                }
+                        function scrollFunction() {
+                            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                                mybutton.style.display = "block";
+                            } else {
+                                mybutton.style.display = "none";
                             }
+                        }
 
-                            // When the user clicks on the button, scroll to the top of the document
-                            function topFunction() {
-                                document.body.scrollTop = 0; // For Safari
-                                document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-                            }</script>
-                <?php
+                        // When the user clicks on the button, scroll to the top of the document
+                        function topFunction() {
+                            document.body.scrollTop = 0; // For Safari
+                            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                        }</script>
+                    <?php
 
+                }
             }
-        }
-        sqlsrv_free_stmt($result);
+            sqlsrv_free_stmt($result);
 
-    } ?>
-                    </div>
+        } ?>
+    </div>
 </div>
 
 </div>

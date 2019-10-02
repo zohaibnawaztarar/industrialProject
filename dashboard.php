@@ -227,7 +227,7 @@
         #get userId from userName
         $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
         if ($resultID == FALSE) {
-            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+            echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
             die(print_r(sqlsrv_errors(), true));
         } else {
             if (sqlsrv_has_rows($resultID) == 0) {
