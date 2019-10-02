@@ -219,14 +219,7 @@
                     <hr/>
                     <form action="index.php" method="GET">
                         <div class="form-group m-0" role="search">
-                            <input required type="text"
-                                   placeholder="<?php if (empty($dRGInput)) {
-                                       echo "DRG Code or Keywords";
-                                   } else {
-                                       echo $dRGInput;
-                                   } ?>"
-                                   name="dRGInput" class="form-control my-2" aria-label="DRG Code or keywords">
-
+                            <input required type="text" placeholder="DRG Code or Keyword" name="dRGInput" class="form-control my-2" aria-label="DRG Code or keywords" value="<?php echo isset($_GET['dRGInput']) ? $_GET['dRGInput'] : '' ?>" >
                             <select required class="form-control my-2" name="state" aria-label="State selection">
                                 <option value="" disabled selected hidden>Select State</option>
                                 <option value="AL">Alabama</option>
@@ -280,13 +273,10 @@
                                 <option value="WV">West Virginia</option>
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
+
                             </select>
-                            <input required type="text" placeholder="<?php if (empty($zipCode)) {
-                                echo "Zip Code";
-                            } else {
-                                echo $zipCode;
-                            } ?>"
-                                   name="zipCode" class="form-control my-2" aria-label="Zip Code">
+
+                            <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2" aria-label="Zip Code" value="<?php echo isset($_GET['zipCode']) ? $_GET['zipCode'] : '' ?>" >
                         </div>
 
                         <div class="form-group m-0">
