@@ -231,13 +231,16 @@
                     <div class="row">
                     <div class="text-center mx-auto mb-4">
                     <br>
-                    <h3 class="text-centre">The data you insert is duplicated</h3>
-                    <h3 class="text-centre">If you want to edit this data again</h3>
+                    <h4 class="text-centre">The data you insert is duplicated. If you want to edit this data again</h4>
                     <button class="btn btn-success btn-mini search-btn my-4" type="submit" onClick = "goBack()">
-                    <i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
-                    <h3 class="text-centre">Or you can update this data</h3>
-                    <form class="" action="../admin/updateDatabase.php" method="post">
-                    <button class="btn btn-success btn-mini search-btn my-4" type="submit">
+                    <i class="fas fa-long-arrow-alt-left"></i> Go Back</button><hr>
+                    <h4 class="text-centre">Or you can update this data</h4>
+                    <form class="" action="../admin/edit.php" method="post">
+                    <input type = "hidden" name = "dRGCode" value = "'.$dRGCode.'">
+                    <input type = "hidden" name = "providerId" value = "'.$providerId.'">
+                    <input type = "hidden" name = "year" value = "'.$year.'">
+                    <input type = "hidden" name = "action" value = 2>
+                    <button class="btn btn-success btn-mini search-btn my-4" type="submit" name = "Submit">
                     <i class="fas fa-long-arrow-alt-left"></i> Update</button>
                     </form>
                     </div></div></div>';
@@ -266,75 +269,64 @@
                     </div></div></div>';
         }
     }
-    else
-        echo '
+    else{
+         ?>
     <div class="container">
         <div class="row">
             <div class="text-center mx-auto mb-4">
                 <br>
-                <h1 class="text-centre">Fill the data in form below to add in database</h1>
+                <h1 class="text-centre" >Fill the data in form below to add in database</h1><hr>
                 <form class="navbar-form" action="add.php" method="post">
-                    <h4 class="text-left">DRG Definition</h4>
-
-                    <input required type="number" name="dRGCode" placeholder="Enter DRG Code" class="form-control my-2"><br>
-
-                    <input required type="text" name="dRGDescription" placeholder="Enter DRG Description"
-                           class="form-control my-2"><br>
-
-                    <h4 class="text-left">Provider Information</h4>
-
-                    <input required type="number" name="providerId" placeholder="Enter provider Id"
-                           class="form-control my-2"><br>
-
-                    <input required type="text" name="providerName" placeholder="Enter Provider Name"
-                           class="form-control my-2"><br>
-
-                    <input required type="text" name="providerStreetAddress" placeholder="Enter Provider Street Address"
-                           class="form-control my-2"><br>
-
-                    <input required type="text" name="providerCity" placeholder="Enter Provider City"
-                           class="form-control my-2"><br>
-
-                    <input required type="text" maxlength="2" name="providerState" placeholder="Enter Provider State"
-                           class="form-control my-2"><br>
-
-                    <input required type="number" name="providerZipCode" placeholder="Enter Provider Zip Code"
-                           class="form-control my-2"><br>
-
-                    <input required type="text" name="hospitalReferralRegionHRRDescription"
-                           placeholder="Enter hospital Referral Region HRR Description" class="form-control my-2"><br>
-
-                    <h4 class="text-left">Charges Data</h4>
-
-                    <input required type="number" name="totalDischarges" placeholder="Enter Total Discharges"
-                           class="form-control my-2"><br>
-
+                    <h4 class="text-left">DRG Definition</h4><hr>
+                    <h5 class="text-left">DRG Code</h5>
+                    <input required type="number" name="dRGCode" class="form-control my-2">
+                    <h5 class="text-left">DRG Description</h5>
+                    <input required type="text" name="dRGDescription" class="form-control my-2">
+                    <hr>
+                    <h4 class="text-left">Provider Information</h4><hr>
+                    <h5 class="text-left">Provider ID</h5>
+                    <input required type="number" name="providerId" class="form-control my-2">
+                    <h5 class="text-left">Provider Name</h5>
+                    <input required type="text" name="providerName" class="form-control my-2">
+                    <h5 class="text-left">Provider Street Address</h5>
+                    <input required type="text" name="providerStreetAddress" class="form-control my-2">
+                    <h5 class="text-left">Provider City</h5>
+                    <input required type="text" name="providerCity" class="form-control my-2">
+                    <h5 class="text-left">Provider State</h5>
+                    <input required type="text" maxlength="2" name="providerState" class="form-control my-2">
+                    <h5 class="text-left">Provider Zip Code</h5>
+                    <input required type="number" name="providerZipCode" class="form-control my-2">
+                    <h5 class="text-left">Hospital Referral Region HRR Description</h5>
+                    <input required type="text" name="hospitalReferralRegionHRRDescription" class="form-control my-2">
+                    <hr>
+                    <h4 class="text-left">Charges Data</h4><hr>
+                    <h5 class="text-left">Total Discharges</h5>
+                    <input required type="number" name="totalDischarges" class="form-control my-2"><br>
+                    <h5 class="text-left">Average Covered Charges</h5>
                     <input required type="number" step="any" min="0" name="averageCoveredCharges"
-                           placeholder="Enter Average Covered Charges" class="form-control my-2"><br>
-
-                    <input required type="number" step="any" min="0" name="averageTotalPayments"
-                           placeholder="Enter Average Total Payments" class="form-control my-2"><br>
-
-                    <input required type="number" step="any" min="0" name="averageMedicarePayments"
-                           placeholder="Enter Average Medicare Payments" class="form-control my-2"><br>
-
-                    <input required type="number" step="any" min="0" name="year" placeholder="Enter year"
                            class="form-control my-2"><br>
-
+                    <h5 class="text-left">Average Total Payments</h5>
+                    <input required type="number" step="any" min="0" name="averageTotalPayments"
+                           class="form-control my-2"><br>
+                    <h5 class="text-left">Average Medicare Payments</h5>
+                    <input required type="number" step="any" min="0" name="averageMedicarePayments"
+                           class="form-control my-2"><br>
+                    <h5 class="text-left">Year of the Procedure</h5>
+                    <input required type="number" step="any" min="0" name="year" class="form-control my-2"><br>
                     <input class="btn btn-success btn-mini search-btn my-4" style="padding: .500rem .79rem;"
                            type="submit"
                            name="submit" value="Submit">
                 </form>
                 <br><br>
                 <form class="" action="../admin/admin.php" method="post">
-                <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+                <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Admin</button>
                 </form>
                 </div>
         </div>
-    </div>';
-?>
-    <br><br>
+    </div>
 
+    <br><br>
+<?php } ?>
     <!-- Footer -->
     <footer class="py-3 bg-dark">
         <div class="container">
