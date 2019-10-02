@@ -188,13 +188,13 @@
 <?php
 include_once "db_connect.php";
 
-if (isset($_GET['register'])) {
-    $username = $_GET['username'];
-    $password = $_GET['password'];
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    $name = $_GET['name'];
-    $email = $_GET['email'];
-    $zip = $_GET['zip'];
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $zip = $_POST['zip'];
 
     $sqlDuplicate = "SELECT * FROM UserDB WHERE userName = ?";
     $params = array($username);
@@ -207,6 +207,9 @@ if (isset($_GET['register'])) {
 
             echo '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>';
             sqlsrv_close($conn);
+        }
+        else {
+            echo "Error";
         }
     } else {
         ?>
