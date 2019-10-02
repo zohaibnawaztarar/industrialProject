@@ -204,7 +204,7 @@
   <label for="email">E-mail *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="email" maxlength="80" size="30" class="form-control my-2" aria-label="Enter your email address">
+  <input  type="email" name="email" maxlength="80" size="30" class="form-control my-2" aria-label="Enter your email address">
  </td>
 
 </tr>
@@ -213,7 +213,7 @@
   <label for="telephone">Phone Number</label>
  </td>
  <td valign="top">
-  <input  type="text" name="telephone" maxlength="30" size="30" class="form-control my-2" aria-label="Enter your telephone number">
+  <input  type="number" name="telephone" maxlength="30" size="30" class="form-control my-2" aria-label="Enter your telephone number">
  </td>
 </tr>
 <tr>
