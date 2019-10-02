@@ -30,4 +30,6 @@ h2 {
 footer {
     margin-top: 260px;
 }
-
+.navbar-dark .navbar-nav .nav-link {
+    color: rgb(255, 255, 255);
+}

@@ -109,8 +109,8 @@
     </div>
 
 	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="banner">
+		<a class="navbar-brand" href="index.php"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
 		<button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 		 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -132,9 +132,11 @@
 			</ul>
 			 <form class="navbar-form form-inline" action="login.php" method="POST">
                 <div id="id3" class="form-group">
-                    <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username" name="userName" required>
-                    <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password" name="uncrypPass" required>
-					<input class="form-control" type="hidden" name="remember" value="checked">
+                    <input readonly="true" id="id3.1" class="form-control mr-2" type="text" placeholder="Username"
+                           name="userName" required aria-label="Enter your username">
+                    <input readonly="true" id="id3.2" class="form-control mr-2" type="password" placeholder="Password"
+                           name="uncrypPass" required aria-label="Enter your Password">
+                    <input class="form-control" type="hidden" name="remember" value="checked">
 					<button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="submit">Log In</button>
 					<button class="btn btn-outline-success login-btn my-2 my-sm-0 mr-2" type="register" onclick="location.href='register.php';">Register</button>
                 </div>
@@ -173,7 +175,7 @@
 	</div>
 	<!-- Page Content -->
 
-<div class="container my-5">
+<div class="container my-5" role="main">
 <div class="row">
   <div class="column"><p><h2>Send us a Message</h2></p>
 
@@ -185,7 +187,7 @@
   <label for="first_name">First Name *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="first_name" maxlength="50" size="30" class="form-control my-2">
+  <input  type="text" name="first_name" maxlength="50" size="30" class="form-control my-2" aria-label="Enter your First Name">
  </td>
 </tr>
 
@@ -194,7 +196,7 @@
   <label for="last_name">Last Name *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="last_name" maxlength="50" size="30" class="form-control my-2">
+  <input  type="text" name="last_name" maxlength="50" size="30" class="form-control my-2" aria-label="Enter your last name">
  </td>
 </tr>
 <tr>
@@ -202,7 +204,7 @@
   <label for="email">E-mail *</label>
  </td>
  <td valign="top">
-  <input  type="text" name="email" maxlength="80" size="30" class="form-control my-2">
+  <input  type="text" name="email" maxlength="80" size="30" class="form-control my-2" aria-label="Enter your email address">
  </td>
 
 </tr>
@@ -211,7 +213,7 @@
   <label for="telephone">Phone Number</label>
  </td>
  <td valign="top">
-  <input  type="text" name="telephone" maxlength="30" size="30" class="form-control my-2">
+  <input  type="text" name="telephone" maxlength="30" size="30" class="form-control my-2" aria-label="Enter your telephone number">
  </td>
 </tr>
 <tr>
@@ -219,7 +221,7 @@
   <label for="comments">Message *</label>
  </td>
  <td valign="top">
-  <textarea  name="comments" maxlength="1000" cols="33" rows="6" class="form-control my-2"></textarea>
+  <textarea  name="comments" maxlength="1000" cols="33" rows="6" class="form-control my-2" aria-label="Enter your message"></textarea>
  </td>
 
 </tr>
@@ -230,14 +232,16 @@
     </tr>
 <tr>
  <td colspan="2" style="text-align:right">
-  <input class="btn btn-success btn-mini search-btn my-4 center-block text-center" type="submit" value="Submit">
+  <input aria-label="Submit" class="btn btn-success btn-mini search-btn my-4 center-block text-center" type="submit" value="Submit">
  </td>
 </tr>
 </table>
 </form>
 
 	</div>
-  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234 567 890<br> <b>Email:</b> <a href = "mailto:contact@comparecare.com">contact@comparecare.com</a> <br> <b>Address:</b> University of Dundee, Dundee.</p><br><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+  <div class="column"><p><h2>Contact Information</h2><br><b>Tel:</b> 01234 567 890<br> <b>Email:</b> <a style="color: #005eb8" href = "mailto:contact@comparecare.com">contact@comparecare.com</a> <br> <b>Address:</b> University of Dundee, Dundee.</p><br>
+      <iframe title="Map showing location of compare care office" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2204.5523597286315!2d-2.984331484041944!3d56.45824468074793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48865cb89a2d3b2b%3A0x8580bd23131296a7!2sUniversity%20of%20Dundee!5e0!3m2!1sen!2suk!4v1568903273084!5m2!1sen!2suk"
+              width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" alt="Google map showing marker on our address location"></iframe>
 </div>
 </div>
 </div>

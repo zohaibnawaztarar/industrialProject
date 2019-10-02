@@ -112,6 +112,7 @@ a.custom-card:hover {
   display: none;
 }
 
+
 input[type="checkbox"] {
   cursor: pointer;
   -webkit-appearance: none;
@@ -121,6 +122,9 @@ input[type="checkbox"] {
   background: lightgray;
   height: 16px;
   width: 16px;
+}
+  .navbar-dark .navbar-nav .nav-link {
+  color: rgb(255, 255, 255);
 }
 
 /*#7b7b7b;*/
