@@ -290,9 +290,6 @@
                                         <button class="btn btn-success buy-btn mx-1 m-1" style="
                                             float: right" type="buy" >
                                             <i class="fas fa-info-circle" style="color: white"></i> View more information
-                                        </button>
-                                        <button class="btn btn-success buy-btn mx-1 m-1" style="
-                                            float: right" type="buy" > <i class="fas fa-times-circle" style="color: white"></i> Unbookmark
                                         </button><br>
                                     </form>
                                 </div>
@@ -303,10 +300,9 @@
             }
         }
         sqlsrv_free_stmt($result);
-
         ?>
 
-
+        <br><br>
     </div>
 
     <!-- Footer -->
@@ -329,7 +325,6 @@
         $(document).ready(function () {
             // executes when HTML-Document is loaded and DOM is ready
             console.log("document is ready");
-
 
             $(".card").hover(
                 function () {

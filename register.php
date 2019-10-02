@@ -147,10 +147,10 @@ if ($encrypPass == "") {
                     <li class="nav-item">
                         <a class="nav-link active account" href="dashboard.php">
                             <?php
-if ($userName != "") {
-    echo "$userName" . "'s ";
-}
-?>Account
+                            if ($userName != "") {
+                                echo "$userName" . "'s ";
+                            }
+                            ?>Account
                         </a>
                     </li>
                     <li class="nav-item">
@@ -184,7 +184,7 @@ if ($userName != "") {
         <div class="card my-4">
             <div class="card-body mx-3">
                 <div id="register">
-                    <form action="php/register.php" method="GET">
+                    <form action="php/register.php" method="POST">
                         <div class="form-group row">
                             <label for="username" class="col-sm-2 col-form-label">Username</label>
                             <div class="col-sm-10">
