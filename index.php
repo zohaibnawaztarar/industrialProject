@@ -281,7 +281,7 @@
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
                             </select>
-                            <input required type="text" placeholder="<?php if (empty($zipCode)) {
+                            <input required type="number" placeholder="<?php if (empty($zipCode)) {
                                 echo "Zip Code";
                             } else {
                                 echo $zipCode;
