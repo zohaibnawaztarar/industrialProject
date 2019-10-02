@@ -44,8 +44,8 @@
         $providerId = $_GET['providerId'];
     }
 
-    if (isset($_GET['toBookmark'])) {
-        $toBookmark = $_GET['toBookmark'];
+    if (isset($_POST['toBookmark'])) {
+        $toBookmark = $_POST['toBookmark'];
     }
 
     $userName = "";
@@ -400,7 +400,7 @@
                                 }
 
                                 ?>
-                                <form action='hospitalDetails.php' method='GET' style="float: right">
+                                <form action="<?php echo "hospitalDetails.php?providerId=".$providerId."&dRGCode=".$dRGCode;?>" method='POST' style="float: right">
                                     <input type='hidden' name='toBookmark' value='<?php if ($isBookMark){echo 'd';} else {echo 'a';} ?>'>
                                     <input type='hidden' name='dRGCode' value='<?php echo $dRGCode; ?>'>
                                     <input type='hidden' name='providerId' value='<?php echo $providerId; ?>'>
