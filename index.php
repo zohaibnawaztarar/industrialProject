@@ -276,7 +276,7 @@
 
                             </select>
 
-                            <input required type="text" placeholder="Zip Code" name="zipCode" class="form-control my-2" aria-label="Zip Code" value="<?php echo isset($_GET['zipCode']) ? $_GET['zipCode'] : '' ?>" >
+                            <input required type="number" placeholder="Zip Code" name="zipCode" class="form-control my-2" aria-label="Zip Code" value="<?php echo isset($_GET['zipCode']) ? $_GET['zipCode'] : '' ?>" >
 
                         </div>
 
