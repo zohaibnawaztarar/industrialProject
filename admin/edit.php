@@ -27,7 +27,6 @@
 </head>
 
 <body>
-
 <div id="id1" class="userDetails">
     <?php
     include_once("../php/db_connect.php");
@@ -216,6 +215,7 @@
 </script>
 <?php
 include "../php/db_connect.php";
+//get column name
 $sql = "SELECT name FROM sys.columns WHERE object_id = OBJECT_ID('dbo.insertDB')";
 $result = sqlsrv_query($conn, $sql);
 $count_column = 0;
@@ -236,41 +236,50 @@ if (isset($_POST["Submit"])) {
     //check if this procedure exists
     if($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)){
         //show the procedure
-        echo "<br><p><h2>The procedure information is:</h2> </p>";
-        echo '<strong>DRG Code: </strong>'.$dRGCode.'<br><strong>DRG Description: </strong>'.$row['dRGDescription'].'<br><strong>Provider ID: </strong>'.$row['providerId'].
-            '<br><strong>Provider Name: </strong>'.$row['providerName'].'<br><strong>Provider Street Address: </strong>'.$row['providerStreetAddress'].
-            '<br><strong>Provider City: </strong>'.$row['providerCity'].'<br><strong>Provider State: </strong>'.$row['providerState'].
-            '<br><strong>Provider Zip Code: </strong>'.$row['providerZipCode'].'<br><strong>Hospital Referral Region HRR Description: </strong>'.
-            $row['hospitalReferralRegionHRRDescription'].'<br><strong>Total Discharges: </strong>'.$row['totalDischarges'].
-            '<br><strong>Average Covered Charges: </strong>'.$row['averageCoveredCharges'].'<br><strong>Average Total Payments: </strong>'.
-            $row['averageTotalPayments'].'<br><strong>Average Medicare Payments: </strong>'.$row['averageMedicarePayments'].
-            '<br><strong>Year: </strong>'.$row['year'];
+        echo '<div class="text-center mx-auto mb-4">
+            <hr><h2 class="text-centre">The procedure information</h2><hr></div>';
+        echo '<li><strong>DRG Code : </strong>'.$dRGCode.'</li>
+            <li><strong> DRG Description : </strong>'.$row['dRGDescription'].'</li><li><strong> Provider ID : </strong>'.
+            $row['providerId'].'</li><li><strong> Provider Name : </strong>'.$row['providerName'].
+            '</li><li><strong> Provider Street Address : </strong>'.$row['providerStreetAddress'].
+            '</li><li><strong> Provider City : </strong>'.$row['providerCity'].'</li><li><strong> Provider State : </strong>'.
+            $row['providerState'].'</li><li><strong> Provider Zip Code : </strong>'.$row['providerZipCode'].
+            '</li><li><strong>Hospital Referral Region HRR Description : </strong>'.
+            $row['hospitalReferralRegionHRRDescription'].'</li><li><strong> Total Discharges : </strong>'.$row['totalDischarges'].
+            '</li><li><strong> Average Covered Charges : </strong>'.$row['averageCoveredCharges'].
+            '</li><li><strong> Average Total Payments : </strong>'.$row['averageTotalPayments'].
+            '</li><li><strong> Average Medicare Payments : </strong>'.$row['averageMedicarePayments'].
+            '</li><li><strong> Year : </strong>'.$row['year'].'</li>';
         if($action == "1"){ //delete
             sqlsrv_free_stmt($result);
-            echo "<p>Click button to confirm deleting this procedure</p>";
-            echo '<form action = "edit.php?dRGCode='.$dRGCode.'&providerId='.$providerId.'&year='.
-                $year.'" method = "POST">
-                <p><input class="button" name="ConfirmInfo" value="Confirm" type="Submit" /></p>
-                </form>';
+            echo '<div class="text-center mx-auto mb-4">
+            <hr><h3 class="text-centre">Click button to confirm deleting this procedure</h3>
+            <form action = "edit.php?dRGCode='.$dRGCode.'&providerId='.$providerId.'&year='. $year.'" method = "POST">
+            <button class="btn btn-success btn-mini search-btn my-4" type="submit" name="ConfirmInfo">Confirm</button></form></div>';
         }
         else if($action == "2"){//update
-            echo "<p><strong>Choose the checkbox and enter information</strong></p>";
+            echo "<div class=\"text-center mx-auto mb-4\">
+            <hr><h3 class=\"text-centre\">Choose the checkbox and enter information</h3><hr></div>";
             sqlsrv_free_stmt($result);
             //select the column that users want to update
             echo '<form action = "edit.php?dRGCode='.$dRGCode.'&providerId='.$providerId.'&year='.
-                $year.'" method = "POST" >';
+                $year.'" method = "POST" ><table class = "table"><tr><th>Column</th><th>Column Data</th></tr><tr>';
             for($t = 0;$t < count($column_name); $t++){
-                echo '<p><input type = "checkbox" name = "column[]" value = "'.$column_name[$t].'">'
-                    .$column_name[$t].':  </input>';
-                if($t == 0 || $t == 2 || $t == 7 || $t > 8) echo '<input type = "number" name = "column_info[]" /></p>';
-                else echo '<input type = "text" name = "column_info[]" /></p>';
+                echo '<td><input type = "checkbox" name = "column[]" value = "'.$column_name[$t].'"> '
+                    .$column_name[$t].'  </input></td>';
+                if($t > 9 && $t < 13) echo '<td><input type = "number" step="0.000001" min="0" name = "column_info[]" /></td></tr>';
+                else if($t == 0 || $t == 2 || $t == 7 || $t == 9 || $t == 13)
+                    echo '<td><input type = "number" min="0" name = "column_info[]" /></td></tr>';
+                else echo '<td><input type = "text" name = "column_info[]" /></td></tr>';
             }
-            echo '<p><input class="btn btn-success btn-mini search-btn my-4" name="UpdateInfo" value="Update" type="Submit" /></p></form>';
+            echo '</table><button class="btn btn-success btn-mini search-btn my-4" type="submit" name = "UpdateInfo">
+                  Update</button></form>';
         }
     }else{
 
-        echo "<br><h2>Sorry, there is not such procedure in the data. <a href = 'edit.php'>
-                    Click here</a> to go back upload or delete page</h2><br><br>";
+        echo "<div class=\"text-center mx-auto mb-4\">
+            <hr><h3 class=\"text-centre\">Sorry, there is not such procedure in the data.</h3></div>";
+
     }
 }else if(isset($_POST["ConfirmInfo"])){//confirm to delete the procedure
     $dRGCode = $_GET['dRGCode'];
@@ -280,7 +289,8 @@ if (isset($_POST["Submit"])) {
         $year;
     $result = sqlsrv_query($conn, $sql);
     sqlsrv_free_stmt($result);
-    echo "<br><h2>Deleted successfully. <a href = 'edit.php'>click here</a> to go back upload or delete page.</h2><br><br><br><br>";
+    echo "<div class=\"text-center mx-auto mb-4\">
+            <hr><h2 class=\"text-centre\">Deleted successfully.</h2></div>";
 }
 else if(isset($_POST["UpdateInfo"])){//confirm to update the procedure
     //get information to update the procedure
@@ -297,7 +307,8 @@ else if(isset($_POST["UpdateInfo"])){//confirm to update the procedure
             for($find_num = 0; $find_num < count($column_name); $find_num++){
                 if($column_name[$find_num] == $temp_col){//check if the input field is empty
                     if(!$col_info[$find_num]){
-                        echo "<p>The input field ".$temp_col." is empty!</p>";
+                        echo "<div class=\"text-center mx-auto mb-4\">
+                        <hr><h4 class=\"text-centre\">The input field ".$temp_col." is empty!</h4></div>";
                         $state = false;
                     }else{//update the procedure
                         $sql = "UPDATE insertDB SET ".$temp_col." = "."'".$col_info[$find_num]."' WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".$year;
@@ -309,19 +320,17 @@ else if(isset($_POST["UpdateInfo"])){//confirm to update the procedure
         }
     }
     if($state == true)//check if the procedure is updated
-        echo "<br><br>Updated successfully. <a href = 'edit.php'>Click here</a> to go back upload or delete page.<br><br>";
+        echo "<div class=\"text-center mx-auto mb-4\"><hr><h3 class=\"text-centre\">Updated successfully</h3></div>";
     else
-        echo '<button onclick="goBack()">Go Back</button>';
+        echo '<button class="btn btn-success btn-mini search-btn my-4" onclick="goBack()">
+                        <i class="fas fa-long-arrow-alt-left"></i> Go Back</button>';;
 }
 else{//get the basic information of the procedure
     $sql = "SELECT year FROM dbo.newDB GROUP BY year ORDER BY year";
     $result = sqlsrv_query($conn, $sql);
     echo '<form class="navbar-form" action = "edit.php" method = "POST">
         <div class="form-group text-left">
-        <br>
-
-            <h2 class="text-center"> Please enter the details below to find the data you want to update</h2>
-            <br>
+        <br><h2 class="text-center">Please enter the details below to find the data you want to update</h2><hr>
                 <label class="text-left" for="get_dRGCode">DRG Code: </label>
                 <input required class="form-control my-2" type="text" name="dRGCode" placeholder="Enter DRG Code">
                 <br>
@@ -334,6 +343,7 @@ else{//get the basic information of the procedure
         echo '<option value = "'.$row['year'].'">'.$row['year'].'</option>';
     }
     echo '</select></div><br>
+        <label for="get_action">Action: </label>
         <select class="form-control my-2" name="action">
         <option required value = "0" disabled selected hidden>Please select the action</option>
         <option required value = 1>Delete</option>
@@ -345,7 +355,7 @@ else{//get the basic information of the procedure
 ?>
 <br><br>
 <form class="" action="../admin/admin.php" method="post">
-    <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Back</button>
+    <button class="btn btn-success btn-mini search-btn my-4" type="submit"><i class="fas fa-long-arrow-alt-left"></i> Go Admin</button>
 </form>
         </div>
     </div>

@@ -71,6 +71,24 @@ body {
   border-color: var(--shadow-accent);
 }
 
+.table{
+  width: 800px;
+  border-bottom: 1px solid #D1D4D7;
+}
+
+th {
+  background-color: #005eb8;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+textarea_text,textarea_number {
+  width: 300px;
+}
+
+
 .card {
   height: 100%;
 }
@@ -94,5 +112,39 @@ a.custom-card:hover {
   display: none;
 }
 
+input[type="checkbox"] {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background: lightgray;
+  height: 16px;
+  width: 16px;
+}
 
+/*#7b7b7b;*/
+INPUT[type=checkbox]:focus
+{
+  outline: 1px solid rgba(0, 0, 0, 0.2);
+}
 
+INPUT[type=checkbox]
+{
+  background-color: #DDD;
+  border-radius: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  position: relative;
+  top: 5px;
+}
+
+INPUT[type=checkbox]:checked
+{
+  background-color: #409fd6;
+  background: #005eb8 url("data:image/gif;base64,R0lGODlhCwAKAIABAP////3cnSH5BAEKAAEALAAAAAALAAoAAAIUjH+AC73WHIsw0UCjglraO20PNhYAOw==") 3px 3px no-repeat;
+}
