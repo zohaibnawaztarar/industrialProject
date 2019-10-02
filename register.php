@@ -114,12 +114,12 @@ if ($encrypPass == "") {
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance"></i> Compare Care</a>
+        <a class="navbar-brand" href="index.php"><i class="fas fa-ambulance" title="Compare care logo. Vehicle with medical cross symbol on side"></i> Compare Care</a>
         <button class="navbar-toggler my-1" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
+        <div class="collapse navbar-collapse" id="navbarResponsive" role="banner">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Home</a>
@@ -180,39 +180,49 @@ if ($userName != "") {
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" role="main">
         <div class="card my-4">
             <div class="card-body mx-3">
                 <div id="register">
                     <form action="php/register.php" method="GET">
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Username</label>
+                            <label for="username" class="col-sm-2 col-form-label">Username</label>
                             <div class="col-sm-10">
+
                                 <input name="username" class="form-control" type="text" placeholder="e.g. jCena" value="" required aria-label="Enter your username">
+
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Password</label>
+                            <label for="password" class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-10">
+
                                 <input name="password" class="form-control" type="password" placeholder="e.g. SomePassword11" value="" required aria-label="Enter your password">
+
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Name</label>
+                            <label for="name" class="col-sm-2 col-form-label">Name</label>
                             <div class="col-sm-10">
+
                                 <input name="name" class="form-control" type="text" placeholder="e.g. John" value="" required aria-label="Enter your name">
+
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Email</label>
+                            <label for="email" class="col-sm-2 col-form-label">Email</label>
                             <div class="col-sm-10">
+
                                 <input name="email" class="form-control" type="text" placeholder="e.g. yourName@provider.com" value="" required aria-label="Enter your Email">
+
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 col-form-label">Zip Code</label>
+                            <label for="zip" class="col-sm-2 col-form-label">Zip Code</label>
                             <div class="col-sm-10">
+
                                 <input name="zip" class="form-control" type="text" placeholder="e.g. 10001" value="" required aria-label="Enter your zip code">
+
                             </div>
                         </div>
                         <div class="form-group row">
