@@ -54,16 +54,16 @@
         $dRGInput = $_GET['dRGInput'];
     }
 
-    if (isset($_GET['order'])) {
-        $order = $_GET['order'];
+    if (isset($_POST['order'])) {
+        $order = $_POST['order'];
     }
 
-    if (isset($_GET['priceMin'])) {
-        $priceMin = $_GET['priceMin'];
+    if (isset($_POST['priceMin'])) {
+        $priceMin = $_POST['priceMin'];
     }
 
-    if (isset($_GET['priceMax'])) {
-        $priceMax = $_GET['priceMax'];
+    if (isset($_POST['priceMax'])) {
+        $priceMax = $_POST['priceMax'];
     }
 
     $userName = "";
@@ -590,52 +590,44 @@
         defer>
 </script>
 
-
 <div class="container" role="main">
-    <form action="index.php" method="GET" <?php if (empty($dRGInput) or empty($state) or empty($zipCode)){echo "hidden";}?>>
-        <input type="hidden" name="state" value="<?php echo $state; ?>"/>
-        <input type="hidden" name="zipCode" value="<?php echo $zipCode; ?>"/>
-        <input type="hidden" name="dRGInput" value="<?php echo $dRGInput; ?>"/>
-
+    <form action="<?php echo "index.php?state=".$state."&zipCode=".$zipCode."&dRGInput=".$dRGInput?>"
+          method="POST"
+          <?php if (empty($dRGInput) or empty($state) or empty($zipCode)) {echo "hidden";} ?>>
         <div class="row my-3 text-center sorters">
-
-            <form action="index.php" method="GET">
-
-                <div class="col-lg-2">
-                    <label class="my-2"><strong>Price Range:</strong></label>
-                </div>
-                <div class="col-lg-4">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Min: $</span>
-                        </div>
-                        <input type="number" class="form-control my-2"
-                               aria-label="Minimum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
-                               name="priceMin">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">Max: $</span>
-                        </div>
-                        <input type="number" class="form-control my-2"
-                               aria-label="Maximum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
-                               name="priceMax">
+            <div class="col-lg-2">
+                <label class="my-2"><strong>Price Range:</strong></label>
+            </div>
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Min: $</span>
                     </div>
+                    <input type="number" class="form-control my-2"
+                           aria-label="Minimum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
+                           name="priceMin">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Max: $</span>
+                    </div>
+                    <input type="number" class="form-control my-2"
+                           aria-label="Maximum amount (to the nearest dollar)" placeholder="0" min="0" step="500"
+                           name="priceMax">
                 </div>
-                <div class="col-lg-3">
-                    <select class="form-control my-2" name="order" aria-label="Filter type">
-                        <option value="" disabled selected hidden>Sort by</option>
-                        <option value="price_asc" type="submit">Price: Low to High</option>
-                        <option value="price_desc" type="submit">Price: High to Low</option>
-                        <option value="distance_asc" type="submit">Distance: Closest First</option>
-                        <option value="distance_desc" type="submit">Distance: Furthest First</option>
-                        <option value="city_asc" type="submit">City Name: A - Z</option>
-                        <option value="city_desc" type="submit">City Name: Z - A</option>
-                    </select>
-                </div>
-                <div class="col-lg-3">
-
-                    <button class="btn search-btn mt-2" type="submit">Apply</button>
-                </div>
-            </form>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-control my-2" name="order" aria-label="Filter type">
+                    <option value="" disabled selected hidden>Sort by</option>
+                    <option value="price_asc" type="submit">Price: Low to High</option>
+                    <option value="price_desc" type="submit">Price: High to Low</option>
+                    <option value="distance_asc" type="submit">Distance: Closest First</option>
+                    <option value="distance_desc" type="submit">Distance: Furthest First</option>
+                    <option value="city_asc" type="submit">City Name: A - Z</option>
+                    <option value="city_desc" type="submit">City Name: Z - A</option>
+                </select>
+            </div>
+            <div class="col-lg-3">
+                <button class="btn search-btn mt-2" type="submit">Apply</button>
+            </div>
         </div>
     </form>
     <hr/>
@@ -671,184 +663,188 @@
         include_once("php/db_connect.php");
 
         if (empty($dRGInput) or empty($state) or empty($zipCode)) {
-            if (!empty($userName)) {
-                #get userId from userName
-                $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
-                if ($resultID == FALSE) {
-                    echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
-                    die(print_r(sqlsrv_errors(), true));
-                } else {
-                    if (sqlsrv_has_rows($resultID) == 0) {
-                        //no user with that user name
-                    } else {
-                        $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
-                        $userID = $rowID['userID'];
-                    }
-                }
-
-                $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
-                $param = array($userID);
-                # run sql query on already set up database connection with custom parameters
-                $result = sqlsrv_query($conn, $sql, $param);
-
-                if ($result == FALSE) {
-                    echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-                    die(print_r(sqlsrv_errors(), true));
-                } else {
-                    #return if no results from query.
-                    if (sqlsrv_has_rows($result) == 0) {
-                        echo '<h1 class="display-3 pb-5 text-center">Bookmark procedures to view them here</h1>';
-                        echo '<h1 class="display-3 pb-5 text-center"><br><br></h1>';
-                    } else {
-                        echo '<h3 class="pt-5"><i class="fas fa-bookmark"></i> Your Bookmarks</h3>';
-                        #display formatted query results on frontend.
-                        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                        ?>
-                        <div class="card my-3">
-                            <div class="row no-gutters">
-                                <div class="col">
-                                    <div class="card-body">
-                                        <h4 class="card-title nhsColor" style="
-                                            float: left">
-                                            <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
-                                            float: right">
-                                                $
-                                                <?php echo round($row['averageTotalPayments']); ?>
-                                            </h3><br>
-                                        </h4>
-                                        <h5 class="card-title text-secondary">
-                                            <br><?php echo $row['dRGDescription']; ?>
-                                        </h5>
-                                        <p class="card-text">
-                                            <?php echo $row['providerCity']; ?>
-                                        </p>
-                                        <form action="hospitalDetails.php" method="GET">
-                                            <input type='hidden' name="providerId"
-                                                   value="<?php echo $row['providerId']; ?>">
-                                            <?php
-                                            if (empty($row['dRGCode'])) { $dRGCode = $dRGInput; }
-                                            else { $dRGCode = $row['dRGCode']; }
-                                            ?>
-                                            <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                            <button class="btn btn-success buy-btn mx-1 m-1" style="
-                                            float: right" type="buy" >
-                                                <i class="fas fa-info-circle" style="color: white"></i> View more information
-                                            </button><br>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                        }
-                    }
-                }
+        if (!empty($userName)) {
+            #get userId from userName
+            $resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+            if ($resultID == FALSE) {
+                echo '<h1 class="display-3 pb-5 text-center">Database Query Error!</h1>';
+                die(print_r(sqlsrv_errors(), true));
             } else {
-                echo '<h1 class="display-3 pb-5 text-center">Create an account to save procedures!</h1>';
-                echo '<h3 class="pb-5 text-center">Benefit from quick access to procedures you often search for.</h3>';
-                echo '<div class="col-sm-2 m-auto">
+                if (sqlsrv_has_rows($resultID) == 0) {
+                    //no user with that user name
+                } else {
+                    $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+                    $userID = $rowID['userID'];
+                }
+            }
+
+            $sql = 'SELECT * FROM dbo.newDB main, dbo.bmDB bm WHERE bm.userID=? AND main.providerId=bm.providerId AND main.dRGCode=bm.dRGCode AND year=2017';
+            $param = array($userID);
+            # run sql query on already set up database connection with custom parameters
+            $result = sqlsrv_query($conn, $sql, $param);
+
+        if ($result == FALSE) {
+            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+            die(print_r(sqlsrv_errors(), true));
+        } else {
+            #return if no results from query.
+        if (sqlsrv_has_rows($result) == 0) {
+            echo '<h1 class="display-3 pb-5 text-center">Bookmark procedures to view them here</h1>';
+            echo '<h1 class="display-3 pb-5 text-center"><br><br></h1>';
+        } else {
+            echo '<h3 class="pt-5"><i class="fas fa-bookmark"></i> Your Bookmarks</h3>';
+            #display formatted query results on frontend.
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+            ?>
+            <div class="card my-3">
+                <div class="row no-gutters">
+                    <div class="col">
+                        <div class="card-body">
+                            <h4 class="card-title nhsColor" style="
+                                            float: left">
+                                <?php echo $row['providerName']; ?><h3 class="card-title mb-2" style="
+                                            float: right">
+                                    $
+                                    <?php echo round($row['averageTotalPayments']); ?>
+                                </h3><br>
+                            </h4>
+                            <h5 class="card-title text-secondary">
+                                <br><?php echo $row['dRGDescription']; ?>
+                            </h5>
+                            <p class="card-text">
+                                <?php echo $row['providerCity']; ?>
+                            </p>
+                            <form action="hospitalDetails.php" method="GET">
+                                <input type='hidden' name="providerId"
+                                       value="<?php echo $row['providerId']; ?>">
+                                <?php
+                                if (empty($row['dRGCode'])) {
+                                    $dRGCode = $dRGInput;
+                                } else {
+                                    $dRGCode = $row['dRGCode'];
+                                }
+                                ?>
+                                <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+                                <button class="btn btn-success buy-btn mx-1 m-1" style="
+                                            float: right" type="buy">
+                                    <i class="fas fa-info-circle" style="color: white"></i> View more information
+                                </button>
+                                <br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php
+        }
+        }
+        }
+        } else {
+            echo '<h1 class="display-3 pb-5 text-center">Create an account to save procedures!</h1>';
+            echo '<h3 class="pb-5 text-center">Benefit from quick access to procedures you often search for.</h3>';
+            echo '<div class="col-sm-2 m-auto">
                         <button class="btn search-btn btn-outline-success my-2 my-sm-0 mr-2" onclick="location.href = \'register.php\'"> Register</button>
                         </div><br><br>';
-            }
+        }
         } else {
-            # run sql query on already set up database connection with custom parameters
-            $result = sqlsrv_query($conn, $sql, $params);
+        # run sql query on already set up database connection with custom parameters
+        $result = sqlsrv_query($conn, $sql, $params);
 
-            $rows_count = 0;
-            #returns error if required
-            if ($result == FALSE) {
-                echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
-                die(print_r(sqlsrv_errors(), true));
+        $rows_count = 0;
+        #returns error if required
+        if ($result == FALSE) {
+            echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+            die(print_r(sqlsrv_errors(), true));
 
-            } else {
-                #return if no results from query.
-                if (sqlsrv_has_rows($result) == 0) {
-                    echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
-                    echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
-                } else {
-                    #display formatted query results on frontend.
+        } else {
+        #return if no results from query.
+        if (sqlsrv_has_rows($result) == 0) {
+            echo '<h1 class="display-3 pb-5 text-center">No results found!</h1>';
+            echo '<h1 class="display-3 pb-5 text-center"><br><br><br></h1>';
+        } else {
+        #display formatted query results on frontend.
 
 
-                while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
-                    $rows_count++;
-                    ?>
-                    <div id="" class="resultContainer">
-                        <div class="card my-3">
-                            <div class="row no-gutters">
-                                <div class="col">
-                                    <div class="card-body">
-                                        <h4 class="card-title nhsColor" style="
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+        $rows_count++;
+        ?>
+            <div id="" class="resultContainer">
+                <div class="card my-3">
+                    <div class="row no-gutters">
+                        <div class="col">
+                            <div class="card-body">
+                                <h4 class="card-title nhsColor" style="
                                             float: left">
-                                            <?php echo ucwords(strtolower($row['providerName'])); ?><h3
-                                                    class="card-title mb-2"
-                                                    style="
+                                    <?php echo ucwords(strtolower($row['providerName'])); ?><h3
+                                            class="card-title mb-2"
+                                            style="
                                             float: right">
-                                                $
-                                                <?php echo round($row['averageTotalPayments']); ?>
-                                            </h3><br>
-                                        </h4>
-                                        <h5 class="card-title text-secondary">
-                                            <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
-                                        </h5>
-                                        <p class="card-text">
-                                            <?php echo $row['providerCity']; ?>
-                                        </p>
-                                        <br>
-                                        <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
-                                        <form action="hospitalDetails.php" method="GET">
-                                            <input type='hidden' name="providerId"
-                                                   value="<?php echo $row['providerId']; ?>">
-                                            <?php
+                                        $
+                                        <?php echo round($row['averageTotalPayments']); ?>
+                                    </h3><br>
+                                </h4>
+                                <h5 class="card-title text-secondary">
+                                    <br><?php echo ucwords(strtolower($row['dRGDescription'])); ?>
+                                </h5>
+                                <p class="card-text">
+                                    <?php echo $row['providerCity']; ?>
+                                </p>
+                                <br>
+                                <p class="distance" id="<?php echo $row['providerName']; ?>"></p>
+                                <form action="hospitalDetails.php" method="GET">
+                                    <input type='hidden' name="providerId"
+                                           value="<?php echo $row['providerId']; ?>">
+                                    <?php
 
-                                            if (empty($row['dRGCode'])) {
-                                                $dRGCode = $dRGInput;
-                                            } else {
-                                                $dRGCode = $row['dRGCode'];
-                                            }
-                                            ?>
-                                            <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
-                                            <button class="btn btn-success buy-btn mx-1 m-auto" style="
+                                    if (empty($row['dRGCode'])) {
+                                        $dRGCode = $dRGInput;
+                                    } else {
+                                        $dRGCode = $row['dRGCode'];
+                                    }
+                                    ?>
+                                    <input type='hidden' name="dRGCode" value="<?php echo $dRGCode; ?>">
+                                    <button class="btn btn-success buy-btn mx-1 m-auto" style="
                                             float: right" type="buy">
-                                                <i class="fas fa-info-circle"></i> View more information
-                                            </button>
-                                            <br>
-                                        </form>
-                                    </div>
-                                </div>
+                                        <i class="fas fa-info-circle"></i> View more information
+                                    </button>
+                                    <br>
+                                </form>
                             </div>
                         </div>
                     </div>
-                <?php }
+                </div>
+            </div>
+        <?php }
 
-                ?>
+        ?>
 
-                    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i> Top
-                    </button>
-                    <script>//Get the button:
-                        mybutton = document.getElementById("myBtn");
+            <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-arrow-up"></i> Top
+            </button>
+            <script>//Get the button:
+                mybutton = document.getElementById("myBtn");
 
-                        // When the user scrolls down 20px from the top of the document, show the button
-                        window.onscroll = function () {
-                            scrollFunction()
-                        };
+                // When the user scrolls down 20px from the top of the document, show the button
+                window.onscroll = function () {
+                    scrollFunction()
+                };
 
-                        function scrollFunction() {
-                            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                                mybutton.style.display = "block";
-                            } else {
-                                mybutton.style.display = "none";
-                            }
-                        }
-
-                        // When the user clicks on the button, scroll to the top of the document
-                        function topFunction() {
-                            document.body.scrollTop = 0; // For Safari
-                            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-                        }</script>
-                    <?php
-
+                function scrollFunction() {
+                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                        mybutton.style.display = "block";
+                    } else {
+                        mybutton.style.display = "none";
+                    }
                 }
-            }
+
+                // When the user clicks on the button, scroll to the top of the document
+                function topFunction() {
+                    document.body.scrollTop = 0; // For Safari
+                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                }</script>
+            <?php
+
+        }
+        }
             sqlsrv_free_stmt($result);
 
         } ?>
