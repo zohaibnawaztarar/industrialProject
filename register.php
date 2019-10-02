@@ -213,7 +213,7 @@ if ($encrypPass == "") {
                             <label for="email" class="col-sm-2 col-form-label">Email</label>
                             <div class="col-sm-10">
 
-                                <input name="email" class="form-control" type="text" placeholder="e.g. yourName@provider.com" value="" required aria-label="Enter your Email">
+                                <input name="email" class="form-control" type="email" placeholder="e.g. yourName@provider.com" value="" required aria-label="Enter your Email">
 
                             </div>
                         </div>
@@ -221,7 +221,7 @@ if ($encrypPass == "") {
                             <label for="zip" class="col-sm-2 col-form-label">Zip Code</label>
                             <div class="col-sm-10">
 
-                                <input name="zip" class="form-control" type="text" placeholder="e.g. 10001" value="" required aria-label="Enter your zip code">
+                                <input name="zip" class="form-control" type="number" placeholder="e.g. 10001" value="" required aria-label="Enter your zip code">
 
                             </div>
                         </div>
