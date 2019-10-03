@@ -70,6 +70,30 @@ if ($url == "") { //If the referee is an about:blank page or been entered from t
     session_start();
 }
 
+if (isset($_POST['removed']))
+{
+    #logout
+    $userName = $encrypPass = "";
+    setcookie("userName", " ");
+    setcookie("encrypPass", " ");
+
+    // Unset all of the session variables.
+    session_start();
+    $_SESSION = array();
+
+    // If it's desired to kill the session, also delete the session cookie.
+    // Note: This will destroy the session, and not just the session data!
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+    // Finally, destroy the session.
+    session_destroy();
+}
+
 if ($userName == "") {
     if ((isset($_SESSION['userName'])) && !empty($_SESSION['userName'])) {
         $userName = $_SESSION["userName"];
@@ -107,6 +131,21 @@ if ($encrypPass == "") {
         if ($encrypPass == " ") {
             $encrypPass = "";
         }
+    }
+}
+
+
+#get userId from userName
+$resultID = sqlsrv_query($conn, "SELECT * FROM userDB WHERE userName=?", array($userName));
+if ($resultID == FALSE) {
+    echo '<h1 class="display-3 pb-5 text-center">Databse Query Error!</h1>';
+    die(print_r(sqlsrv_errors(), true));
+} else {
+    if (sqlsrv_has_rows($resultID) == 0) {
+        //no user with that user name
+    } else {
+        $rowID = sqlsrv_fetch_array($resultID, SQLSRV_FETCH_ASSOC);
+        $userID = $rowID['userID'];
     }
 }
 
@@ -151,10 +190,10 @@ if ($encrypPass == "") {
                     <li class="nav-item">
                         <a class="nav-link active account" href="../dashboard.php">
                             <?php
-if ($userName != "") {
-    echo "$userName" . "'s ";
-}
-?>Account
+                            if ($userName != "") {
+                                echo "$userName" . "'s ";
+                            }
+                            ?>Account
                         </a>
                     </li>
                     <li class="nav-item">
@@ -193,218 +232,97 @@ if ($userName != "") {
                 <div class="col-sm-8 m-auto text-center">
                     <h1><i class="fas fa-address-book"></i> Profile</h1>
                     <?php
-                    if (isset($_GET['cancel'])) {
+                    if (isset($_POST['cancel'])) {
                         echo '<h4 style="color: grey;"><i class="fas fa-ban" style="color: var(--accent)"></i> Cancelled Action!</h4>';
                         echo '<br/>';
-                    } else if (isset($_GET['removed'])) {
+                    } else if (isset($_POST['removed'])) {
                         echo '<h4 style="color: grey;"><i class="fas fa-user-minus" style="color: green"></i> Successful Deletion!</h4>';
                         echo '<br/>';
-                    } else if (isset($_GET['added'])) {
-                        echo '<h4 style="color: grey;"><i class="fas fa-user-plus" style="color: green"></i> Successful Addition!</h4>';
-                        echo '<br/>';
-                    } else if (isset($_GET['updated'])) {
+                        #delete from DB
+                        $userID = $_POST['userID'];
+                        $deleteSql = "DELETE FROM dbo.userDB WHERE userID='$userID'";
+                        $deleteResult = sqlsrv_query($conn, $deleteSql) or die(print_r(sqlsrv_errors(), true));
+                    } else if (isset($_POST['updated'])) {
                         echo '<h4 style="color: grey;"><i class="fas fa-user-edit" style="color: green"></i> Successful Modification!</h4>';
                         echo '<br/>';
                     }
                     ?>
                 </div>
             </div>
+
+
             <div class="row my-5">
+                <?php
+                if (!empty($userName))
+                {
+                    ?>
                 <div class="col-sm-4 buttonlist">
-                    <button id="update" class="btn crud-btn my-1" onclick="showHideCRUD(this.id)" type="back">Update Profile Info</button>
-                    <button id="remove" class="btn crud-btn my-1" onclick="showHideCRUD(this.id)" type="back">Delete Account</button>
+                    <form action="customers.php" method='POST' style="float: none">
+                        <input type='hidden' name='userID' value='<?php echo $userID ?>'>
+                        <!--
+                        <button id="update" class="btn crud-btn my-1" onclick="showHideCRUD(this.id)" type="back">Update Profile Info</button>
+                        -->
+                        <button id="remove" class="btn crud-btn my-1" data-toggle="modal" data-target="#deleteModal" type="button">
+                            Delete Account
+                        </button>
+                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Delete Account?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Deleting this account cannot be undone. Proceed?
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger" name="removed" value="1">Delete Account</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+
                 <div class="col-sm-8">
                     <div id="view_all_div">
                         <div class="table-responsive-xl">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Name</th>
                                         <th scope="col">User Name</th>
+                                        <th scope="col">Full Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Zip Code</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php tableCustomersShow($conn); ?>
+                                    <?php
+
+                                    //generate table from user
+                                    tableCustomersShow($conn, $userID);
+
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div id="update_div">
-                    <?php
-                        if (!isset($_GET['update_customer_id_select'])) { ?>
-                        <form action="" method="GET">
-                            <div class="form-group">
-                                <label for="update_customer_select">Select Customer to Modify:</label>
-                                <select class="form-control" id="update_customer_select" name="update_customer_id_select">
-                                    <?php
-                                        $sql = "SELECT * FROM customers";
-                                        $resultset = mysqli_query($conn, $sql) or die("database error:" . mysqli_error($conn));
-                                        while ($record = mysqli_fetch_assoc($resultset)) {
-                                            unset($id, $name);
-                                            $id = $record['customer_id'];
-                                            $desc = $record['customer_first_name'] . " " . $record['customer_last_name'];
-                                            ?>
-                                    <option value="<?php echo $id; ?>">
-                                        <?php echo $id . " - " . $desc ?>
-                                    </option>';
-                                    <?php }?>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary" name="select" value="select">Select</button>
-                        </form> 
-                    <?php } ?>
-                        <div id="update_details">
-                            <?php
-                                if (isset($_GET['update_customer_id_select'])) {
-                                    $usr = $_GET['update_customer_id_select'];
-                                    $sql = "SELECT * FROM dbo.user.DB WHERE userID = $usr";
-                                    $resultset = mysqli_query($conn, $sql) or die("database error:" . mysqli_error($conn));
-                                    while ($record = mysqli_fetch_assoc($resultset)) {
-                            ?>
-                            <form action="php/customers/update.php" method="GET">
-                                <input name="id_update" class="form-control" type="hidden" value="<?php echo $record['userIf']; ?>" required />
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">First Name:</label>
-                                    <input name="first_name" class="form-control" type="text" value="<?php echo $record['customer_first_name']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Last Name:</label>
-                                    <input name="last_name" class="form-control" type="text" value="<?php echo $record['customer_last_name']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Phone:</label>
-                                    <input name="phone" class="form-control" type="text" value="<?php echo $record['customer_phone']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Email:</label>
-                                    <input name="email" class="form-control" type="text" value="<?php echo $record['customer_email']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Age:</label>
-                                    <input name="age" class="form-control" type="text" value="<?php echo $record['customer_age']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Gender:</label>
-                                    <input name="gender" class="form-control" type="text" value="<?php echo $record['customer_gender']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Nationality:</label>
-                                    <input name="nation" class="form-control" type="text" value="<?php echo $record['customer_nationality']; ?>" required />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Address ID:</label>
-                                    <select name="address_id" class="form-control" required>
-                                    <?php
-                                        $sql_address = "SELECT * FROM address";
-                                        $resultset_address = mysqli_query($conn, $sql_address) or die("database error:" . mysqli_error($conn));
-                                        while ($record_address = mysqli_fetch_assoc($resultset_address)) {
-                                            unset($address_id, $address_desc);
-                                            $address_id = $record_address['address_id'];
-                                            $address_desc = $record_address['address_no'] . " " . $record_address['address_street'] . " " . $record_address['address_city'];
-                                            ?>
-                                    <option value="<?php echo $address_id; 
-                                    if ($record['address_id'] == $record_address['address_id']) {
-                                        echo "\" selected=\"selected";
-                                    }
-                                    ?>">
-                                        <?php echo $address_id . " - " . $address_desc ?>
-                                    </option>';
-                                    <?php }?>
-                                </select>
-                                </div>
-                                <div class="form-group form-inline my-4">
-                                    <button type="submit" class="btn btn-danger mx-2" name="update" value="update">Update</button>
-                                    <button type="submit" class="btn btn-secondary" name="cancel" value="cancel" formnovalidate>Cancel</button>
-                                </div>
-                            </form>
-                                    <?php } }?> 
-                        </div>
-                    </div>
-                    <div id="remove_div">
-                    <?php
-                        if (!isset($_GET['remove_customer_id_select'])) { ?>
-                        <form action="" method="GET">
-                            <div class="form-group">
-                                <label for="remove_customer_select">Select Customer to Remove:</label>
-                                <select class="form-control" id="remove_customer_select" name="remove_customer_id_select">
-                                    <?php
-                                        $sql = "SELECT * FROM customers";
-                                        $resultset = mysqli_query($conn, $sql) or die("database error:" . mysqli_error($conn));
-                                        while ($record = mysqli_fetch_assoc($resultset)) {
-                                            unset($id, $name);
-                                            $id = $record['customer_id'];
-                                            $desc = $record['customer_first_name'] . " " . $record['customer_last_name'];
-                                            ?>
-                                    <option value="<?php echo $id; ?>">
-                                        <?php echo $id . " - " . $desc ?>
-                                    </option>';
-                                    <?php }?>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary" name="select" value="select">Select</button>
-                        </form> 
-                    <?php } ?>
-                        <div id="remove_details">
-                            <?php
-                                if (isset($_GET['remove_customer_id_select'])) {
-                                    $usr = $_GET['remove_customer_id_select'];
-                                    $sql = "SELECT * FROM customers WHERE customer_id = $usr";
-                                    $resultset = mysqli_query($conn, $sql) or die("database error:" . mysqli_error($conn));
-                                    while ($record = mysqli_fetch_assoc($resultset)) {
-                            ?>
-                            <form>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">First Name:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_first_name']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Last Name:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_last_name']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Phone:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_phone']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Email:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_email']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Age:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_age']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Gender:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_gender']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Nationality:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['customer_nationality']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline my-1">
-                                    <label class="mx-3">Address ID:</label>
-                                    <input class="form-control" type="text" value="<?php echo $record['address_address_id']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline mt-4 mb-2">
-                                    <button type="submit" class="btn btn-secondary mx-2" name="cancel" value="cancel" formnovalidate>Cancel</button>
-                                </div>
-                            </form>
-                            <form action="php/customers/remove.php" method="GET">
-                                <div class="form-group form-inline m-0">
-                                    <input name="id_delete" class="form-control" type="hidden" value="<?php echo $record['customer_id']; ?>" readonly />
-                                </div>
-                                <div class="form-group form-inline mb-4">
-                                    <button type="submit" class="btn btn-danger mx-2" name="remove" value="remove">Remove</button>
-                                </div>
-                            </form>
-                                    <?php } }?> 
-                        </div>
-                    </div>
                 </div>
+                <?php
+                }
+                else
+                {
+                    echo '<div class="col-sm-4 buttonlist"></div>';
+                    echo '<div class="col-sm-8">';
+                    echo '<h1>No account detected. You are currently not logged in.</h1>';
+                    echo '</div>';
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -463,41 +381,41 @@ if (($userName != "") && ($encrypPass != "")) {
 }
 ?>
 
-        <script type="text/javascript">
-            function showHideCRUD(clicked_id) {
-                var u = document.getElementById("update_div");
-                var r = document.getElementById("remove_div");
-                if (clicked_id == "update") {
-                    a.style.display = "none";
-                    v.style.display = "none";
-                    r.style.display = "none";
-                    u.style.display = "block";
-                } else {
-                    a.style.display = "none";
-                    u.style.display = "none";
-                    v.style.display = "none";
-                    r.style.display = "block";
-                }
-            }
-        </script>
-            <script type="text/javascript">
-                var u = document.getElementById("update_div");
-                var r = document.getElementById("remove_div");
-
-                <?php
-                if (isset($_GET['select'])) {
-                    if (isset($_GET['update_customer_id_select'])) {
-                        echo 'u.style.display = "block";';
-                    } else if (isset($_GET['remove_customer_id_select'])) {
-                        echo 'r.style.display = "block";';
-                    } else {
-                        echo 'v.style.display = "block";';
-                    }
-                } else {
-                    echo 'v.style.display = "block";';
-                }
-                ?>
-    </script>
+<!--        <script type="text/javascript">-->
+<!--            function showHideCRUD(clicked_id) {-->
+<!--                var u = document.getElementById("update_div");-->
+<!--                var r = document.getElementById("remove_div");-->
+<!--                if (clicked_id == "update") {-->
+<!--                    a.style.display = "none";-->
+<!--                    v.style.display = "none";-->
+<!--                    r.style.display = "none";-->
+<!--                    u.style.display = "block";-->
+<!--                } else {-->
+<!--                    a.style.display = "none";-->
+<!--                    u.style.display = "none";-->
+<!--                    v.style.display = "none";-->
+<!--                    r.style.display = "block";-->
+<!--                }-->
+<!--            }-->
+<!--        </script>-->
+<!--            <script type="text/javascript">-->
+<!--                var u = document.getElementById("update_div");-->
+<!--                var r = document.getElementById("remove_div");-->
+<!---->
+<!--                --><?php
+//                if (isset($_GET['select'])) {
+//                    if (isset($_GET['update_customer_id_select'])) {
+//                        echo 'u.style.display = "block";';
+//                    } else if (isset($_GET['remove_customer_id_select'])) {
+//                        echo 'r.style.display = "block";';
+//                    } else {
+//                        echo 'v.style.display = "block";';
+//                    }
+//                } else {
+//                    echo 'v.style.display = "block";';
+//                }
+//                ?>
+<!--    </script>-->
     </div>
 </body>
 
