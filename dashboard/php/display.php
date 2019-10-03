@@ -1,52 +1,24 @@
 <?php
 //Table Generation
+function tableCustomersShow($conn, $userID) {
+    $sql = "SELECT * FROM dbo.userDB WHERE userID='$userID'";
+    $resultsetLogin = sqlsrv_query($conn, $sql) or die(print_r(sqlsrv_errors(), true));
 
-function tableCustomersShow($conn) {
-    $sql = "SELECT * FROM dbo.userDB";
-    $resultsetLogin = sqlsrv_query($conn, $sql) or die("database error:". mysqli_error($conn));
-    while( $record = sqlsrv_fetch_array($resultset,SQLSRV_FETCH_ASSOC) )  {
-                                    echo '<tr>
-                                        <th scope="row">
-                                            ' . $record['userID'] . '
-                                        </th>
-                                        <td>
-                                        ' . $record['fName'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userName'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userEmail'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userZipcode'] . '
-                                        </td>
-                                       </tr>';
+        while ($record = sqlsrv_fetch_array($resultsetLogin, SQLSRV_FETCH_ASSOC)) {
+            echo '<tr>
+                    <th scope="row">
+                        ' . $record['userName'] . '
+                    </th>
+                    <td>
+                        ' . $record['fName'] . '
+                    </td>
+                    <td>
+                        ' . $record['userEmail'] . '
+                    </td>
+                    <td>
+                        ' . $record['userZipcode'] . '
+                    </td>
+                   </tr>';
     }
 }
-
-function tableOneCustomerShow($conn, $selected_id) {
-    $sql = "SELECT * FROM dbo.userDB WHERE userID = $selected_id";
-    $resultset = mysqli_query($conn, $sql) or die("database error:" . mysqli_error($conn));
-    while ($record = mysqli_fetch_assoc($resultset)) {
-                                    echo '<tr>
-                                        <th scope="row">
-                                            ' . $record['userID'] . '
-                                        </th>
-                                        <td>
-                                        ' . $record['fName'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userName'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userEmail'] . '
-                                        </td>
-                                        <td>
-                                        ' . $record['userZipcode'] . '
-                                        </td>
-                                       </tr>';
-    }
-}
-
 ?>

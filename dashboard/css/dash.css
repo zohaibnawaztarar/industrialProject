@@ -93,8 +93,12 @@ a.custom-card:hover {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)
 }
 
-#id3, #id4, #view_all_div, #add_div, #update_div, #remove_div {
+#id3, #id4  {
   display: none;
+}
+
+#view_all_div, #add_div, #update_div, #remove_div {
+
 }
 
 .dash .buttonlist {
