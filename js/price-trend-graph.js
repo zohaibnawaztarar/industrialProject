@@ -4,23 +4,33 @@ function calculateFuturePrice(prevAvgPrices, years) {
 
     //calculate increases and decreases in price over the year
     for (i = arrLength - 1; i > 0; i--) {
-        totalDifferences = prevAvgPrices[i] - prevAvgPrices[i - 1] + totalDifferences;
+        totalDifferences = prevAvgPrices[i].y - prevAvgPrices[i - 1].y + totalDifferences;
     }
     var averageDifference = totalDifferences / (arrLength - 1);
-    var predictedPrice = Math.round(prevAvgPrices[arrLength - 1] + averageDifference);
+    var predictedPrice = Math.round(prevAvgPrices[arrLength - 1].y + averageDifference);
 
     //put price in correct data format for graph
     // x is the label name ie the year, y is the price value
-    var predictedPriceCoordinates = [
-        {
-            x: years[arrLength - 1],
-            y: prevAvgPrices[arrLength - 1]
-        },
+    var predictedPriceCoordinates = [];
+    //need to add null values here, so that years in tooltips match 2017 and 2018, else uses earliest  years
+    for (i = 0; i < arrLength-1; i++)
+    {
+        predictedPriceCoordinates.push(
+            {
+                x: years[i],
+                y: null
+            }
+        );
+    }
+    //add price for latest year in data for estimation graph line
+    predictedPriceCoordinates.push(prevAvgPrices[arrLength-1]);
+    //add estimated price data for 2018
+    predictedPriceCoordinates.push(
         {
             x: "2018",
             y: predictedPrice
         }
-    ];
+    );
     return predictedPriceCoordinates;
 }
 
@@ -34,9 +44,21 @@ function generateGraph(dataRows) {
 
     for (let row of dataRows) {
         years.push(row.year);
-        avgTotal.push(Math.round(row.averageTotalPayments));
-        avgCovered.push(Math.round(row.averageCoveredCharges));
-        avgMedicare.push(Math.round(row.averageMedicarePayments));
+        avgTotal.push(
+            {
+                x: row.year,
+                y: Math.round(row.averageTotalPayments)
+            });
+        avgCovered.push(
+            {
+                x: row.year,
+                y: Math.round(row.averageCoveredCharges)
+            });
+        avgMedicare.push(
+            {
+                x: row.year,
+                y: Math.round(row.averageMedicarePayments)
+            });
     }
 
     let graphDataSet = [
@@ -75,9 +97,9 @@ function generateGraph(dataRows) {
         //insufficient data, can't make appropriate estimation
     } else {
         //calculate estimated data
-        estimatedAvgTotal = calculateFuturePrice(avgTotal, years);
-        estimatedAvgCovered = calculateFuturePrice(avgCovered, years);
-        estimatedAvgMedicare = calculateFuturePrice(avgMedicare, years);
+        let estimatedAvgTotal = calculateFuturePrice(avgTotal, years);
+        let estimatedAvgCovered = calculateFuturePrice(avgCovered, years);
+        let estimatedAvgMedicare = calculateFuturePrice(avgMedicare, years);
         //add extra year (for x-axis labels)
         years.push("2018");
 
