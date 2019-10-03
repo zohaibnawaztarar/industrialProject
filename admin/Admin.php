@@ -21,6 +21,8 @@
     <link href="../css/dashboard.css" rel="stylesheet">
 
     <?php include_once "../php/db_connect.php"; ?>
+    <?php require_once 'protect.php'; ?>
+    <?php Protect\with('form.php', 'my_password'); ?>
 
 </head>
 
