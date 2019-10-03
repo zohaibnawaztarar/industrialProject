@@ -248,7 +248,7 @@
             //insert the data when the data is not duplicated
             sqlsrv_free_stmt($result);
             $providerStreetAddress = str_replace("'","''",$providerStreetAddress);
-            $sql = "INSERT INTO dbo.insertDB(dRGCode, dRGDescription, providerId, providerName, providerStreetAddress,
+            $sql = "INSERT INTO dbo.editDB(dRGCode, dRGDescription, providerId, providerName, providerStreetAddress,
         providerCity, providerState, providerZipCode, hospitalReferralRegionHRRDescription, totalDischarges,
         averageCoveredCharges, averageTotalPayments, averageMedicarePayments, year)
         Values (".$dRGCode.",'".$dRGDescription."',".$providerId.",'".$providerName."','".$providerStreetAddress.

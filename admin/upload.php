@@ -248,14 +248,14 @@ if (isset($_POST['submit'])) {
         //insert new datas into database
         $costBegin = microtime(true);
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "delete from dbo.insertDB";//delete old data
+        $sql = "delete from dbo.editDB";//delete old data
         $results = sqlsrv_query($conn, $sql);
         sqlsrv_free_stmt($results);
 
         $conn = sqlsrv_connect($serverName, $connectionOptions);
         for ($a = 0; $a < $num; $a++) {
             $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[$a]);
-            $sql = "INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,
+            $sql = "INSERT INTO dbo.editDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,
             providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,
             averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
             VALUES ('$spilt_dRGDefinition[0]','$spilt_dRGDefinition[1]','$list_providerId[$a]','$list_providerName[$a]',
@@ -267,13 +267,17 @@ if (isset($_POST['submit'])) {
         }
         $costEnd = microtime(true);
         $cost = round($costEnd - $costBegin, 3);
-        var_dump($cost);
+        //var_dump($cost);
         sqlsrv_free_stmt($results);
-        echo "Upload successfully.";
-    } else if ($action == 2) {
+        echo "<div class=\"text-center mx-auto mb-4\">
+            <hr><h3 class=\"text-centre\">Replaced All Procedures Successfully</h3>
+            <form class=\"\" action=\"../admin/admin.php\" method=\"post\">
+            <button class=\"btn btn-success btn-mini search-btn my-4\" type=\"submit\">
+            <i class=\"fas fa-long-arrow-alt-left\"></i> Go Admin</button></form></div>";
+    } else if ($action == 2) {//insert
         //add ID
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "alter table insertDB add ID int identity(1,1);";
+        $sql = "alter table editDB add ID int identity(1,1);";
         $results = sqlsrv_query($conn, $sql);
         if ($results === false) die(print_r(sqlsrv_errors(), true));
         sqlsrv_free_stmt($results);//end of connect
@@ -281,7 +285,7 @@ if (isset($_POST['submit'])) {
 //insert data into database
         $conn = sqlsrv_connect($serverName, $connectionOptions);
         if (!empty($arr)) {
-            $sql = sprintf("INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
+            $sql = sprintf("INSERT INTO dbo.editDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
            VALUES ");
             for ($a = 0; $a < $num; $a++) {
                 $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[$a]);
@@ -306,20 +310,24 @@ if (isset($_POST['submit'])) {
             }
             $sql = rtrim($sql, ",");//delete the last comma
             $sql .= ";";//add the last semicolon
-            $sql .= "DELETE FROM insertDB WHERE ID NOT IN (SELECT max(ID) FROM insertDB GROUP BY dRGCode,providerId,year); ";//delete the same data
+            $sql .= "DELETE FROM editDB WHERE ID NOT IN (SELECT max(ID) FROM editDB GROUP BY dRGCode,providerId,year); ";//delete the same data
         }
         $results = sqlsrv_query($conn, $sql);
         if ($results === false) die(print_r(sqlsrv_errors(), true));
         sqlsrv_free_stmt($results);//end of connect
 //delete ID
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "alter table insertDB drop column ID";
+        $sql = "alter table editDB drop column ID";
         $results = sqlsrv_query($conn, $sql);//end of connect
 //print time
         $costEnd = microtime(true);
         $cost = round($costEnd - $costBegin, 3);
-        var_dump($cost);
-        echo "insert done";
+        //var_dump($cost);
+        echo "<div class=\"text-center mx-auto mb-4\">
+            <hr><h3 class=\"text-centre\">Inserted New Procedures Successfully</h3>
+            <form class=\"\" action=\"../admin/admin.php\" method=\"post\">
+            <button class=\"btn btn-success btn-mini search-btn my-4\" type=\"submit\">
+            <i class=\"fas fa-long-arrow-alt-left\"></i> Go Admin</button></form></div>";
     }
 } else echo '<div class="container">
     <div class="row">
