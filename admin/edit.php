@@ -216,7 +216,7 @@
 <?php
 include "../php/db_connect.php";
 //get column name
-$sql = "SELECT name FROM sys.columns WHERE object_id = OBJECT_ID('dbo.insertDB')";
+$sql = "SELECT name FROM sys.columns WHERE object_id = OBJECT_ID('dbo.editDB')";
 $result = sqlsrv_query($conn, $sql);
 $count_column = 0;
 while($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)){
@@ -230,7 +230,7 @@ if (isset($_POST["Submit"])) {
     $providerId= $_POST['providerId'];
     $year = $_POST['year'];
     $action = $_POST['action'];
-    $sql = "SELECT * FROM insertDB WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".
+    $sql = "SELECT * FROM editDB WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".
         $year;
     $result = sqlsrv_query($conn, $sql);
     //check if this procedure exists
@@ -285,7 +285,7 @@ if (isset($_POST["Submit"])) {
     $dRGCode = $_GET['dRGCode'];
     $providerId = $_GET['providerId'];
     $year = $_GET['year'];
-    $sql = "DELETE FROM dbo.insertDB WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".
+    $sql = "DELETE FROM dbo.editDB WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".
         $year;
     $result = sqlsrv_query($conn, $sql);
     sqlsrv_free_stmt($result);
@@ -311,7 +311,7 @@ else if(isset($_POST["UpdateInfo"])){//confirm to update the procedure
                         <hr><h4 class=\"text-centre\">The input field ".$temp_col." is empty!</h4></div>";
                         $state = false;
                     }else{//update the procedure
-                        $sql = "UPDATE insertDB SET ".$temp_col." = "."'".$col_info[$find_num]."' WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".$year;
+                        $sql = "UPDATE editDB SET ".$temp_col." = "."'".$col_info[$find_num]."' WHERE dRGCode = ".$dRGCode." AND providerId = ".$providerId." AND year = ".$year;
                         $result = sqlsrv_query($conn, $sql);
                         $state = true;
                     }
