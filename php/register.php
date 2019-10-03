@@ -196,11 +196,17 @@ if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $zip = $_POST['zip'];
 
+    $options = [
+        'cost' => 10,
+    ];
+    //hash password
+    $hashedPw = password_hash($password, PASSWORD_DEFAULT, $options);
+
     $sqlDuplicate = "SELECT * FROM UserDB WHERE userName = ?";
     $params = array($username);
     $duplicateResult = sqlsrv_query($conn, $sqlDuplicate, $params);
     if (sqlsrv_has_rows($duplicateResult) == 0) {
-        $sql = "INSERT INTO dbo.UserDB (fName, userEmail, userZipcode, userName, userPassword) VALUES ('$name', '$email', '$zip', '$username', '$password')";
+        $sql = "INSERT INTO dbo.UserDB (fName, userEmail, userZipcode, userName, userPassword) VALUES ('$name', '$email', '$zip', '$username', '$hashedPw')";
 
         if (sqlsrv_query($conn, $sql)) {
             echo "<br><br><h1 style=\"text-align: center;\">Registration Successful</h1><br><br><br>";
