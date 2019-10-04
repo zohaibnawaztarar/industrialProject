@@ -326,7 +326,7 @@ else if(isset($_POST["UpdateInfo"])){//confirm to update the procedure
                         <i class="fas fa-long-arrow-alt-left"></i> Go Back</button>';;
 }
 else{//get the basic information of the procedure
-    $sql = "SELECT year FROM dbo.newDB GROUP BY year ORDER BY year";
+    $sql = "SELECT year FROM dbo.editDB GROUP BY year ORDER BY year";
     $result = sqlsrv_query($conn, $sql);
     echo '<form class="navbar-form" action = "edit.php" method = "POST">
         <div class="form-group text-left">
