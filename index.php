@@ -329,7 +329,7 @@
         if (navigator.geolocation) {
             console.log("1")
             navigator.geolocation.getCurrentPosition(function (position) {
-                userPos = {
+                var userPoslive = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
@@ -338,15 +338,15 @@
 
                 }
                 else {
-                    infoWindow.setPosition(userPos);
+                    infoWindow.setPosition(userPoslive);
                     infoWindow.setContent('location found');
                     infoWindow.open(map);
-                    map.setCenter(userPos);
+                    map.setCenter(userPoslive);
                     map.setZoom(8); //If location is found, increase zoom
                 }
 
 
-                haveUserLocation = true;
+                //haveUserLocation = true;
             }, function () {
                 handleLocationError(true, infoWindow, map.getCenter());
             });
@@ -374,7 +374,7 @@
 
         console.log("2")
 
-        if (!haveUserLocation) {
+        if (true) {
 
             haveUserLocation = true;
 
