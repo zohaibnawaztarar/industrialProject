@@ -223,7 +223,7 @@
 
         //check if the data is duplicated
         include "../php/db_connect.php";
-        $sql = "SELECT * FROM dbo.newDB WHERE dRGCode=".$dRGCode." AND providerId=".$providerId." AND year =".$year;
+        $sql = "SELECT * FROM dbo.editDB WHERE dRGCode=".$dRGCode." AND providerId=".$providerId." AND year =".$year;
         $result = sqlsrv_query($conn, $sql);
 
         if($row=sqlsrv_fetch_array($result,SQLSRV_FETCH_ASSOC)) {
