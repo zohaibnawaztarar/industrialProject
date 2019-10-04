@@ -455,13 +455,13 @@
                 } else {
                     $dRGCode = $row['dRGCode'];
                 }
-                $zipCode = $row['providerZipCode'];
+                $zipCodeMap = $row['providerZipCode'];
                 $providerID = $row['providerId'];
                 $name = $row['providerName'];
                 $address = $row['providerStreetAddress'];
                 $city = $row['providerCity'];
                 $aTPs = $row['averageTotalPayments'];
-                echo 'codeAddress("' . $zipCode . '","' . $address . '", "' . $city . '", "' . $name . '","' . $dRGCode . '","' . $providerID . '","' . $aTPs . '");';
+                echo 'codeAddress("' . $zipCodeMap . '","' . $address . '", "' . $city . '", "' . $name . '","' . $dRGCode . '","' . $providerID . '","' . $aTPs . '");';
             }
             sqlsrv_free_stmt($result);
         }
