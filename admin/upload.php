@@ -214,19 +214,21 @@ if (isset($_POST['submit'])) {
         "Uid" => "ip19team8",
         "PWD" => "abc111abc111.."
     );
-    //time start
-    $costBegin = microtime(true);
 
+//time start
+    $costBegin = microtime(true);
+    $costBegin1 = microtime(true);
+//get data from json file
     $allowedExts = array("json");//check if the file is json file
     $temp = explode(".", $_FILES["file"]["name"]);
     $extension = end($temp);     // get extension of json file
-    if ($extension != "json" || $_FILES["file"]["error"] > 0) die("error");//get data from json file
-    $json_string = file_get_contents($_FILES["file"]["tmp_name"]);
-    $replace = str_replace("'", "''", $json_string, $i);//chang ' to ''
+    if ($extension != "json" || $_FILES["file"]["error"] > 0) die("error");
+    $json_string = file_get_contents($_FILES["file"]["tmp_name"]);//open file
+    $replace = str_replace("'","''",$json_string,$i);//chang [ ' ] to [ '' ]
     $arr = array();//translate json array to php array
     $arr = json_decode($replace, true);
-//get the length of php array
-    $num = count($arr);
+    $num = count($arr);//get the length of php array
+
 //spilt php array into different columns
     $list_dRGDefinition = array_column($arr, 'dRGDefinition');
     $list_providerId = array_column($arr, 'providerId');
@@ -241,88 +243,211 @@ if (isset($_POST['submit'])) {
     $list_averageTotalPayments = array_column($arr, 'averageTotalPayments');
     $list_averageMedicarePayments = array_column($arr, 'averageMedicarePayments');
     $list_year = array_column($arr, 'year');
-//spilt dRGDefinition into dRGDeCode and dRGDescription
-    $spilt_dRGDefinition = array();
+    $spilt_dRGDefinition=array();//spilt dRGDefinition into dRGDeCode and dRGDescription
 
     if ($action == 1) {//replace
-        //insert new datas into database
-        $costBegin = microtime(true);
+        //delete old data
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "delete from dbo.editDB";//delete old data
-        $results = sqlsrv_query($conn, $sql);
+        $sql = "DELETE FROM dbo.insertDB";
+        $results = sqlsrv_query($conn,$sql);
         sqlsrv_free_stmt($results);
 
-        $conn = sqlsrv_connect($serverName, $connectionOptions);
-        for ($a = 0; $a < $num; $a++) {
-            $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[$a]);
-            $sql = "INSERT INTO dbo.editDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,
-            providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,
-            averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
-            VALUES ('$spilt_dRGDefinition[0]','$spilt_dRGDefinition[1]','$list_providerId[$a]','$list_providerName[$a]',
-                '$list_providerStreetAddress[$a]','$list_providerCity[$a]','$list_providerState[$a]',
-                '$list_providerZipCode[$a]','$list_hospitalReferralRegionHRRDescription[$a]','$list_totalDischarges[$a]',
-                '$list_averageCoveredCharges[$a]','$list_averageTotalPayments[$a]','$list_averageMedicarePayments[$a]',
-                '$list_year[$a]')";
-            $results = sqlsrv_query($conn, $sql);
+//insert new data into database
+        if (!empty($arr)) {
+            for($i = 0; $i < $num/1000; $i++)
+            {
+                if($i < $num/1000-1)
+                {
+                    $sql = "INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
+            VALUES ";
+                    for ($a = 0; $a < 1000; $a++)
+                    {
+
+                        $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[1000*$i+$a]);
+                        $itemStr = '( ';
+                        $itemStr .= sprintf(" '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ",
+                            $spilt_dRGDefinition[0],
+                            $spilt_dRGDefinition[1],
+                            $list_providerId[1000*$i+$a],
+                            $list_providerName[1000*$i+$a],
+                            $list_providerStreetAddress[1000*$i+$a],
+                            $list_providerCity[1000*$i+$a],
+                            $list_providerState[1000*$i+$a],
+                            $list_providerZipCode[1000*$i+$a],
+                            $list_hospitalReferralRegionHRRDescription[1000*$i+$a],
+                            $list_totalDischarges[1000*$i+$a],
+                            $list_averageCoveredCharges[1000*$i+$a],
+                            $list_averageTotalPayments[1000*$i+$a],
+                            $list_averageMedicarePayments[1000*$i+$a],
+                            $list_year[1000*$i+$a]);
+                        $itemStr .= '),';
+                        $sql .= $itemStr;
+                    }
+                    $sql = rtrim($sql, ",");//delete the last comma
+                    $sql .= ";";//add the last semicolon
+                    $sql .="\n";
+                    $conn = sqlsrv_connect($serverName, $connectionOptions);
+                    $results = sqlsrv_query($conn, $sql);
+                    if( $results=== false ) die( print_r( sqlsrv_errors(), true));
+                    sqlsrv_free_stmt($results);//end of connect
+                }
+                else
+                {
+                    $sql = "INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
+                VALUES ";
+                    for ($a = 0; $a < $num-1000*$i; $a++)
+                    {
+                        $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[1000*$i+$a]);
+                        $itemStr = '( ';
+                        $itemStr .= sprintf(" '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ",
+                            $spilt_dRGDefinition[0],
+                            $spilt_dRGDefinition[1],
+                            $list_providerId[1000*$i+$a],
+                            $list_providerName[1000*$i+$a],
+                            $list_providerStreetAddress[1000*$i+$a],
+                            $list_providerCity[1000*$i+$a],
+                            $list_providerState[1000*$i+$a],
+                            $list_providerZipCode[1000*$i+$a],
+                            $list_hospitalReferralRegionHRRDescription[1000*$i+$a],
+                            $list_totalDischarges[1000*$i+$a],
+                            $list_averageCoveredCharges[1000*$i+$a],
+                            $list_averageTotalPayments[1000*$i+$a],
+                            $list_averageMedicarePayments[1000*$i+$a],
+                            $list_year[1000*$i+$a]);
+                        $itemStr .= '),';
+                        $sql .= $itemStr;
+                    }
+                    $sql = rtrim($sql, ",");//delete the last comma
+                    $sql .= ";";//add the last semicolon
+                    $sql .="\n";
+                    $conn = sqlsrv_connect($serverName, $connectionOptions);
+                    $results = sqlsrv_query($conn, $sql);
+                    if( $results=== false ) die( print_r( sqlsrv_errors(), true));
+                    sqlsrv_free_stmt($results);//end of connect
+                }
+            }
         }
+
+//print time
         $costEnd = microtime(true);
         $cost = round($costEnd - $costBegin, 3);
         //var_dump($cost);
-        sqlsrv_free_stmt($results);
+
         echo "<div class=\"text-center mx-auto mb-4\">
             <hr><h3 class=\"text-centre\">Replaced All Procedures Successfully</h3>
             <form class=\"\" action=\"../admin/admin.php\" method=\"post\">
             <button class=\"btn btn-success btn-mini search-btn my-4\" type=\"submit\">
             <i class=\"fas fa-long-arrow-alt-left\"></i> Go Admin</button></form></div>";
     } else if ($action == 2) {//insert
-        //add ID
+        //delete ID
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "alter table editDB add ID int identity(1,1);";
+        $sql = "ALTER TABLE insertDB DROP COLUMN ID";
+        $results = sqlsrv_query($conn, $sql);//end of connect
+
+//add ID
+        $conn = sqlsrv_connect($serverName, $connectionOptions);
+        $sql = "ALTER TABLE insertDB ADD ID INT IDENTITY(1,1)";
         $results = sqlsrv_query($conn, $sql);
-        if ($results === false) die(print_r(sqlsrv_errors(), true));
+        if( $results=== false ) die( print_r( sqlsrv_errors(), true));
         sqlsrv_free_stmt($results);//end of connect
 
 //insert data into database
-        $conn = sqlsrv_connect($serverName, $connectionOptions);
         if (!empty($arr)) {
-            $sql = sprintf("INSERT INTO dbo.editDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
-           VALUES ");
-            for ($a = 0; $a < $num; $a++) {
-                $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[$a]);
-                $itemStr = '( ';
-                $itemStr .= sprintf(" '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ",
-                    $spilt_dRGDefinition[0],
-                    $spilt_dRGDefinition[1],
-                    $list_providerId[$a],
-                    $list_providerName[$a],
-                    $list_providerStreetAddress[$a],
-                    $list_providerCity[$a],
-                    $list_providerState[$a],
-                    $list_providerZipCode[$a],
-                    $list_hospitalReferralRegionHRRDescription[$a],
-                    $list_totalDischarges[$a],
-                    $list_averageCoveredCharges[$a],
-                    $list_averageTotalPayments[$a],
-                    $list_averageMedicarePayments[$a],
-                    $list_year[$a]);
-                $itemStr .= '),';
-                $sql .= $itemStr;
+            for($i = 0; $i < $num/1000; $i++)
+            {
+                if($i < $num/1000-1)
+                {
+                    $sql = "INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
+            VALUES ";
+                    for ($a = 0; $a < 1000; $a++)
+                    {
+
+                        $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[1000*$i+$a]);
+                        $itemStr = '( ';
+                        $itemStr .= sprintf(" '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ",
+                            $spilt_dRGDefinition[0],
+                            $spilt_dRGDefinition[1],
+                            $list_providerId[1000*$i+$a],
+                            $list_providerName[1000*$i+$a],
+                            $list_providerStreetAddress[1000*$i+$a],
+                            $list_providerCity[1000*$i+$a],
+                            $list_providerState[1000*$i+$a],
+                            $list_providerZipCode[1000*$i+$a],
+                            $list_hospitalReferralRegionHRRDescription[1000*$i+$a],
+                            $list_totalDischarges[1000*$i+$a],
+                            $list_averageCoveredCharges[1000*$i+$a],
+                            $list_averageTotalPayments[1000*$i+$a],
+                            $list_averageMedicarePayments[1000*$i+$a],
+                            $list_year[1000*$i+$a]);
+                        $itemStr .= '),';
+                        $sql .= $itemStr;
+                    }
+                    $sql = rtrim($sql, ",");//delete the last comma
+                    $sql .= ";";//add the last semicolon
+                    $sql .="\n";
+                    $conn = sqlsrv_connect($serverName, $connectionOptions);
+                    $results = sqlsrv_query($conn, $sql);
+                    if( $results=== false ) die( print_r( sqlsrv_errors(), true));
+                    sqlsrv_free_stmt($results);//end of connect
+                }
+                else
+                {
+                    $sql = "INSERT INTO dbo.insertDB (dRGCode,dRGDescription,providerId,providerName,providerStreetAddress,providerCity,providerState,providerZipCode,hospitalReferralRegionHRRDescription,totalDischarges,averageCoveredCharges,averageTotalPayments,averageMedicarePayments,year) 
+                VALUES ";
+                    for ($a = 0; $a < $num-1000*$i; $a++)
+                    {
+                        $spilt_dRGDefinition = explode(' - ', $list_dRGDefinition[1000*$i+$a]);
+                        $itemStr = '( ';
+                        $itemStr .= sprintf(" '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ",
+                            $spilt_dRGDefinition[0],
+                            $spilt_dRGDefinition[1],
+                            $list_providerId[1000*$i+$a],
+                            $list_providerName[1000*$i+$a],
+                            $list_providerStreetAddress[1000*$i+$a],
+                            $list_providerCity[1000*$i+$a],
+                            $list_providerState[1000*$i+$a],
+                            $list_providerZipCode[1000*$i+$a],
+                            $list_hospitalReferralRegionHRRDescription[1000*$i+$a],
+                            $list_totalDischarges[1000*$i+$a],
+                            $list_averageCoveredCharges[1000*$i+$a],
+                            $list_averageTotalPayments[1000*$i+$a],
+                            $list_averageMedicarePayments[1000*$i+$a],
+                            $list_year[1000*$i+$a]);
+                        $itemStr .= '),';
+                        $sql .= $itemStr;
+                    }
+                    $sql = rtrim($sql, ",");//delete the last comma
+                    $sql .= ";";//add the last semicolon
+                    $sql .="\n";
+                    $conn = sqlsrv_connect($serverName, $connectionOptions);
+                    $results = sqlsrv_query($conn, $sql);
+                    if( $results=== false ) die( print_r( sqlsrv_errors(), true));
+                    sqlsrv_free_stmt($results);//end of connect
+                }
             }
-            $sql = rtrim($sql, ",");//delete the last comma
-            $sql .= ";";//add the last semicolon
-            $sql .= "DELETE FROM editDB WHERE ID NOT IN (SELECT max(ID) FROM editDB GROUP BY dRGCode,providerId,year); ";//delete the same data
         }
+
+//print time
+        $costEnd1 = microtime(true);
+        $cost1 = round($costEnd1 - $costBegin1, 3);
+        //var_dump($cost1);
+        echo "<br>";
+        $costBegin2 = microtime(true);
+        $conn = sqlsrv_connect($serverName, $connectionOptions);
+        $sql = "DELETE FROM insertDB WHERE ID NOT IN (SELECT max(ID) FROM insertDB GROUP BY dRGCode,dRGDescription,providerId,year); ";//delete the same data
         $results = sqlsrv_query($conn, $sql);
-        if ($results === false) die(print_r(sqlsrv_errors(), true));
         sqlsrv_free_stmt($results);//end of connect
+
 //delete ID
         $conn = sqlsrv_connect($serverName, $connectionOptions);
-        $sql = "alter table editDB drop column ID";
-        $results = sqlsrv_query($conn, $sql);//end of connect
+        $sql = "ALTER TABLE insertDB DROP COLUMN ID";
+        $results = sqlsrv_query($conn, $sql);
+        sqlsrv_free_stmt($results);//end of connect
+
 //print time
-        $costEnd = microtime(true);
-        $cost = round($costEnd - $costBegin, 3);
-        //var_dump($cost);
+        $costEnd2 = microtime(true);
+        $cost2 = round($costEnd2 - $costBegin2, 3);
+        //var_dump($cost2);
         echo "<div class=\"text-center mx-auto mb-4\">
             <hr><h3 class=\"text-centre\">Inserted New Procedures Successfully</h3>
             <form class=\"\" action=\"../admin/admin.php\" method=\"post\">
