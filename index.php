@@ -316,8 +316,8 @@
 
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
-            center: new google.maps.LatLng(40.425167, 74.002150),
-            zoom: 12
+            center: new google.maps.LatLng(37.09024, -95.712891),
+            zoom: 3
 
         });
 
@@ -333,11 +333,18 @@
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
-                infoWindow.setPosition(userPos);
-                infoWindow.setContent('location found');
-                infoWindow.open(map);
-                map.setCenter(userPos);
-                map.setZoom(8); //If location is found, increase zoom
+                if("<?php echo !empty($_GET); ?>")
+                {
+
+                }
+                else {
+                    infoWindow.setPosition(userPos);
+                    infoWindow.setContent('location found');
+                    infoWindow.open(map);
+                    map.setCenter(userPos);
+                    map.setZoom(8); //If location is found, increase zoom
+                }
+
 
                 haveUserLocation = true;
             }, function () {
@@ -566,6 +573,8 @@
             infoWindow.setContent(infowincontent);
             infoWindow.open(map, marker);
         });
+
+
     }
 
 
