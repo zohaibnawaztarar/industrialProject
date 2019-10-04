@@ -201,23 +201,19 @@
     /*if ($position != "customer" && $position != "databaseFind") { */?>
     <div class="row mt-5">
         <div class="text-center mx-auto mb-2">
-
-
-
-                <div class="card">
-                    <i class="card-img-top fas fa-edit fa-5x my-4"></i>
-                    <div class="card-body text-center">
-                        <form class="navbar-form" method="POST">
-                            <?php if( $_SERVER['REQUEST_METHOD'] == 'POST' ) { ?>
-                                Invalid password
-                            <?php } ?>
-                            <p>Enter password for access:</p>
-                            <input class="form-control my-2" type="password" name="password">
-                            <button class="btn btn-success btn-mini search-btn my-4" type="submit">Log In</button>
-                        </form>
-                    </div>
+             <div class="card">
+                <i class="card-img-top fas fa-edit fa-5x my-4"></i>
+                <div class="card-body text-center">
+                    <form class="navbar-form" method="POST">
+                        <?php if( $_SERVER['REQUEST_METHOD'] == 'POST' ) { ?>
+                            Invalid password
+                        <?php } ?>
+                        <p>Enter password for access:</p>
+                        <input class="form-control my-2" type="password" name="password">
+                        <button class="btn btn-success btn-mini search-btn my-4" type="submit">Log In</button>
+                    </form>
                 </div>
-
+            </div>
         </div>
 
 
@@ -225,7 +221,8 @@
         <br><br><br><br><br><br><br><br>
 
 
-    </div>   <br><br><br><br><br><br><br><br><br><br>
+    </div>
+    <h1><br><br><br><br><br><br></h1>
     <!--     <?php /*} else { */?>
         <h1 class="display-4 text-center my-5">Not Logged into Staff Account</h1>
         --><?php /*} */?>
